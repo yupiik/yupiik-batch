@@ -70,8 +70,8 @@ public class DiffExecutor<A> implements Consumer<Diff<A>> {
     private void withCommitInterval(final Iterator<A> rows,
                                     final String logPrefix,
                                     final SQLBiConsumer<Connection, A> onRow) {
-        while (rows.hasNext()) {
-            try (final var connection = connectionSupplier.get()) {
+        try (final var connection = connectionSupplier.get()) { // todo: retry if connection fails
+            while (rows.hasNext()) {
                 final boolean autoCommit = connection.getAutoCommit();
                 connection.setAutoCommit(false);
                 logger.info("[C][S] Starting transaction");
@@ -97,9 +97,9 @@ public class DiffExecutor<A> implements Consumer<Diff<A>> {
                     logger.info("[C][E] Finished transaction");
                     connection.setAutoCommit(autoCommit);
                 }
-            } catch (final RuntimeException | SQLException sqle) {
-                throw new IllegalStateException(sqle);
             }
+        } catch (final RuntimeException | SQLException sqle) {
+            throw new IllegalStateException(sqle);
         }
     }
 
