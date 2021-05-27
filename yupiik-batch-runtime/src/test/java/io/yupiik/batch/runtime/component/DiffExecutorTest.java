@@ -6,17 +6,22 @@ import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.LongAdder;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,12 +36,36 @@ class DiffExecutorTest {
         try (final var keepDb = dataSource.getConnection()) { // avoid h2 to delete the table with the last close()
             seed(dataSource, "apply");
 
+            final var counter = new LongAdder();
             new DiffExecutor<>(
-                    dataSource::getConnection, 10, false,
+                    () -> Connection.class.cast(Proxy.newProxyInstance(
+                            Thread.currentThread().getContextClassLoader(), new Class<?>[]{Connection.class},
+                            new InvocationHandler() {
+                                private final Connection connection;
+
+                                {
+                                    connection = dataSource.getConnection();
+                                    counter.increment();
+                                }
+
+                                @Override
+                                public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+                                    try {
+                                        return method.invoke(connection, args);
+                                    } catch (final InvocationTargetException ite) {
+                                        throw ite.getTargetException();
+                                    } finally {
+                                        if ("close".equals(method.getName())) {
+                                            counter.decrement();
+                                        }
+                                    }
+                                }
+                            })), 10, false,
                     () -> new Simple.Insert("DiffExecutorTest_apply"),
                     () -> new Simple.Update("DiffExecutorTest_apply"),
                     () -> new Simple.Delete("DiffExecutorTest_apply"))
                     .accept(diff);
+            assertEquals(0, counter.sum());
 
             try (final var connection = dataSource.getConnection();
                  final var statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -120,19 +149,19 @@ class DiffExecutorTest {
         // ensure all operations were logged even if not applied
         assertEquals(
                 """
-                Diff summary:
-                     To Add: 1
-                  To Remove: 1
-                  To Update: 1
-                [C][S] Starting transaction
-                [d][A] Adding Simple[name=12347, age=2]
-                [C][E] Finished transaction
-                [C][S] Starting transaction
-                [d][U] Updating Simple[name=12346, age=3]
-                [C][E] Finished transaction
-                [C][S] Starting transaction
-                [d][D] Deleting Simple[name=12345, age=1]
-                [C][E] Finished transaction""",
+                        Diff summary:
+                             To Add: 1
+                          To Remove: 1
+                          To Update: 1
+                        [C][S] Starting transaction
+                        [d][A] Adding Simple[name=12347, age=2]
+                        [C][E] Finished transaction
+                        [C][S] Starting transaction
+                        [d][U] Updating Simple[name=12346, age=3]
+                        [C][E] Finished transaction
+                        [C][S] Starting transaction
+                        [d][D] Deleting Simple[name=12345, age=1]
+                        [C][E] Finished transaction""",
                 records.stream().map(LogRecord::getMessage).collect(joining("\n")));
     }
 

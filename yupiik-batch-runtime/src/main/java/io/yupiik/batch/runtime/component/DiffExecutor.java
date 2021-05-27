@@ -71,8 +71,7 @@ public class DiffExecutor<A> implements Consumer<Diff<A>> {
                                     final String logPrefix,
                                     final SQLBiConsumer<Connection, A> onRow) {
         while (rows.hasNext()) {
-            try {
-                final var connection = connectionSupplier.get();
+            try (final var connection = connectionSupplier.get()) {
                 final boolean autoCommit = connection.getAutoCommit();
                 connection.setAutoCommit(false);
                 logger.info("[C][S] Starting transaction");
