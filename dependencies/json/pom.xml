@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>dependencies</artifactId>
+    <groupId>io.yupiik.batch</groupId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>json</artifactId>
+  <name>Yupiik Batch :: Dependencies :: JSON</name>
+
+  <properties>
+    <johnzon.version>1.2.12</johnzon.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-json_1.1_spec</artifactId>
+      <version>1.5</version>
+      <classifier>jakarta</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.geronimo.specs</groupId>
+      <artifactId>geronimo-jsonb_1.0_spec</artifactId>
+      <version>1.4</version>
+      <classifier>jakarta</classifier>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.johnzon</groupId>
+      <artifactId>johnzon-core</artifactId>
+      <version>${johnzon.version}</version>
+      <classifier>jakarta</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.johnzon</groupId>
+      <artifactId>johnzon-mapper</artifactId>
+      <version>${johnzon.version}</version>
+      <classifier>jakarta</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.johnzon</groupId>
+      <artifactId>johnzon-jsonb</artifactId>
+      <version>${johnzon.version}</version>
+      <classifier>jakarta</classifier>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+</project>
