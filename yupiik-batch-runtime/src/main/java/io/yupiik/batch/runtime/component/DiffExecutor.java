@@ -19,15 +19,15 @@ public class DiffExecutor<A> implements Consumer<Diff<A>> {
     private final SQLSupplier<Connection> connectionSupplier;
     private final int commitInterval;
     private final boolean dryRun;
-    private final Supplier<SQLBiConsumer<Connection, A>> insertFactory;
-    private final Supplier<SQLBiConsumer<Connection, A>> updateFactory;
-    private final Supplier<SQLBiConsumer<Connection, A>> deleteFactory;
+    private final Supplier<? extends SQLBiConsumer<Connection, A>> insertFactory;
+    private final Supplier<? extends SQLBiConsumer<Connection, A>> updateFactory;
+    private final Supplier<? extends SQLBiConsumer<Connection, A>> deleteFactory;
 
     public DiffExecutor(final SQLSupplier<Connection> connectionSupplier,
                         final int commitInterval, final boolean dryRun,
-                        final Supplier<SQLBiConsumer<Connection, A>> insertFactory,
-                        final Supplier<SQLBiConsumer<Connection, A>> updateFactory,
-                        final Supplier<SQLBiConsumer<Connection, A>> deleteFactory) {
+                        final Supplier<? extends SQLBiConsumer<Connection, A>> insertFactory,
+                        final Supplier<? extends SQLBiConsumer<Connection, A>> updateFactory,
+                        final Supplier<? extends SQLBiConsumer<Connection, A>> deleteFactory) {
         this.connectionSupplier = connectionSupplier;
         this.commitInterval = commitInterval;
         this.dryRun = dryRun;

@@ -97,6 +97,12 @@ public class ExecutionTracer extends BaseExecutionTracer {
         Logger.getLogger(getClass().getName()).log(Level.SEVERE, ex.getMessage(), ex);
     }
 
+    public RunConfiguration chilRunConfiguration() {
+        final var configuration = new RunConfiguration();
+        configuration.setElementExecutionWrapper(e -> (c, r) -> Executable.Result.class.cast(traceStep(c, e, r)));
+        return configuration;
+    }
+
     public static RunConfiguration runConfiguration(final SQLSupplier<Connection> dataSource, final String batch, final Clock clock) {
         return trace(new RunConfiguration(), dataSource, batch, clock);
     }
