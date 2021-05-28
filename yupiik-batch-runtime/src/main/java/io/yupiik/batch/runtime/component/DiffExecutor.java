@@ -85,6 +85,9 @@ public class DiffExecutor<A> implements Consumer<Diff<A>> {
     private void withCommitInterval(final Iterator<A> rows,
                                     final String logPrefix,
                                     final SQLBiConsumer<Connection, A> onRow) {
+        if (!rows.hasNext()) {
+            return;
+        }
         try (final var connection = connectionSupplier.get()) { // todo: retry if connection fails
             while (rows.hasNext()) {
                 final boolean autoCommit = connection.getAutoCommit();

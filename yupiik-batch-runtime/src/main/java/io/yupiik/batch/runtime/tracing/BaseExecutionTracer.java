@@ -40,6 +40,10 @@ public abstract class BaseExecutionTracer {
 
     public Executable.Result<?> traceStep(final RunConfiguration configuration,
                                           final BatchChain<?, ?, ?> batchChain, final BatchChain.Result<?> previous) {
+        if (batchChain.skipTracing()) {
+            return batchChain.execute(configuration, Executable.Result.class.cast(previous));
+        }
+
         final var start = clock.instant();
         var status = Status.SUCCESS;
         String comment = null;
@@ -54,13 +58,12 @@ public abstract class BaseExecutionTracer {
             comment = err.getMessage();
             throw err;
         } finally {
-            if (!batchChain.skipTracing()) {
-                final var end = clock.instant();
-                final var execution = new StepExecution(
-                        UUID.randomUUID().toString(), batchChain.name(), status, comment,
-                        LocalDateTime.ofInstant(start, clock.getZone()), LocalDateTime.ofInstant(end, clock.getZone()));
-                steps.add(execution);
-            }
+            final var end = clock.instant();
+            final var execution = new StepExecution(
+                    UUID.randomUUID().toString(), batchChain.name(), status, comment,
+                    LocalDateTime.ofInstant(start, clock.getZone()), LocalDateTime.ofInstant(end, clock.getZone()),
+                    steps.isEmpty() ? null : steps.get(steps.size() - 1).id());
+            steps.add(execution);
         }
     }
 
@@ -91,7 +94,7 @@ public abstract class BaseExecutionTracer {
 
     public static record StepExecution(
             String id, String name, Status status, String comment,
-            LocalDateTime started, LocalDateTime finished) {
+            LocalDateTime started, LocalDateTime finished, String previous) {
     }
 
     public static record JobExecution(

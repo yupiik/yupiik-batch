@@ -27,6 +27,7 @@ import java.util.Optional;
 import static java.time.Clock.systemUTC;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -58,6 +59,7 @@ class ExecutionTracerTest {
                         "   comment CLOB," +
                         "   started TIMESTAMP," +
                         "   finished TIMESTAMP," +
+                        "   previous_id VARCHAR(64)," +
                         "   PRIMARY KEY (id)" +
                         ")");
                 connection.commit();
@@ -119,19 +121,27 @@ class ExecutionTracerTest {
 
             try (final var connection = dataSource.getConnection();
                  final var statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {
-                try (final var resultSet = statement.executeQuery("SELECT name, comment, status from BATCH_STEP_EXECUTION_TRACE ORDER BY name")) {
+                try (final var resultSet = statement.executeQuery(
+                        "SELECT id, name, comment, status, previous_id from BATCH_STEP_EXECUTION_TRACE ORDER BY name")) {
+                    String id;
                     assertTrue(resultSet.next());
                     assertEquals("step1", resultSet.getString("name"));
                     assertEquals("SUCCESS", resultSet.getString("status"));
+                    assertNull(resultSet.getString("previous_id"));
+                    id = resultSet.getString("id");
 
                     assertTrue(resultSet.next());
                     assertEquals("step2", resultSet.getString("name"));
                     assertEquals("SUCCESS", resultSet.getString("status"));
+                    assertEquals(id, resultSet.getString("previous_id"));
+                    id = resultSet.getString("id");
 
                     assertTrue(resultSet.next());
                     assertEquals("step3", resultSet.getString("name"));
                     assertEquals("error for test", resultSet.getString("comment"));
                     assertEquals("FAILURE", resultSet.getString("status"));
+                    assertEquals(id, resultSet.getString("previous_id"));
+                    id = resultSet.getString("id");
 
                     assertFalse(resultSet.next(), () -> {
                         try {

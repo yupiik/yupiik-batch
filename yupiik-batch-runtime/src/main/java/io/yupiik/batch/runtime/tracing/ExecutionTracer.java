@@ -23,6 +23,7 @@ import io.yupiik.batch.runtime.sql.SQLSupplier;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.Clock;
 import java.util.List;
 import java.util.logging.Level;
@@ -57,14 +58,18 @@ public class ExecutionTracer extends BaseExecutionTracer {
         } catch (final SQLException throwables) {
             throw new IllegalStateException(throwables);
         }
+        final var stepsIt = steps.iterator();
+        if (!stepsIt.hasNext()) {
+            return;
+        }
 
         final var insert = new SQLBiConsumer.Batched<StepExecution>() {
             @Override
             protected PreparedStatement createStatement(final Connection connection) throws SQLException {
                 return connection.prepareStatement("" +
                         "INSERT INTO BATCH_STEP_EXECUTION_TRACE" +
-                        " (id, job_id, name, status, comment, started, finished) VALUES" +
-                        " (?, ?, ?, ?, ?, ?, ?)");
+                        " (id, job_id, name, status, comment, started, finished, previous_id) VALUES" +
+                        " (?, ?, ?, ?, ?, ?, ?, ?)");
             }
 
             @Override
@@ -72,17 +77,24 @@ public class ExecutionTracer extends BaseExecutionTracer {
                 statement.setString(1, row.id());
                 statement.setString(2, job.id());
                 statement.setString(3, row.name());
-                statement.setString(4, row.status() == null ? "-" : row.status().name());
+                if (row.status() == null) {
+                    statement.setNull(4, Types.VARCHAR);
+                } else {
+                    statement.setString(4, row.status().name());
+                }
                 statement.setString(5, row.comment());
                 statement.setObject(6, row.started());
                 statement.setObject(7, row.finished());
+                if (row.previous() == null) {
+                    statement.setNull(8, Types.VARCHAR);
+                } else {
+                    statement.setString(8, row.previous());
+                }
             }
         };
         final int commitInterval = 10; // likely sufficient in one iteration since #steps < 10 in general
-        final var stepsIt = steps.iterator();
-        while (stepsIt.hasNext()) {
-            try {
-                final var connection = dataSource.get();
+        try (final var connection = dataSource.get()) {
+            while (stepsIt.hasNext()) {
                 final boolean autoCommit = connection.getAutoCommit();
                 connection.setAutoCommit(false);
                 try {
@@ -101,9 +113,11 @@ public class ExecutionTracer extends BaseExecutionTracer {
                 } finally {
                     connection.setAutoCommit(autoCommit);
                 }
-            } catch (final RuntimeException | SQLException sqle) {
-                throw new IllegalStateException(sqle);
             }
+        } catch (final RuntimeException re) {
+            throw re;
+        } catch (final SQLException sqle) {
+            throw new IllegalStateException(sqle);
         }
     }
 
@@ -118,7 +132,8 @@ public class ExecutionTracer extends BaseExecutionTracer {
         return configuration;
     }
 
-    public static RunConfiguration runConfiguration(final SQLSupplier<Connection> dataSource, final String batch, final Clock clock) {
+    public static RunConfiguration runConfiguration(final SQLSupplier<Connection> dataSource, final String batch,
+                                                    final Clock clock) {
         return trace(new RunConfiguration(), dataSource, batch, clock);
     }
 
