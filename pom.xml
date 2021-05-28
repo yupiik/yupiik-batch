@@ -51,7 +51,8 @@
     <dependency>
       <groupId>io.yupiik.logging</groupId>
       <artifactId>yupiik-logging-jul</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1-SNAPSHOT</version>
+      <classifier>jakarta</classifier>
       <scope>runtime</scope>
     </dependency>
 
