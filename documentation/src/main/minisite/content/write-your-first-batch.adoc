@@ -59,7 +59,7 @@ TIP: `io.yupiik.batch.runtime.documentation.ConfigurationParameterCollector` cla
 Reusable components are in `io.yupiik.batch.runtime.component` package.
 This section highlights a few of them.
 
-include::generated/components.adoc[]
+include::content/generated/components.adoc[]
 
 === Combine components
 
