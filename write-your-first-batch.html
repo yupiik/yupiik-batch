@@ -155,8 +155,95 @@ fields are injected so they shouldn&#8217;t be <code>final</code> but there is n
 <p>Reusable components are in <code>io.yupiik.batch.runtime.component</code> package.
 This section highlights a few of them.</p>
 </div>
+<div class="sect2">
+<h3 id="_io_yupiik_batch_runtime_component_acceptedlossdifffilter">io.yupiik.batch.runtime.component.AcceptedLossDiffFilter</h3>
 <div class="paragraph">
-<p>Unresolved directive in &lt;stdin&gt; - include::generated/components.adoc[]</p>
+<p>Enables to filter a <code>Diff</code>. If the <code>acceptedLoss</code> is not reached, i.e. more row would be deleted than this percentage, the chain will end there.</p>
+</div>
+<div class="paragraph">
+<p>Goal is to not delete a database if incoming data are corrupted or not properly up to date.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_io_yupiik_batch_runtime_component_datasetdiffcomputer">io.yupiik.batch.runtime.component.DatasetDiffComputer</h3>
+<div class="paragraph">
+<p>Component which takes as input two iterators representing sorted datasets.</p>
+</div>
+<div class="paragraph">
+<p>Both dataset will be compared - in streaming mode - using the <code>Comparator</code> passed in the constructor/factory method.
+It enables to detect deletions and additions and it will be reflected in the resulting <code>Diff</code> instance.</p>
+</div>
+<div class="paragraph">
+<p>If equals, the <code>BiPredicate</code> will be used to check it is actually equal or not.
+If not the data will be considered updated, otherwise not changed and ignored from the diff.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_io_yupiik_batch_runtime_component_diffexecutor">io.yupiik.batch.runtime.component.DiffExecutor</h3>
+<div class="paragraph">
+<p>Enables to apply a <code>Diff</code> - from a <code>DatasetDiffComputer</code>.</p>
+</div>
+<div class="paragraph">
+<p>It will apply it in a database represented by the <code>connectionSupplier</code> with the provided <code>commitInterval</code>.
+The statements are creating using the related factories - <code>insertFactory</code>, <code>updateFactory</code>, <code>deleteFactory</code>.</p>
+</div>
+<div class="paragraph">
+<p>Finally, <code>dryRun</code> toggle enables to simulate the processing without issuing any modification in the database.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_io_yupiik_batch_runtime_component_mapper">io.yupiik.batch.runtime.component.Mapper</h3>
+<div class="paragraph">
+<p>This mapping component enables to convert an input to an output instance by providing an specification instance.</p>
+</div>
+<div class="paragraph">
+<p>It is a class decorated with <code>@Mapping</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Mapping(
+        from = IncomingModel.class,
+        to = OutputModel.class,
+        documentation = "Converts an input to an output.",
+        properties = {
+                @Property(type = CONSTANT, to = "outputFieldUrl", value = "https://foo.bar/"),
+                @Property(type = TABLE_MAPPING, from = "inputKeyField", to = "mappedOutput", value = "myLookupTable", onMissedTableLookup = FORWARD)
+        },
+        tables = {
+                @Mapping.MappingTable(
+                        name = "myLookupTable",
+                        entries = {
+                                @Entry(input = "A", output = "1"),
+                                @Entry(input = "C", output = "3")
+                        }
+                )
+        })
+public class MyMapperSpec {
+    @Mapping.Custom(description = "This will map X to Y.")
+    String outputField(final IncomingModel in[, @Table("myLookupTable") final Map&lt;String, String&gt; myLookupTable) {
+        return ...;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To get a mapper, you simply call <code>Mapper.mapper(MyMapperSpec.class)</code> and then can insert this mapper in any <code>BatchChain</code>.</p>
+</div>
+<div class="paragraph">
+<p>The specification API enables static mapping (<code>properties</code>) or custom mapping - <code>@Mapping.Custom</code> - for more advanced logic.</p>
+</div>
+<div class="paragraph">
+<p>The companion class <code>io.yupiik.batch.runtime.documentation.MapperDocGenerator</code> enables to generate an asciidoctor documentation for a mapper class.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_io_yupiik_batch_runtime_component_sqlquery">io.yupiik.batch.runtime.component.SQLQuery</h3>
+<div class="paragraph">
+<p>Enables to extract data from a SQL query.</p>
+</div>
+<div class="paragraph">
+<p>A custom mapper will be called for each <code>ResultSet</code> line to convert current row in an object passed to the rest of the <code>BatchChain</code>.</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_combine_components">Combine components</h3>
