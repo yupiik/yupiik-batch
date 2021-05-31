@@ -1,0 +1,148 @@
+= Write your first batch
+
+[abstract]
+Writing a batch is mainly about writing a `main(String...)` method which uses Yupiik Batch compoennts.
+
+== Create a batch
+
+Implementing a batch is about extending `Batch` interface:
+
+[source,java]
+----
+public class MyBatch implements Batch<MyConf> {
+    @Override
+    public void accept(final MyConf configuration) {
+        // ...
+    }
+}
+----
+
+What is important to note is that a batch has a configuration and the configuration is "injected" in `accept` method.
+This enables the framework to map the main arguments to the configuration in an unified fashion.
+
+Once you have a batch implementation, you can run it using `Batch` launcher method:
+
+[source,java]
+----
+public static void main(final String... args) {
+    Batch.run(MyBatch.class, args);
+}
+----
+
+== Define your batch configuration
+
+A batch configuration is a class with field(s) decorated with `@Param`:
+
+[source,java]
+----
+public class DataSourceConfiguration {
+    @Param(description = "Driver to use", required = true)
+    private String driver;
+
+    @Param(description = "JDBC URL to use", required = true)
+    private String url;
+
+    @Param(description = "Database username.")
+    private String username;
+
+    @Param(description = "Database password.")
+    private String password;
+}
+----
+
+NOTE: fields are injected so they shouldn't be `final` but there is no constraint on having getters/setters.
+
+TIP: `io.yupiik.batch.runtime.documentation.ConfigurationParameterCollector` class enables to extract all parameters for a batch and then map this extraction to a documentation if needed.
+
+== Reusable batch components
+
+Reusable components are in `io.yupiik.batch.runtime.component` package.
+This section highlights a few of them.
+
+include::generated/components.adoc[]
+
+=== Combine components
+
+Combining components can be done in a plain main:
+
+[source,java]
+----
+final var referenceData = new ReferenceDataSQLQuery(databaseConnection);
+final var newInputs = new MyNewInputs();
+final var comparingProcessor = new ReferencialRowDatasetDiffComputer();
+final var diff = comparingProcessor.apply(referenceData, newInputs);
+if (new AcceptedLossDiffFilter(0.10).test(diff)) {
+    new ReferenceDataDiffExecutor(databaseConnection, 25).accept(diff);
+}
+----
+
+However, for too noisy cases, it can be neat to use a fluent API on the diff to make it more readable and composable.
+Indeed you can use the `Stream` or `Optional` API:
+
+[source,java]
+----
+// init
+final var diff = new ReferencialRowDatasetDiffComputer()
+        .apply(new ReferenceDataSQLQuery(databaseConnection), new MyNewInputs());
+
+// start the flow
+Stream.of(diff)
+    .filter(new AcceptedLossDiffFilter(0.10))
+    .forEach(new ReferenceDataDiffExecutor(databaseConnection, 25));
+
+// or
+Optional.of(diff)
+    .filter(new AcceptedLossDiffFilter(0.10))
+    .ifPresent(new ReferenceDataDiffExecutor(databaseConnection, 25));
+----
+
+This enables to read more explicitly the flow of processing thanks `Stream` or `Optional` fluent API.
+It is also now easier to insert an element or decorate components explicitly.
+
+However, these two API are not designed for that and will quickly hit some limitation.
+To make it more batch oriented, parent `Batch` class enables to define a stream like flow but more batch oriented.
+You have to start your flow by `from()` or use a specific source such as `DatasetDiffComputer`.
+For example:
+
+[source,java]
+----
+@Override
+public void accept(final MyConfiguration configuration) {
+    final var connectionProvider = configuration.datasource.toConnectionProvider();
+    referencialRowDatasetDiff()
+            .withCustomData(myInput())
+            .withReferencialData(referenceData(datasource, configuration.table))
+        .diff()
+        .filter(withAcceptedLoss(configuration.acceptedLoss))
+        .then(applyDiff(connectionProvider, configuration.commitInterval, configuration.dryRun, configuration.table))
+        .run(runConfiguration(datasource, getClass().getSimpleName(), systemUTC()));
+}
+----
+
+This DSL is more friendly to the batches we write (integrating with default components).
+
+IMPORTANT: until you hit `run()` nothing is done.
+
+TIP: some components have a static factory to make it more expressive, don't hesitate to use it.
+
+Finally, the `RunConfiguration` enables to intercept any step of the `BatchChain` defined by the previous DSL.
+Combined with `ExecutionTracer`, it will let you store any execution and its steps in a database for audit or monitoring/administration purposes.
+
+== TIP
+
+* Use `FluentIterator` to `filter` and `map` your input `Iterator`, it makes the code more readable and adds some features `Stream` does not have like a more advanced `distinct` implementation.
+
+Here is a sample input iterator written using `FluentIterator` and filtering its data with some business rule on the raw input and post processing the mapped data with `PspRolePasswordInjector`.
+
+[source,java]
+----
+final var iterator = FluentIterator.of(myIterator()) <1>
+        .filter(new MyBusinessFilter()) <2>
+        .map(new MyBusinessMapper()) <3>
+        .unwrap(); <4>
+----
+<.> Create a `FluentIterator` from `myIterator()` result,
+<.> Filter the iterator with a `Predicate`,
+<.> Map the iterator data to another model with a `Mapper>,
+<.> Remove the enclosing `FluentIterator` wrapper which is not needed once the full iterator chain is defined (optional).
+

@@ -16,10 +16,15 @@
 package io.yupiik.batch.runtime.component;
 
 import io.yupiik.batch.runtime.component.diff.Diff;
+import io.yupiik.batch.runtime.documentation.Component;
 
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
+@Component("""
+        Enables to filter a `Diff`. If the `acceptedLoss` is not reached, i.e. more row would be deleted than this percentage, the chain will end there.
+
+        Goal is to not delete a database if incoming data are corrupted or not properly up to date.""")
 public class AcceptedLossDiffFilter<A> implements Predicate<Diff<A>> {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final double acceptedLoss;

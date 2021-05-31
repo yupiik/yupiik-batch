@@ -16,6 +16,7 @@
 package io.yupiik.batch.runtime.component;
 
 import io.yupiik.batch.runtime.component.diff.Diff;
+import io.yupiik.batch.runtime.documentation.Component;
 import io.yupiik.batch.runtime.iterator.CountingIterator;
 
 import java.util.Comparator;
@@ -26,6 +27,14 @@ import java.util.function.BiPredicate;
 
 // highly inspired from
 // https://github.com/rmannibucau/comparator/blob/master/src/main/java/com/github/rmannibucau/comparator/DifferenceAnalyzer.java#L22
+@Component("""
+        Component which takes as input two iterators representing sorted datasets.
+        
+        Both dataset will be compared - in streaming mode - using the `Comparator` passed in the constructor/factory method.
+        It enables to detect deletions and additions and it will be reflected in the resulting `Diff` instance.
+        
+        If equals, the `BiPredicate` will be used to check it is actually equal or not.
+        If not the data will be considered updated, otherwise not changed and ignored from the diff.""")
 public class DatasetDiffComputer<T> implements BiFunction<Iterator<T>, Iterator<T>, Diff<T>> {
     private final Comparator<T> keyComparator;
     private final BiPredicate<T, T> equalTester;

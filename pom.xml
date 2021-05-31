@@ -34,6 +34,7 @@
   <modules>
     <module>dependencies</module>
     <module>yupiik-batch-runtime</module>
+    <module>documentation</module>
   </modules>
 
   <dependencyManagement>
@@ -51,7 +52,7 @@
     <dependency>
       <groupId>io.yupiik.logging</groupId>
       <artifactId>yupiik-logging-jul</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <version>1.0.1</version>
       <classifier>jakarta</classifier>
       <scope>runtime</scope>
     </dependency>

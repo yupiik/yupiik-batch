@@ -16,6 +16,7 @@
 package io.yupiik.batch.runtime.component;
 
 import io.yupiik.batch.runtime.component.diff.Diff;
+import io.yupiik.batch.runtime.documentation.Component;
 import io.yupiik.batch.runtime.sql.SQLBiConsumer;
 import io.yupiik.batch.runtime.sql.SQLSupplier;
 
@@ -29,6 +30,13 @@ import java.util.logging.Logger;
 
 import static io.yupiik.batch.runtime.sql.SQLBiConsumer.noop;
 
+@Component("""
+        Enables to apply a `Diff` - from a `DatasetDiffComputer`.
+        
+        It will apply it in a database represented by the `connectionSupplier` with the provided `commitInterval`.
+        The statements are creating using the related factories - `insertFactory`, `updateFactory`, `deleteFactory`.
+        
+        Finally, `dryRun` toggle enables to simulate the processing without issuing any modification in the database.""")
 public class DiffExecutor<A> implements Consumer<Diff<A>> {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final SQLSupplier<Connection> connectionSupplier;

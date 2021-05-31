@@ -15,6 +15,7 @@
  */
 package io.yupiik.batch.runtime.component;
 
+import io.yupiik.batch.runtime.documentation.Component;
 import io.yupiik.batch.runtime.sql.SQLFunction;
 import io.yupiik.batch.runtime.sql.SQLSupplier;
 
@@ -26,6 +27,10 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+@Component("""
+        Enables to extract data from a SQL query.
+        
+        A custom mapper will be called for each `ResultSet` line to convert current row in an object passed to the rest of the `BatchChain`.""")
 public class SQLQuery<T> implements Iterator<T>, AutoCloseable {
     private final String query;
     private final SQLFunction<ResultSet, T> mapper;

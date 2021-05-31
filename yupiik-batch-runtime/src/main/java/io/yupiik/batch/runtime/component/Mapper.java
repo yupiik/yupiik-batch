@@ -15,6 +15,7 @@
  */
 package io.yupiik.batch.runtime.component;
 
+import io.yupiik.batch.runtime.documentation.Component;
 import io.yupiik.batch.runtime.component.mapping.Mapping;
 
 import java.lang.reflect.Constructor;
@@ -34,6 +35,43 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 // todo: nested objects support if needed (mapper of mapper in terms of impl, nothing more crazy)
+@Component("""
+        This mapping component enables to convert an input to an output instance by providing an specification instance.
+                
+        It is a class decorated with `@Mapping`:
+                
+        [source,java]
+        ----
+        @Mapping(
+                from = IncomingModel.class,
+                to = OutputModel.class,
+                documentation = "Converts an input to an output.",
+                properties = {
+                        @Property(type = CONSTANT, to = "outputFieldUrl", value = "https://foo.bar/"),
+                        @Property(type = TABLE_MAPPING, from = "inputKeyField", to = "mappedOutput", value = "myLookupTable", onMissedTableLookup = FORWARD)
+                },
+                tables = {
+                        @Mapping.MappingTable(
+                                name = "myLookupTable",
+                                entries = {
+                                        @Entry(input = "A", output = "1"),
+                                        @Entry(input = "C", output = "3")
+                                }
+                        )
+                })
+        public class MyMapperSpec {
+            @Mapping.Custom(description = "This will map X to Y.")
+            String outputField(final IncomingModel in[, @Table("myLookupTable") final Map<String, String> myLookupTable) {
+                return ...;
+            }
+        }
+        ----
+        
+        To get a mapper, you simply call `Mapper.mapper(MyMapperSpec.class)` and then can insert this mapper in any `BatchChain`.
+        
+        The specification API enables static mapping (`properties`) or custom mapping - `@Mapping.Custom` - for more advanced logic.
+        
+        The companion class `io.yupiik.batch.runtime.documentation.MapperDocGenerator` enables to generate an asciidoctor documentation for a mapper class.""")
 public class Mapper<A, B, C> implements Function<A, B> {
     private final Function<A, B> delegate;
     private final C delegateInstance;
