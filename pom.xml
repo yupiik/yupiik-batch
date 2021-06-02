@@ -29,11 +29,13 @@
 
   <properties>
     <junit5.version>5.8.0-M1</junit5.version>
+    <owb.version>2.0.23-SNAPSHOT</owb.version>
   </properties>
 
   <modules>
     <module>dependencies</module>
     <module>yupiik-batch-runtime</module>
+    <module>yupiik-batch-ui</module>
     <module>documentation</module>
   </modules>
 

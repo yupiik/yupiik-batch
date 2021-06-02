@@ -36,6 +36,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>yupiik-batch-ui-backend</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-finder-shaded</artifactId>
       <version>4.20</version>
@@ -56,6 +61,9 @@
           <preActions>
             <preAction>
               <type>io.yupiik.batch.documentation.DocumentComponents</type>
+            </preAction>
+            <preAction>
+              <type>io.yupiik.batch.documentation.DocumentUIConfiguration</type>
             </preAction>
           </preActions>
           <git>

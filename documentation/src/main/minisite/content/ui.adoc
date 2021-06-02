@@ -1,0 +1,91 @@
+= Getting Started
+:minisite-index: 200
+:minisite-index-title: UI
+:minisite-index-description: Visualize your batch executions.
+:minisite-index-icon: mouse
+
+[abstract]
+Yupiik Batch provides an UI which can be used to visualize a database populated using `ExecutionTracer`.
+
+== Dependency
+
+The dependency to use is:
+
+[source,xml]
+----
+<dependency>
+  <groupId>io.yupiik.batch</groupId>
+  <artifactId>yupiik-batch-ui-backend</artifactId>
+  <version>${yupiik-batch.version}</version>
+</dependency>
+----
+
+You can add any JDBC driver you want too.
+Once you have it, you can create a Docker image using the main `org.apache.openwebbeans.se.CDILauncher` - just use the previous classpath.
+
+TIP: using `jib` the docker image creation is very smooth.
+
+== Configuration
+
+include::content/generated/ui.configuration.adoc[]
+
+== Extend the UI
+
+The UI provides a few extension points to let you enrich it with other utilities.
+
+First step is to create a javascript file which will register the extension then use the related configuration to let the server inject it into the `index.html`.
+
+An extension often looks like:
+
+[source,javascript]
+----
+window.yupiikBatchExtensions = (function () {
+    return {
+        routes: function (React, router, antd, antdIcons) { // custom additional routes
+            var e = React.createElement;
+
+            // foo extension (content + breadcrumb)
+            function Foo() {
+                return e(router.Link, { to: '/extensions/foo' }, ['Foo link']);
+            }
+            function FooBreadcrumb() {
+                return e(antd.Breadcrumb, null, [
+                    e(antd.Breadcrumb.Item, null, [
+                        e(router.Link, { to: '/' }, [
+                            e(antdIcons.HomeOutlined, null, null),
+                        ]),
+                    ]),
+                    e(antd.Breadcrumb.Item, null, [
+                        e('span', null, ['Files']),
+                    ]),
+                ]);
+            }
+            Foo.Breadcrumb = vBreadcrumb;
+
+            // register extension routes
+            return [
+                {
+                    path: '/extensions/foo',
+                    component: Foo,
+                    sider: {
+                        selectedKey: 'foo',
+                        menu: {
+                            attributes: {
+                                icon: e(antdIcons.FileOutlined, null, null),
+                            },
+                            content: e(router.Link, { to: '/extensions/foo' }, 'Foo'),
+                        },
+                    },
+                },
+            ];
+        },
+
+        // wrap comments - if you want to match a pattern to add links or components
+        commentWrapper: function (comment, React, router, antd, antdIcons) {
+            return `THIS IS A COMMENT: ${comment}`;
+        },
+    };
+})();
+----
+
+TIP: `React`, `react-router`, `useJsonRpc` - a hook to call JSON-RPC server, `andt` - components, and `antdIcons` are injected in extension points to let you integrate with the application UI.

@@ -13,16 +13,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.yupiik.batch.runtime.documentation;
+package io.yupiik.batch.ui.backend.model;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
+import java.util.List;
 
-import static java.lang.annotation.ElementType.TYPE;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-
-@Target(TYPE)
-@Retention(RUNTIME)
-public @interface Component {
-    String value();
+public record Page<T>(long total, List<T> items) {
 }

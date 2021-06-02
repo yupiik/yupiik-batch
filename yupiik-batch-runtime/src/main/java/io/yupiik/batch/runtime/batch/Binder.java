@@ -66,7 +66,7 @@ public class Binder {
     }
 
     protected String toName(final Field param, final Param conf) {
-        return (prefix == null ? "" : prefix + "-") + (conf.name().isBlank() ? param.getName() : conf.name());
+        return (prefix == null || prefix.isBlank() ? "" : prefix + "-") + (conf.name().isBlank() ? param.getName() : conf.name());
     }
 
     protected void doBind(final Object instance, final Field param, final Param conf, final String paramName) {

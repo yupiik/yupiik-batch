@@ -25,18 +25,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static java.util.Locale.ROOT;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 
 public record ConfigurationParameterCollector(
         List<Class<Batch<?>>> batchClasses) implements Supplier<Map<String, ConfigurationParameterCollector.Parameter>> {
     @Override
     public Map<String, Parameter> get() {
+        return getWithPrefix(batchType -> batchType.getSimpleName().toLowerCase(Locale.ROOT));
+    }
+
+    public Map<String, Parameter> getWithPrefix(final Function<Class<?>, String> prefix) {
         return batchClasses.stream()
                 .flatMap(batchType -> {
                     final var doc = new HashMap<String, Parameter>();
-                    new Binder(batchType.getSimpleName().toLowerCase(Locale.ROOT), List.of()) {
+                    new Binder(prefix.apply(batchType), List.of()) {
                         @Override
                         protected void doBind(final Object instance, final Field param, final Param conf, final String paramName) {
                             onParam(instance, param, conf, paramName);
@@ -66,6 +73,20 @@ public record ConfigurationParameterCollector(
                     return doc.entrySet().stream();
                 })
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public String toAsciidoc() {
+        return "[options=\"header\",cols=\"a,a,2\"]\n" +
+                "|===\n" +
+                "|Name|Env Variable|Description\n" +
+                getWithPrefix(c -> "").entrySet().stream()
+                        .sorted(Map.Entry.comparingByKey())
+                        .map(e -> "" +
+                                "| `" + e.getKey() + "` " + (e.getValue().param().required() ? "*" : "") +
+                                "| `" + e.getKey().replaceAll("[^A-Za-z0-9]", "_").toUpperCase(ROOT) + "` " +
+                                "| " + e.getValue().param().description() + "\n")
+                        .collect(joining()) + "\n" +
+                "|===\n";
     }
 
     public static record Parameter(Param param, String defaultValue) {

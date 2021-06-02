@@ -13,7 +13,10 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.yupiik.batch.runtime.documentation;
+package io.yupiik.batch.ui.backend.test;
+
+import org.apache.openwebbeans.junit5.Cdi;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -23,6 +26,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target(TYPE)
 @Retention(RUNTIME)
-public @interface Component {
-    String value();
+@ExtendWith(DatabaseSetup.class)
+@Cdi(reusable = true)
+public @interface BackendSupport {
 }

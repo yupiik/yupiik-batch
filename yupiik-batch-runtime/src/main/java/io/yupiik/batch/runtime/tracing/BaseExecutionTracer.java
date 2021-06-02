@@ -49,8 +49,11 @@ public abstract class BaseExecutionTracer {
         String comment = null;
         try {
             final var executed = batchChain.execute(configuration, Executable.Result.class.cast(previous));
+            if (BatchChain.Commentifiable.class.isInstance(batchChain)) {
+                comment = BatchChain.Commentifiable.class.cast(batchChain).toComment();
+            }
             if (executed != null && executed.value() != null && BatchChain.Commentifiable.class.isInstance(executed.value())) {
-                comment = BatchChain.Commentifiable.class.cast(executed.value()).toComment();
+                comment = (comment == null || comment.isBlank() ? "" : (comment + '\n')) + BatchChain.Commentifiable.class.cast(executed.value()).toComment();
             }
             return executed;
         } catch (final Error | RuntimeException err) {
