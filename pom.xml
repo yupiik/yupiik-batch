@@ -21,7 +21,7 @@
 
   <groupId>io.yupiik.batch</groupId>
   <artifactId>yupiik-batch</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.3</version>
   <name>Yupiik Batch</name>
   <packaging>pom</packaging>
   <description>Yupiik Batch</description>
@@ -303,7 +303,7 @@ under the License.
     <connection>scm:git:https://github.com/yupiik/yupiik-batch.git</connection>
     <developerConnection>scm:git:https://github.com/yupiik/yupiik-batch.git</developerConnection>
     <url>https://github.com/yupiik/yupiik-batch.git</url>
-    <tag>HEAD</tag>
+    <tag>yupiik-batch-0.0.3</tag>
   </scm>
 
   <distributionManagement>
