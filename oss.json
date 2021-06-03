@@ -1,0 +1,11 @@
+{
+  "skip": false,
+  "name": "Batch",
+  "description": "Batch runtime framework.",
+  "website": "https://github.com/yupiik/yupiik-batch",
+  "logo": "https://www.yupiik.com/img/logo.png",
+  "categories": [
+    "java",
+    "batch"
+  ]
+}
