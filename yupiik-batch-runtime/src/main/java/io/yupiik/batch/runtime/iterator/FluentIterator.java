@@ -38,6 +38,10 @@ public class FluentIterator<A> implements Iterator<A>, BatchChain.Commentifiable
         return new FluentIterator<>(new MappingIterator<>(delegate, function));
     }
 
+    public <B> FluentIterator<B> flatMap(final Function<A, Iterator<B>> function) {
+        return new FluentIterator<>(new FlatMappingIterator<>(delegate, function));
+    }
+
     public FluentIterator<A> sort(final Comparator<A> comparator) {
         return new FluentIterator<>(new SortingIterator<>(delegate, comparator));
     }

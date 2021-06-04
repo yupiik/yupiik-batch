@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static java.util.Collections.emptyIterator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,6 +46,34 @@ class FluentIteratorTest {
         assertEquals(1, iterator.next());
         assertTrue(iterator.hasNext());
         assertEquals(2, iterator.next());
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    void flatMap() {
+        final var iterator = FluentIterator.of(List.of("ab", "cd").iterator())
+                .flatMap(it -> List.of(it.charAt(0), it.charAt(1)).iterator())
+                .unwrap();
+        assertTrue(iterator.hasNext());
+        assertEquals('a', iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals('b', iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals('c', iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals('d', iterator.next());
+        assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    void flatMapWithEmpty() {
+        final var iterator = FluentIterator.of(List.of("ab", "cd").iterator())
+                .flatMap(it -> it.charAt(0) == 'a' ? emptyIterator() : List.of(it.charAt(0), it.charAt(1)).iterator())
+                .unwrap();
+        assertTrue(iterator.hasNext());
+        assertEquals('c', iterator.next());
+        assertTrue(iterator.hasNext());
+        assertEquals('d', iterator.next());
         assertFalse(iterator.hasNext());
     }
 
