@@ -39,6 +39,11 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>excel-iterator</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-finder-shaded</artifactId>
       <version>4.20</version>
@@ -50,7 +55,7 @@
       <plugin> <!-- mvn [compile] yupiik-tools:serve-minisite -e -->
         <groupId>io.yupiik.maven</groupId>
         <artifactId>yupiik-tools-maven-plugin</artifactId>
-        <version>1.0.19</version>
+        <version>1.0.20</version>
         <configuration>
           <siteBase>//yupiik.github.io/yupiik-batch</siteBase>
           <logoText>Yupiik Batch</logoText>
@@ -59,6 +64,9 @@
           <preActions>
             <preAction>
               <type>io.yupiik.batch.documentation.DocumentComponents</type>
+            </preAction>
+            <preAction>
+              <type>io.yupiik.batch.documentation.DocumentIterators</type>
             </preAction>
             <preAction>
               <type>io.yupiik.batch.documentation.DocumentUIConfiguration</type>

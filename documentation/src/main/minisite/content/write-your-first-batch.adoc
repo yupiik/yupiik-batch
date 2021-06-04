@@ -128,6 +128,13 @@ TIP: some components have a static factory to make it more expressive, don't hes
 Finally, the `RunConfiguration` enables to intercept any step of the `BatchChain` defined by the previous DSL.
 Combined with `ExecutionTracer`, it will let you store any execution and its steps in a database for audit or monitoring/administration purposes.
 
+== Reusable Iterators
+
+Reusable iterators are either provided through `FluentIterator` or extensions (in this case you must add a dependency to get it).
+
+include::content/generated/iterators.adoc[]
+
+
 == TIP
 
 * Use `FluentIterator` to `filter` and `map` your input `Iterator`, it makes the code more readable and adds some features `Stream` does not have like a more advanced `distinct` implementation.

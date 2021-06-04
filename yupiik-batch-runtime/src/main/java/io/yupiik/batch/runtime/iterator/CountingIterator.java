@@ -17,7 +17,7 @@ package io.yupiik.batch.runtime.iterator;
 
 import java.util.Iterator;
 
-public class CountingIterator<T> implements Iterator<T> {
+public class CountingIterator<T> implements Iterator<T>, AutoCloseable {
     private final Iterator<T> delegate;
     private long total;
 
@@ -39,5 +39,12 @@ public class CountingIterator<T> implements Iterator<T> {
 
     public long getTotal() {
         return total;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (AutoCloseable.class.isInstance(delegate)) {
+            AutoCloseable.class.cast(delegate).close();
+        }
     }
 }

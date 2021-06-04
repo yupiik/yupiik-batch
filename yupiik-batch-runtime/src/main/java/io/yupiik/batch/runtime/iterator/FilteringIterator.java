@@ -18,7 +18,7 @@ package io.yupiik.batch.runtime.iterator;
 import java.util.Iterator;
 import java.util.function.Predicate;
 
-public class FilteringIterator<A> implements Iterator<A> {
+public class FilteringIterator<A> implements Iterator<A>, AutoCloseable {
     private final Predicate<A> filter;
     private final Iterator<A> delegate;
     private A next;
@@ -48,5 +48,12 @@ public class FilteringIterator<A> implements Iterator<A> {
         final var value = next;
         next = null;
         return value;
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (AutoCloseable.class.isInstance(delegate)) {
+            AutoCloseable.class.cast(delegate).close();
+        }
     }
 }

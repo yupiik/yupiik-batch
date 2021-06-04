@@ -15,13 +15,15 @@
  */
 package io.yupiik.batch.runtime.iterator;
 
+import io.yupiik.batch.runtime.batch.builder.BatchChain;
+
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
 // stream like API but iterator oriented with less overhead
-public class FluentIterator<A> implements Iterator<A> {
+public class FluentIterator<A> implements Iterator<A>, BatchChain.Commentifiable, AutoCloseable {
     private final Iterator<A> delegate;
 
     private FluentIterator(final Iterator<A> delegate) {
@@ -44,6 +46,10 @@ public class FluentIterator<A> implements Iterator<A> {
         return new FluentIterator<>(new DistinctIterator<>(delegate, keyExtractor, comparator));
     }
 
+    public CommentedIterator<A> withComment(final String comment) {
+        return new CommentedIterator<>(comment, delegate);
+    }
+
     public Iterator<A> unwrap() {
         return delegate;
     }
@@ -60,5 +66,44 @@ public class FluentIterator<A> implements Iterator<A> {
     @Override
     public A next() {
         return delegate.next();
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (AutoCloseable.class.isInstance(delegate)) {
+            AutoCloseable.class.cast(delegate).close();
+        }
+    }
+
+    public static class CommentedIterator<A> implements Iterator<A>, BatchChain.Commentifiable, AutoCloseable {
+        private final String comment;
+        private final Iterator<A> delegate;
+
+        public CommentedIterator(final String comment, final Iterator<A> delegate) {
+            this.comment = comment;
+            this.delegate = delegate;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return delegate.hasNext();
+        }
+
+        @Override
+        public A next() {
+            return delegate.next();
+        }
+
+        @Override
+        public String toComment() {
+            return comment;
+        }
+
+        @Override
+        public void close() throws Exception {
+            if (AutoCloseable.class.isInstance(delegate)) {
+                AutoCloseable.class.cast(delegate).close();
+            }
+        }
     }
 }

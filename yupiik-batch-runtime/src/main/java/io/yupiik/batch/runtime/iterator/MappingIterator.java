@@ -18,10 +18,9 @@ package io.yupiik.batch.runtime.iterator;
 import java.util.Iterator;
 import java.util.function.Function;
 
-public class MappingIterator<A, B> implements Iterator<B> {
+public class MappingIterator<A, B> implements Iterator<B>, AutoCloseable {
     private final Function<A, B> function;
     private final Iterator<A> delegate;
-    private A next;
 
     public MappingIterator(final Iterator<A> delegate, final Function<A, B> function) {
         this.function = function;
@@ -36,5 +35,12 @@ public class MappingIterator<A, B> implements Iterator<B> {
     @Override
     public B next() {
         return function.apply(delegate.next());
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (AutoCloseable.class.isInstance(delegate)) {
+            AutoCloseable.class.cast(delegate).close();
+        }
     }
 }

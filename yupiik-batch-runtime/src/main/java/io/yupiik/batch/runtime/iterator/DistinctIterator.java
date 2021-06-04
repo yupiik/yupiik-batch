@@ -28,7 +28,7 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 // todo: better impl in terms of mem
-public class DistinctIterator<A, B> implements Iterator<A> {
+public class DistinctIterator<A, B> implements Iterator<A>, AutoCloseable {
     private final Logger logger = Logger.getLogger(getClass().getName());
 
     private final Iterator<A> delegate;
@@ -56,5 +56,12 @@ public class DistinctIterator<A, B> implements Iterator<A> {
     @Override
     public A next() {
         return delegate.next();
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (AutoCloseable.class.isInstance(delegate)) {
+            AutoCloseable.class.cast(delegate).close();
+        }
     }
 }

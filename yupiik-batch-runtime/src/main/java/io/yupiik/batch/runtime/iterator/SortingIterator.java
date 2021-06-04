@@ -21,7 +21,7 @@ import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
 
-public class SortingIterator<A> implements Iterator<A> {
+public class SortingIterator<A> implements Iterator<A>, AutoCloseable {
     private final Iterator<A> delegate;
 
     public SortingIterator(final Iterator<A> input, final Comparator<A> comparator) {
@@ -39,5 +39,12 @@ public class SortingIterator<A> implements Iterator<A> {
     @Override
     public A next() {
         return delegate.next();
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (AutoCloseable.class.isInstance(delegate)) {
+            AutoCloseable.class.cast(delegate).close();
+        }
     }
 }

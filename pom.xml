@@ -37,6 +37,7 @@
     <module>yupiik-batch-runtime</module>
     <module>yupiik-batch-ui</module>
     <module>documentation</module>
+    <module>iterators</module>
   </modules>
 
   <dependencyManagement>
