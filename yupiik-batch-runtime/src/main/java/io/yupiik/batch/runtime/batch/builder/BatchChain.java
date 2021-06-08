@@ -22,6 +22,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.util.Collections.reverse;
+import static java.util.Optional.ofNullable;
 
 /**
  * Very trivial way to define common operations simply.
@@ -86,7 +87,6 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
         final Runnable execution = () -> {
             Result<?> result = null; // starting node generates a result without a previous one normally
             for (final var it : chain) {
-                final var previous = result;
                 result = wrapper.apply(BatchChain.class.cast(it)).execute(configuration, Result.class.cast(result));
             }
         };
@@ -98,7 +98,7 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
     }
 
     default BatchChain<P, R, R> filter(final String name, final Predicate<R> filter) {
-        return new BatchChain<>() {
+        final var chain = new BatchChain<P, R, R>() {
             @Override
             public Result<R> execute(final RunConfiguration configuration, final Result<R> previous) {
                 return switch (previous.type()) {
@@ -122,10 +122,14 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
                 return name;
             }
         };
+        if (Commentifiable.class.isInstance(filter)) {
+            return new CommentifiableBatchChain<>(chain, Commentifiable.class.cast(filter), ofNullable(this));
+        }
+        return chain;
     }
 
     default <C> BatchChain<P, R, C> map(final String name, final Function<R, C> fn) {
-        return new BatchChain<>() {
+        final var chain = new BatchChain<P, R, C>() {
             @Override
             public Result<C> execute(final RunConfiguration configuration, final Result<R> previous) {
                 return switch (previous.type()) {
@@ -144,10 +148,14 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
                 return name;
             }
         };
+        if (Commentifiable.class.isInstance(fn)) {
+            return new CommentifiableBatchChain<>(chain, Commentifiable.class.cast(fn), ofNullable(this));
+        }
+        return chain;
     }
 
     default BatchChain<P, R, R> then(final String name, final Consumer<R> consumer) {
-        return new BatchChain<>() {
+        final var chain = new BatchChain<P, R, R>() {
             @Override
             public Result<R> execute(final RunConfiguration configuration, final Result<R> previous) {
                 return switch (previous.type()) {
@@ -169,6 +177,10 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
                 return name;
             }
         };
+        if (Commentifiable.class.isInstance(consumer)) {
+            return new CommentifiableBatchChain<>(chain, Commentifiable.class.cast(consumer), ofNullable(this));
+        }
+        return chain;
     }
 
     /**
@@ -178,6 +190,35 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
     interface Commentifiable {
         default String toComment() {
             return toString();
+        }
+    }
+
+    record CommentifiableBatchChain<A, B, C>(BatchChain<A, B, C> chain, Commentifiable commentifiable,
+                                             Optional<BatchChain<?, A, B>> previous) implements
+            BatchChain<A, B, C>, Commentifiable {
+        @Override
+        public Optional<BatchChain<?, A, B>> previous() {
+            return previous;
+        }
+
+        @Override
+        public String name() {
+            return chain.name();
+        }
+
+        @Override
+        public boolean skipTracing() {
+            return chain.skipTracing();
+        }
+
+        @Override
+        public Result<C> execute(final RunConfiguration configuration, final Result<B> previous) {
+            return chain.execute(configuration, previous);
+        }
+
+        @Override
+        public String toComment() {
+            return commentifiable.toComment();
         }
     }
 }

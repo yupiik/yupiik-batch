@@ -15,12 +15,22 @@
  */
 package io.yupiik.batch.runtime.batch;
 
+import io.yupiik.batch.runtime.batch.builder.Executable;
+import io.yupiik.batch.runtime.batch.builder.RunConfiguration;
+import io.yupiik.batch.runtime.fn.CommentifiableConsumer;
+import io.yupiik.batch.runtime.fn.CommentifiableFunction;
+import io.yupiik.batch.runtime.fn.CommentifiablePredicate;
+import io.yupiik.batch.runtime.tracing.BaseExecutionTracer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -48,6 +58,74 @@ class BatchTest {
         Batch.run(MyBatch.class, "--mybatch-foo", "bar");
         assertNotNull(MyBatch.last);
         assertEquals("bar", MyBatch.last.foo);
+    }
+
+    @Test
+    void commentable() {
+        final var result = new AtomicReference<Map.Entry<BaseExecutionTracer.JobExecution, List<BaseExecutionTracer.StepExecution>>>();
+        final var tracer = new BaseExecutionTracer("test", Clock.systemUTC()) {
+
+            @Override
+            protected void save(JobExecution execution, List<StepExecution> steps) {
+                result.set(Map.entry(execution, steps));
+            }
+        };
+        final var runConfiguration = new RunConfiguration();
+        runConfiguration.setExecutionWrapper(tracer::traceExecution);
+        runConfiguration.setElementExecutionWrapper(e -> (c, r) -> Executable.Result.class.cast(tracer.traceStep(c, e, r)));
+
+        final var conf = new Conf();
+        conf.foo = "too";
+
+        new Batch<Conf>() {
+            @Override
+            public void accept(final Conf conf) {
+                final var root = from();
+                final var map = root
+                        .map("map1", new CommentifiableFunction<Void, String>() {
+                            @Override
+                            public String apply(final Void unused) {
+                                return conf.foo;
+                            }
+
+                            @Override
+                            public String toComment() {
+                                return conf.foo + " map step";
+                            }
+                        });
+                final var filter = map
+                        .filter("filter1", new CommentifiablePredicate<>() {
+                            @Override
+                            public boolean test(final String t) {
+                                return t.startsWith("to");
+                            }
+
+                            @Override
+                            public String toComment() {
+                                return conf.foo + " filter step";
+                            }
+                        });
+                final var then = filter
+                        .then("then1", new CommentifiableConsumer<>() {
+                            @Override
+                            public void accept(final String s) {
+                                // no-op
+                            }
+
+                            @Override
+                            public String toComment() {
+                                return conf.foo + " consume step";
+                            }
+                        });
+                then.run(runConfiguration);
+            }
+        }.accept(conf);
+
+        final var executions = result.get();
+        assertNotNull(executions);
+        assertEquals(
+                List.of("too map step", "too filter step", "too consume step"),
+                executions.getValue().stream().map(BaseExecutionTracer.StepExecution::comment).collect(toList()));
     }
 
     @Test
