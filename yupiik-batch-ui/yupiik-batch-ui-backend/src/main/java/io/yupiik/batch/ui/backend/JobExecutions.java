@@ -48,13 +48,16 @@ public class JobExecutions {
     private Configuration configuration;
 
     private String countAllJobs;
+    private String findLastExecutions;
 
     @PostConstruct
     private void init() {
-        countAllJobs = new Substitutor(key -> switch (key) {
+        final var simpleQueryInterpolator = new Substitutor(key -> switch (key) {
             case "table" -> configuration.getJobTable();
             default -> throw new IllegalStateException("Unknown key '" + key + "'");
-        }).replace(configuration.getCountAllJobs());
+        });
+        countAllJobs = simpleQueryInterpolator.replace(configuration.getCountAllJobs());
+        findLastExecutions = simpleQueryInterpolator.replace(configuration.getFindLastExecutions());
     }
 
     @JsonRpcMethod(name = "yupiik-batch-executions", documentation = "Returns the paginated executions, not that steps are not populated.")
@@ -83,6 +86,23 @@ public class JobExecutions {
                     r.getObject(5, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
                     null));
             return new Page<>(total, items);
+        }
+    }
+
+    @JsonRpcMethod(name = "yupiik-batch-last-executions", documentation = "Returns the last execution of each batch to be able to build an overview page.")
+    public Page<Job> findLastJobs() throws SQLException {
+        try (final var connection = dataSource.getConnection();
+             final var stmt = connection.createStatement();
+             final var result = stmt.executeQuery(findLastExecutions)) {
+            final var items = IteratingResultset.toList(result, r -> new Job(
+                    r.getString(1),
+                    r.getString(2),
+                    ofNullable(r.getString(3)).map(Status::valueOf).orElse(null),
+                    r.getString(4),
+                    r.getObject(5, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
+                    r.getObject(5, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
+                    null));
+            return new Page<>(items.size(), items);
         }
     }
 

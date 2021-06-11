@@ -100,6 +100,15 @@ public class Configuration {
             description = "Count all jobs SQL query (for portability), `${table}` is replaced by the table name.")
     private String countAllJobs = "SELECT count(*) FROM ${table}";
 
+
+    @Param(name = "yupiik.batch.backend.queries.findLastExecutions",
+            description = "SQL query (for portability) to find last execution of each batch, `${table}` is replaced by the table name.")
+    private String findLastExecutions = "" +
+            "SELECT t.id, t.name, t.status, t.comment, t.started, t.finished " +
+            "FROM ${table} t INNER JOIN" +
+            "(SELECT name, max(finished) as finished FROM ${table} GROUP BY name) as v on t.name = v.name and t.finished = v.finished " +
+            "ORDER BY name DESC";
+
     @Param(name = "yupiik.batch.backend.queries.findJobById",
             description = "Find a job by id SQL query (for portability), `${table}` is replaced by the table name.")
     private String findJobById = "SELECT id, name, status, comment, started, finished FROM ${table} WHERE id = ?";
@@ -115,6 +124,10 @@ public class Configuration {
                 .flatMap(it -> Stream.of("--" + it, System.getProperty(it)))
                 .collect(toList());
         new Binder(null, params).bind(this);
+    }
+
+    public String getFindLastExecutions() {
+        return findLastExecutions;
     }
 
     public String getFrontendExtensionsJs() {

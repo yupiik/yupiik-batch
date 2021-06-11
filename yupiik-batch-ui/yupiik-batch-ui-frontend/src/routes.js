@@ -1,8 +1,8 @@
+import { HistoryOutlined, HomeOutlined, RadarChartOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { HistoryOutlined, HomeOutlined } from '@ant-design/icons';
-import Home from './components/home/Home';
-import Executions from './components/executions/Executions';
 import Execution from './components/executions/Execution';
+import { ExecutionHistory, LastExecutions } from './components/executions/Executions';
+import Home from './components/home/Home';
 import extensions from './extensions/extensions';
 
 
@@ -23,7 +23,7 @@ const routes = [
     },
     {
         path: '/executions',
-        component: Executions,
+        component: ExecutionHistory,
         sider: {
             selectedKey: 'executions',
             menu: {
@@ -31,6 +31,19 @@ const routes = [
                     icon: <HistoryOutlined />,
                 },
                 content: <Link to="/executions">Execution history</Link>,
+            },
+        },
+    },
+    {
+        path: '/last-executions',
+        component: LastExecutions,
+        sider: {
+            selectedKey: 'last-executions',
+            menu: {
+                attributes: {
+                    icon: <RadarChartOutlined />,
+                },
+                content: <Link to="/last-executions">Last Executions</Link>,
             },
         },
     },

@@ -37,6 +37,6 @@ public class Frontend implements ServletContainerInitializer {
         final var router = servletContext.addServlet("frontend-router", frontendServlet);
         router.setLoadOnStartup(1);
         router.setAsyncSupported(true);
-        router.addMapping("/", "/index.html", "/home", "/execution/*", "/executions", "/extensions/*");
+        router.addMapping("/", "/index.html", "/home", "/execution/*", "/executions", "/last-executions", "/extensions/*");
     }
 }

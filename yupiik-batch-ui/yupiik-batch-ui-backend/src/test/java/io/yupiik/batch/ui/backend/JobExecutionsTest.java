@@ -39,11 +39,14 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Map;
+import java.util.function.IntFunction;
+import java.util.function.Supplier;
 
 import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @BackendSupport
@@ -70,7 +73,7 @@ class JobExecutionsTest {
         assertEquals(List.of(), jobs.items());
 
         // insert some data to get it - will be deleted with DatabaseSetup callback
-        addJobs(10);
+        addJobs(10, i -> "test " + i);
 
         final var jobsPage1 = fetchJobs(0, 5);
         assertEquals(10, jobsPage1.total());
@@ -96,13 +99,48 @@ class JobExecutionsTest {
     }
 
     @Test
+    void findLastJobs() throws IOException, InterruptedException, SQLException {
+        final Supplier<Page<Job>> fetcher = () -> {
+            try {
+                return toPage(client.send(
+                        HttpRequest.newBuilder()
+                                .POST(HttpRequest.BodyPublishers.ofString(factory.createObjectBuilder()
+                                        .add("jsonrpc", "2.0")
+                                        .add("method", "yupiik-batch-last-executions")
+                                        .build()
+                                        .toString()))
+                                .uri(URI.create("http://localhost:" + configuration.getPort() + "/jsonrpc"))
+                                .build(),
+                        HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8)));
+            } catch (final IOException | InterruptedException e) {
+                return fail(e);
+            }
+        };
+
+        final var jobs = fetcher.get();
+        assertEquals(0, jobs.total());
+        assertEquals(List.of(), jobs.items());
+
+        // insert some data to get it - will be deleted with DatabaseSetup callback
+        addJobs(10, i -> "test " + (i % 3));
+
+        final var withData = fetcher.get();
+        assertEquals(3, withData.total());
+        assertEquals("[" +
+                        "Job[id=8, name=test 2, status=SUCCESS, comment=comment 8, started=2021-06-09T11:49Z, finished=2021-06-09T11:49Z, steps=null], " +
+                        "Job[id=7, name=test 1, status=FAILURE, comment=comment 7, started=2021-06-08T11:49Z, finished=2021-06-08T11:49Z, steps=null], " +
+                        "Job[id=9, name=test 0, status=FAILURE, comment=comment 9, started=2021-06-10T11:49Z, finished=2021-06-10T11:49Z, steps=null]]",
+                withData.items().toString());
+    }
+
+    @Test
     void findJob() throws IOException, InterruptedException, SQLException {
         final var jobs = fetchJobs(0, 10);
         assertEquals(0, jobs.total());
         assertEquals(List.of(), jobs.items());
 
         // insert some data to get it - will be deleted with DatabaseSetup callback
-        addJobs(1);
+        addJobs(1, i -> "test " + i);
         addSteps("0", 3);
 
         final var job = fetchJob("0");
@@ -137,7 +175,7 @@ class JobExecutionsTest {
         }
     }
 
-    private void addJobs(final int count) throws SQLException {
+    private void addJobs(final int count, final IntFunction<String> nameFactory) throws SQLException {
         try (final var connection = dataSource.getConnection();
              final var statement = connection.prepareStatement("" +
                      "INSERT INTO BATCH_JOB_EXECUTION_TRACE " +
@@ -146,7 +184,7 @@ class JobExecutionsTest {
             final var from = OffsetDateTime.of(2021, 6, 1, 11, 49, 0, 0, ZoneOffset.UTC);
             for (int i = 0; i < count; i++) {
                 statement.setString(1, String.valueOf(i));
-                statement.setString(2, "test " + i);
+                statement.setString(2, nameFactory.apply(i));
                 statement.setString(3, i % 2 == 0 ? "SUCCESS" : "FAILURE");
                 statement.setString(4, "comment " + i);
                 statement.setObject(5, from.plusDays(i));
@@ -172,6 +210,10 @@ class JobExecutionsTest {
                         .uri(URI.create("http://localhost:" + configuration.getPort() + "/jsonrpc"))
                         .build(),
                 HttpResponse.BodyHandlers.ofString(StandardCharsets.UTF_8));
+        return toPage(fetch);
+    }
+
+    private Page<Job> toPage(final HttpResponse<String> fetch) {
         final var json = assertJsonRpcResult(fetch);
         final var result = json.getJsonObject("result").toString();
         final Page<Map<String, Object>> jobPage = jsonb.fromJson(result, new JohnzonParameterizedType(Page.class, JsonObject.class));
@@ -202,7 +244,7 @@ class JobExecutionsTest {
         assertEquals(200, fetch.statusCode());
 
         final var json = jsonb.fromJson(fetch.body(), JsonObject.class);
-        assertFalse(json.containsKey("error"));
+        assertFalse(json.containsKey("error"), () -> json.get("error").toString());
         assertTrue(json.containsKey("result"));
         return json;
     }
