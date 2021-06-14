@@ -42,7 +42,7 @@ public class DataSourceConfiguration {
             properties.setProperty("user", username);
         }
         if (password != null) {
-            properties.setProperty("password", username);
+            properties.setProperty("password", password);
         }
         return () -> DriverManager.getConnection(url, properties);
     }
