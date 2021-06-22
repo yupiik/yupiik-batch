@@ -33,17 +33,36 @@ class BinderTest {
                         "ds=DataSourceConfiguration[driver='org.h2.Driver2', url='jdbc:h2:mem:test2', username='null', password='null'], " +
                         "dryRun=false, acceptedLoss=0.1, commitInterval=25, table='THE_TABLE']",
                 new Binder("a", List.of(
-                "--a-driver", "org.h2.Driver",
-                "--a-url", "jdbc:h2:mem:test",
-                "--a-ds-driver", "org.h2.Driver2",
-                "--a-ds-url", "jdbc:h2:mem:test2"
-        )).bind(Configuration.class).toString());
+                        "--a-driver", "org.h2.Driver",
+                        "--a-url", "jdbc:h2:mem:test",
+                        "--a-ds-driver", "org.h2.Driver2",
+                        "--a-ds-url", "jdbc:h2:mem:test2"
+                )).bind(Configuration.class).toString());
+    }
+
+    @Test
+    void list() {
+        assertEquals(
+                "Configuration[list=[a, b]]",
+                new Binder("a", List.of()).bind(ListConfiguration.class).toString());
     }
 
     @Test
     void missingParam() {
         assertEquals("Missing parameter --ds-driver",
                 assertThrows(IllegalArgumentException.class, () -> new Binder(null, List.of()).bind(Configuration.class)).getMessage());
+    }
+
+    public static class ListConfiguration {
+        @Param(name = "list", description = "")
+        List<String> values = List.of("a", "b");
+
+        @Override
+        public String toString() {
+            return new StringJoiner(", ", Configuration.class.getSimpleName() + "[", "]")
+                    .add("list=" + values)
+                    .toString();
+        }
     }
 
     public static class Configuration extends DataSourceConfiguration {

@@ -21,6 +21,7 @@ import java.lang.reflect.ParameterizedType;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
@@ -74,10 +75,23 @@ public class Binder {
         final Object toSet;
         if (isList(param)) {
             final var list = value.map(it -> coerce(it, param.getType())).collect(toList());
-            if (list.isEmpty() && conf.required()) {
-                throw new IllegalArgumentException("Missing parameter --" + paramName);
+            if (list.isEmpty()) {
+                if (!param.canAccess(instance)) {
+                    param.setAccessible(true);
+                }
+                Object defaultValue = null;
+                try {
+                    defaultValue = param.get(instance);
+                } catch (final IllegalAccessException e) {
+                    // no-op
+                }
+                toSet = defaultValue;
+                if (conf.required() && (toSet == null || Collection.class.cast(toSet).isEmpty())) {
+                    throw new IllegalArgumentException("Missing parameter --" + paramName);
+                }
+            } else {
+                toSet = list;
             }
-            toSet = list;
         } else { // singular value
             final var fieldType = param.getType().getTypeName();
             if (isNestedModel(instance, fieldType)) {
