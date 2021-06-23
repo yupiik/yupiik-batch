@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -33,7 +34,12 @@ import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 
 public record ConfigurationParameterCollector(
-        List<Class<Batch<?>>> batchClasses) implements Supplier<Map<String, ConfigurationParameterCollector.Parameter>> {
+        List<Class<Batch<?>>> batchClasses,
+        BiPredicate<Object, String> isNested) implements Supplier<Map<String, ConfigurationParameterCollector.Parameter>> {
+    public ConfigurationParameterCollector(final List<Class<Batch<?>>> batchClasses) {
+        this(batchClasses, null);
+    }
+
     @Override
     public Map<String, Parameter> get() {
         return getWithPrefix(batchType -> batchType.getSimpleName().toLowerCase(Locale.ROOT));
@@ -68,6 +74,11 @@ public record ConfigurationParameterCollector(
                                     }
                                 }.bind(param.getType());
                             }
+                        }
+
+                        @Override
+                        protected boolean isNestedModel(final Object instance, final String fieldType) {
+                            return super.isNestedModel(instance, fieldType) || (isNested != null && isNested.test(instance, fieldType));
                         }
                     }.bind(Batches.findConfType(batchType));
                     return doc.entrySet().stream();
