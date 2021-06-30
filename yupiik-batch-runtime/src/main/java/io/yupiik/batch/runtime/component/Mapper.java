@@ -244,6 +244,10 @@ public class Mapper<A, B, C> implements Function<A, B> {
                                 if (mapping == null) {
                                     throw new IllegalArgumentException("No mapping table named '" + name + "'");
                                 }
+                                if (Mapping.ReversedTable.class == it.getType()) {
+                                    final var value = new Mapping.ReversedTable(mapping.entrySet());
+                                    return (Function<Object, Object>) i -> value;
+                                }
                                 return (Function<Object, Object>) i -> mapping;
                             }
                             throw new IllegalArgumentException("Unsupported parameter: " + it.getName() + " in " + method);

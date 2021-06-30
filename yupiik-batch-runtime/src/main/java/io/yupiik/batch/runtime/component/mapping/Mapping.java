@@ -17,11 +17,15 @@ package io.yupiik.batch.runtime.component.mapping;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Enables to define a mapping between an input record and output record.
@@ -61,11 +65,24 @@ public @interface Mapping {
      */
     boolean enableInDocumentation() default true;
 
+    class ReversedTable {
+        private final Collection<Map.Entry<String, String>> underlying;
+
+        public ReversedTable(final Collection<Map.Entry<String, String>> underlying) {
+            this.underlying = underlying;
+        }
+
+        public List<String> get(final String key) {
+            return underlying.stream().filter(it -> it.getValue().equals(key)).map(Map.Entry::getKey).collect(toList());
+        }
+    }
+
     @Target(PARAMETER)
     @Retention(RUNTIME)
     @interface Table {
         /**
          * Enables to inject in a custom mapper the map of string/string from the annotation.
+         * Note that you can also inject a {@code ReversedTable} if you want a way to reverse the table.
          *
          * @return a mapping table name.
          */
@@ -122,7 +139,7 @@ public @interface Mapping {
      */
     @Target(METHOD)
     @Retention(RUNTIME)
-    public @interface Custom {
+    @interface Custom {
         /**
          * Name of the target attribute.
          * If empty, name will match the method name.

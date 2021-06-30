@@ -49,6 +49,13 @@ class MapperTest {
                 new Mapper<>(SimpleTableSpec.class).apply(new Simple("first", 123)));
     }
 
+    @Test
+    void reversedTable() {
+        assertEquals(
+                new SimpleCopy("first", 0),
+                new Mapper<>(ReversedTableSpec.class).apply(new Simple("first", 123)));
+    }
+
     public static record Simple(String name, int age) {
     }
 
@@ -73,6 +80,17 @@ class MapperTest {
             properties = @Mapping.Property(type = Mapping.PropertyType.TABLE_MAPPING, from = "name", to = "name", value = "m"),
             tables = @Mapping.MappingTable(name = "m", entries = @Mapping.Entry(input = "first", output = "premier")))
     public static record SimpleTableSpec() {
+    }
+
+    @Mapping(
+            from = Simple.class,
+            to = SimpleCopy.class,
+            tables = @Mapping.MappingTable(name = "m", entries = @Mapping.Entry(input = "first", output = "premier")))
+    public static record ReversedTableSpec() {
+        @Mapping.Custom(description = "")
+        String name(@Mapping.Table("m") final Mapping.ReversedTable table) {
+            return table.get("premier").get(0);
+        }
     }
 
     @Mapping(to = SimpleCopy.class, properties = {
