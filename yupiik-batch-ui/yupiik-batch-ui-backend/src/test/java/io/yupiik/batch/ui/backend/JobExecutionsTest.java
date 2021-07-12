@@ -127,9 +127,10 @@ class JobExecutionsTest {
         final var withData = fetcher.get();
         assertEquals(3, withData.total());
         assertEquals("[" +
-                        "Job[id=8, name=test 2, status=SUCCESS, comment=comment 8, started=2021-06-09T11:49Z, finished=2021-06-09T11:49Z, steps=null], " +
+                        "Job[id=9, name=test 0, status=FAILURE, comment=comment 9, started=2021-06-10T11:49Z, finished=2021-06-10T11:49Z, steps=null], " +
                         "Job[id=7, name=test 1, status=FAILURE, comment=comment 7, started=2021-06-08T11:49Z, finished=2021-06-08T11:49Z, steps=null], " +
-                        "Job[id=9, name=test 0, status=FAILURE, comment=comment 9, started=2021-06-10T11:49Z, finished=2021-06-10T11:49Z, steps=null]]",
+                        "Job[id=8, name=test 2, status=SUCCESS, comment=comment 8, started=2021-06-09T11:49Z, finished=2021-06-09T11:49Z, steps=null]" +
+                        "]",
                 withData.items().toString());
     }
 

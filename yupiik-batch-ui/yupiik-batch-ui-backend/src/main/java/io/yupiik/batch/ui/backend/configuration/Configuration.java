@@ -107,7 +107,7 @@ public class Configuration {
             "SELECT t.id, t.name, t.status, t.comment, t.started, t.finished " +
             "FROM ${table} t INNER JOIN" +
             "(SELECT name, max(finished) as finished FROM ${table} GROUP BY name) as v on t.name = v.name and t.finished = v.finished " +
-            "ORDER BY name DESC";
+            "ORDER BY name ASC";
 
     @Param(name = "yupiik.batch.backend.queries.findJobById",
             description = "Find a job by id SQL query (for portability), `${table}` is replaced by the table name.")
