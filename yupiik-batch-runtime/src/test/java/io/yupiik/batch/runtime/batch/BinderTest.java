@@ -48,6 +48,13 @@ class BinderTest {
     }
 
     @Test
+    void listWithConfig() {
+        assertEquals(
+                "Configuration[list=[c]]",
+                new Binder("a", List.of("--a-list", "c")).bind(ListConfiguration.class).toString());
+    }
+
+    @Test
     void missingParam() {
         assertEquals("Missing parameter --ds-driver",
                 assertThrows(IllegalArgumentException.class, () -> new Binder(null, List.of()).bind(Configuration.class)).getMessage());
