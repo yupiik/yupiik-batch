@@ -18,6 +18,7 @@ package io.yupiik.batch.runtime.batch;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -74,7 +75,8 @@ public class Binder {
         final var value = findParam(paramName);
         final Object toSet;
         if (isList(param)) {
-            final var list = value.map(it -> coerce(it, param.getType())).collect(toList());
+            final var listType = ParameterizedType.class.cast(param.getGenericType()).getActualTypeArguments()[0];
+            final var list = value.map(it -> coerce(it, Class.class.cast(listType))).collect(toList());
             if (list.isEmpty()) {
                 if (!param.canAccess(instance)) {
                     param.setAccessible(true);
