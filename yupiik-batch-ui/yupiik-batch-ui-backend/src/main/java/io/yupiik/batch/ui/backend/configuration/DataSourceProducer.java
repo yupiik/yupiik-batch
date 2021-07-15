@@ -43,6 +43,7 @@ public class DataSourceProducer {
         properties.setMaxIdle(configuration.getMaxActive());
         properties.setRemoveAbandoned(configuration.isRemoveAbandoned());
         properties.setRemoveAbandonedTimeout(configuration.getRemoveAbandonedTimeout());
+        properties.setRollbackOnReturn(true);
         return new DataSource(properties);
     }
 
