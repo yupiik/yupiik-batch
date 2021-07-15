@@ -20,9 +20,13 @@ import io.yupiik.batch.runtime.batch.builder.BatchChain;
 import java.util.Collection;
 
 public record Diff<T>(Collection<T> deleted, Collection<T> added, Collection<T> updated,
-                      long initialTotal) implements BatchChain.Commentifiable {
+                      long initialTotal, long newSize) implements BatchChain.Commentifiable {
     @Override
     public String toComment() {
-        return "deleted: " + deleted.size() + ", added: " + added.size() + ", updated: " + updated.size() + ", initial-size=" + initialTotal;
+        return "deleted: " + deleted.size() +
+                ", added: " + added.size() +
+                ", updated: " + updated.size() +
+                ", initial-size=" + initialTotal +
+                ", new-size=" + newSize;
     }
 }

@@ -45,7 +45,8 @@ public class DatasetDiffComputer<T> implements BiFunction<Iterator<T>, Iterator<
     }
 
     @Override
-    public Diff<T> apply(final Iterator<T> rawIncoming, final Iterator<T> reference) {
+    public Diff<T> apply(final Iterator<T> rawIncoming, final Iterator<T> rawReference) {
+        final var reference = new CountingIterator<>(rawReference);
         final var incoming = new CountingIterator<>(rawIncoming);
 
         final var missing = new LinkedList<T>();
@@ -101,7 +102,7 @@ public class DatasetDiffComputer<T> implements BiFunction<Iterator<T>, Iterator<
             missing.add(mapMiss(reference.next()));
         }
 
-        return new Diff<>(missing, added, updated, incoming.getTotal());
+        return new Diff<>(missing, added, updated, reference.getTotal(), incoming.getTotal());
     }
 
     protected T mapMiss(final T data) {

@@ -185,7 +185,7 @@ class DiffExecutorTest {
                 List.of(new Simple("12345", 1)),
                 List.of(new Simple("12347", 2)),
                 List.of(new Simple("12346", 3)),
-                -1);
+                -1, -1);
     }
 
     private void seed(final DataSource dataSource, final String mtd) throws SQLException {
