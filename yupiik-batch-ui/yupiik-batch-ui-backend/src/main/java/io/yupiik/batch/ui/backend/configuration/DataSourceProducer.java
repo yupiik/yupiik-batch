@@ -41,6 +41,8 @@ public class DataSourceProducer {
         properties.setMinIdle(configuration.getMinIdle());
         properties.setMaxActive(configuration.getMaxActive());
         properties.setMaxIdle(configuration.getMaxActive());
+        properties.setRemoveAbandoned(configuration.isRemoveAbandoned());
+        properties.setRemoveAbandonedTimeout(configuration.getRemoveAbandonedTimeout());
         return new DataSource(properties);
     }
 

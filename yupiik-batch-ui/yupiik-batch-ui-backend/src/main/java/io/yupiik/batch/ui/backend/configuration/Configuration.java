@@ -81,6 +81,12 @@ public class Configuration {
     @Param(name = "yupiik.batch.backend.datasource.maxConnections", description = "Max connections in the pool.")
     private int maxActive = 16;
 
+    @Param(name = "yupiik.batch.backend.datasource.removeAbandoned", description = "Should connections be removed when abandoned (see related timeout).")
+    private boolean removeAbandoned = true;
+
+    @Param(name = "yupiik.batch.backend.datasource.removeAbandonedTimeout", description = "The time in seconds before a connection can be considered abandoned.")
+    private int removeAbandonedTimeout = 55;
+
     @Param(name = "yupiik.batch.backend.database.jobTable", description = "Job table to query.")
     private String jobTable = "BATCH_JOB_EXECUTION_TRACE";
 
@@ -124,6 +130,14 @@ public class Configuration {
                 .flatMap(it -> Stream.of("--" + it, System.getProperty(it)))
                 .collect(toList());
         new Binder(null, params).bind(this);
+    }
+
+    public boolean isRemoveAbandoned() {
+        return removeAbandoned;
+    }
+
+    public int getRemoveAbandonedTimeout() {
+        return removeAbandonedTimeout;
     }
 
     public String getFindLastExecutions() {
