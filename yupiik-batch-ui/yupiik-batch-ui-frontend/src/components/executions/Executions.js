@@ -5,7 +5,7 @@ import { Link, useLocation, withRouter } from 'react-router-dom';
 import { useJsonRpc } from '../../hooks/useJsonRpc';
 import { ReportTable } from './ReportTable';
 
-function BaseExecutions({ history, method, pageSize }) {
+function BaseExecutions({ history, method, pageSize, showDuration, sortAttribute }) {
     const location = useLocation();
     const queryPage = new URLSearchParams(location.search || '').get('page');
     const [pagination, setPagination] = useState({ page: queryPage ? +queryPage : 0, pageSize: pageSize || 10 });
@@ -26,6 +26,10 @@ function BaseExecutions({ history, method, pageSize }) {
             <ReportTable
                 idRenderer={id => (<Link to={`/execution/${id}`}>{id}</Link>)}
                 data={data.items}
+                showDuration={showDuration}
+                method={method}
+                reversed={true}
+                sortAttribute={sortAttribute}
                 pagination={pageSize ? {
                     total: data.total,
                     current: pagination.page + 1,
@@ -52,7 +56,7 @@ function ExecutionsBreadcrumb() {
     );
 }
 function Executions(props) {
-    return (<BaseExecutions {...props} method="yupiik-batch-executions" pageSize={10} />);
+    return (<BaseExecutions {...props} showDuration={true} method="yupiik-batch-executions" pageSize={10} />);
 }
 Executions.Breadcrumb = ExecutionsBreadcrumb;
 
@@ -66,7 +70,7 @@ function LastExecutionsViewBreadcrumb() {
     );
 }
 function LastExecutionsView(props) {
-    return (<BaseExecutions {...props} method="yupiik-batch-last-executions" />);
+    return (<BaseExecutions {...props} showDuration={true} sortAttribute={false} method="yupiik-batch-last-executions" />);
 }
 LastExecutionsView.Breadcrumb = LastExecutionsViewBreadcrumb;
 

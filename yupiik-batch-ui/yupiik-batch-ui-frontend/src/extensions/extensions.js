@@ -12,6 +12,9 @@ window.yupiikBatchExtensions = {
     commentWrapper: function (comment) {
         return comment; // or any react component
     },
+    tableColumnWrapper: function ({ columns, method }) {
+        return columns;
+    }
 };
 */
 
@@ -19,6 +22,7 @@ window.yupiikBatchExtensions = {
 const exts = {
     routes: () => [],
     commentWrapper: c => c,
+    // tableColumnWrapper, not set is a better default
     ...(window.yupiikBatchExtensions || {}),
 };
 
@@ -28,5 +32,8 @@ const extensions = {
     routes: () => exts.routes(registry),
     commentWrapper: c => exts.commentWrapper(c, registry),
 };
+if (exts.tableColumnsWrapper) {
+    extensions.tableColumnsWrapper = data => exts.tableColumnsWrapper(data);
+}
 
 export default extensions;

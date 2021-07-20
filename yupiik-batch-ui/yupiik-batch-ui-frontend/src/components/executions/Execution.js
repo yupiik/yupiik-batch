@@ -36,7 +36,7 @@ function ExecutionBreadcrumb() {
 
 function Execution() {
     const { id } = useParams();
-    const [ idValue ] = useState({ id });
+    const [idValue] = useState({ id });
     const { loading, data, error } = useJsonRpc('yupiik-batch-execution', idValue);
     if (loading) {
         return (<Skeleton active />);
@@ -65,7 +65,16 @@ function Execution() {
             </Descriptions>
             <div>
                 <PageHeader title="Steps" />
-                <ReportTable idRenderer={id => id} data={data.steps} pagination={{ hideOnSinglePage: true }} previousId={true} />
+                <ReportTable
+                    idRenderer={id => id}
+                    data={data.steps}
+                    pagination={{ hideOnSinglePage: true }}
+                    previousId={true}
+                    showDuration={true}
+                    reversed={false}
+                    sortAttribute="started"
+                    method="yupiik-batch-execution"
+                />
             </div>
         </div>
     );

@@ -77,21 +77,21 @@ class JobExecutionsTest {
 
         final var jobsPage1 = fetchJobs(0, 5);
         assertEquals(10, jobsPage1.total());
-        assertEquals("[Job[" +
-                "id=9, name=test 9, status=FAILURE, comment=comment 9, started=2021-06-10T11:49Z, finished=2021-06-10T11:49Z, steps=null], " +
-                "Job[id=8, name=test 8, status=SUCCESS, comment=comment 8, started=2021-06-09T11:49Z, finished=2021-06-09T11:49Z, steps=null], " +
-                "Job[id=7, name=test 7, status=FAILURE, comment=comment 7, started=2021-06-08T11:49Z, finished=2021-06-08T11:49Z, steps=null], " +
-                "Job[id=6, name=test 6, status=SUCCESS, comment=comment 6, started=2021-06-07T11:49Z, finished=2021-06-07T11:49Z, steps=null], " +
-                "Job[id=5, name=test 5, status=FAILURE, comment=comment 5, started=2021-06-06T11:49Z, finished=2021-06-06T11:49Z, steps=null]]", jobsPage1.items().toString());
+        assertEquals("[" +
+                "Job[id=9, name=test 9, status=FAILURE, comment=comment 9, started=2021-06-10T11:49Z, finished=2021-06-10T11:58:01Z, steps=null], " +
+                "Job[id=8, name=test 8, status=SUCCESS, comment=comment 8, started=2021-06-09T11:49Z, finished=2021-06-09T11:57:01Z, steps=null], " +
+                "Job[id=7, name=test 7, status=FAILURE, comment=comment 7, started=2021-06-08T11:49Z, finished=2021-06-08T11:56:01Z, steps=null], " +
+                "Job[id=6, name=test 6, status=SUCCESS, comment=comment 6, started=2021-06-07T11:49Z, finished=2021-06-07T11:55:01Z, steps=null], " +
+                "Job[id=5, name=test 5, status=FAILURE, comment=comment 5, started=2021-06-06T11:49Z, finished=2021-06-06T11:54:01Z, steps=null]]", jobsPage1.items().toString());
 
         final var jobsPage2 = fetchJobs(1, 5);
         assertEquals(10, jobsPage2.total());
         assertEquals("[" +
-                "Job[id=4, name=test 4, status=SUCCESS, comment=comment 4, started=2021-06-05T11:49Z, finished=2021-06-05T11:49Z, steps=null], " +
-                "Job[id=3, name=test 3, status=FAILURE, comment=comment 3, started=2021-06-04T11:49Z, finished=2021-06-04T11:49Z, steps=null], " +
-                "Job[id=2, name=test 2, status=SUCCESS, comment=comment 2, started=2021-06-03T11:49Z, finished=2021-06-03T11:49Z, steps=null], " +
-                "Job[id=1, name=test 1, status=FAILURE, comment=comment 1, started=2021-06-02T11:49Z, finished=2021-06-02T11:49Z, steps=null], " +
-                "Job[id=0, name=test 0, status=SUCCESS, comment=comment 0, started=2021-06-01T11:49Z, finished=2021-06-01T11:49Z, steps=null]]", jobsPage2.items().toString());
+                "Job[id=4, name=test 4, status=SUCCESS, comment=comment 4, started=2021-06-05T11:49Z, finished=2021-06-05T11:53:01Z, steps=null], " +
+                "Job[id=3, name=test 3, status=FAILURE, comment=comment 3, started=2021-06-04T11:49Z, finished=2021-06-04T11:52:01Z, steps=null], " +
+                "Job[id=2, name=test 2, status=SUCCESS, comment=comment 2, started=2021-06-03T11:49Z, finished=2021-06-03T11:51:01Z, steps=null], " +
+                "Job[id=1, name=test 1, status=FAILURE, comment=comment 1, started=2021-06-02T11:49Z, finished=2021-06-02T11:50:01Z, steps=null], " +
+                "Job[id=0, name=test 0, status=SUCCESS, comment=comment 0, started=2021-06-01T11:49Z, finished=2021-06-01T11:49:01Z, steps=null]]", jobsPage2.items().toString());
 
         final var jobsPage3 = fetchJobs(2, 5);
         assertEquals(10, jobsPage3.total());
@@ -127,10 +127,9 @@ class JobExecutionsTest {
         final var withData = fetcher.get();
         assertEquals(3, withData.total());
         assertEquals("[" +
-                        "Job[id=9, name=test 0, status=FAILURE, comment=comment 9, started=2021-06-10T11:49Z, finished=2021-06-10T11:49Z, steps=null], " +
-                        "Job[id=7, name=test 1, status=FAILURE, comment=comment 7, started=2021-06-08T11:49Z, finished=2021-06-08T11:49Z, steps=null], " +
-                        "Job[id=8, name=test 2, status=SUCCESS, comment=comment 8, started=2021-06-09T11:49Z, finished=2021-06-09T11:49Z, steps=null]" +
-                        "]",
+                        "Job[id=9, name=test 0, status=FAILURE, comment=comment 9, started=2021-06-10T11:49Z, finished=2021-06-10T11:58:01Z, steps=null], " +
+                        "Job[id=7, name=test 1, status=FAILURE, comment=comment 7, started=2021-06-08T11:49Z, finished=2021-06-08T11:56:01Z, steps=null], " +
+                        "Job[id=8, name=test 2, status=SUCCESS, comment=comment 8, started=2021-06-09T11:49Z, finished=2021-06-09T11:57:01Z, steps=null]]",
                 withData.items().toString());
     }
 

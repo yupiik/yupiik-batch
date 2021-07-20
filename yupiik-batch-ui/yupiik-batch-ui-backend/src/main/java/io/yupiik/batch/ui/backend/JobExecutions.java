@@ -83,7 +83,7 @@ public class JobExecutions {
                     ofNullable(r.getString(3)).map(Status::valueOf).orElse(null),
                     r.getString(4),
                     r.getObject(5, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
-                    r.getObject(5, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
+                    r.getObject(6, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
                     null));
             return new Page<>(total, items);
         }
@@ -100,7 +100,7 @@ public class JobExecutions {
                     ofNullable(r.getString(3)).map(Status::valueOf).orElse(null),
                     r.getString(4),
                     r.getObject(5, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
-                    r.getObject(5, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
+                    r.getObject(6, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
                     null));
             return new Page<>(items.size(), items);
         }
