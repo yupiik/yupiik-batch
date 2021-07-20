@@ -12,7 +12,7 @@ window.yupiikBatchExtensions = {
     commentWrapper: function (comment) {
         return comment; // or any react component
     },
-    tableColumnWrapper: function ({ columns, method }) {
+    tableColumnsgWrapper: function ({ columns, method }) {
         return columns;
     }
 };
