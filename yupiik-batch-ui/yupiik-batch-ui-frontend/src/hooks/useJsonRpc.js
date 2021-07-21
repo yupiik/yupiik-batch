@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+// todo: move to useReducer which would enable extensions to access more easily data too
 let idCounter = 0;
 export function useJsonRpc(method, params) {
     const [loading, setLoading] = useState(true);
@@ -45,9 +46,7 @@ export function useJsonRpc(method, params) {
                     setData(json.result);
                 }
             })
-            .finally(() => {
-                setLoading(false);
-            });
+            .finally(() => setLoading(false));
         return () => { };
     }, [method, params]);
 
