@@ -84,6 +84,14 @@ window.yupiikBatchExtensions = (function () {
         commentWrapper: function (comment, React, router, antd, antdIcons) {
             return `THIS IS A COMMENT: ${comment}`;
         },
+
+        // enables to overwrite parts of the routes
+        routeDecorator: function (route) { return route; },
+
+        // enables to change the columns of the tables, method is the JSON-RPC methods called for the table
+        tableColumnsWrapper: function ({ columns, method }) {
+            return columns;
+        },
     };
 })();
 ----

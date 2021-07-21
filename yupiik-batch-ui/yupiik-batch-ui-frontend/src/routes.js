@@ -69,6 +69,6 @@ const routes = [
                 it.sider.menu,
         } :
         it.sider,
-}));
+})).map(it => extensions.routeDecorator(it));
 
 export default routes;

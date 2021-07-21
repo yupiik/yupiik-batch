@@ -12,7 +12,7 @@ window.yupiikBatchExtensions = {
     commentWrapper: function (comment) {
         return comment; // or any react component
     },
-    tableColumnsgWrapper: function ({ columns, method }) {
+    tableColumnsWrapper: function ({ columns, method }) {
         return columns;
     }
 };
@@ -22,6 +22,7 @@ window.yupiikBatchExtensions = {
 const exts = {
     routes: () => [],
     commentWrapper: c => c,
+    routeDecorator: c => c,
     // tableColumnWrapper, not set is a better default
     ...(window.yupiikBatchExtensions || {}),
 };
@@ -31,9 +32,10 @@ const registry = { React, router, useJsonRpc, antd, antdIcons };
 const extensions = {
     routes: () => exts.routes(registry),
     commentWrapper: c => exts.commentWrapper(c, registry),
+    routeDecorator: r => exts.routeDecorator(r, registry),
 };
 if (exts.tableColumnsWrapper) {
-    extensions.tableColumnsWrapper = data => exts.tableColumnsWrapper(data);
+    extensions.tableColumnsWrapper = data => exts.tableColumnsWrapper(data, registry);
 }
 
 export default extensions;
