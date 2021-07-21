@@ -21,7 +21,7 @@
 
   <groupId>io.yupiik.batch</groupId>
   <artifactId>yupiik-batch</artifactId>
-  <version>0.0.16</version>
+  <version>0.0.17-SNAPSHOT</version>
   <name>Yupiik Batch</name>
   <packaging>pom</packaging>
   <description>Yupiik Batch</description>
