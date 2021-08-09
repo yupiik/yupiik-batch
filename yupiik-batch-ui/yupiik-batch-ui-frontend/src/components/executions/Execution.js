@@ -1,14 +1,15 @@
-import { Link } from 'react-router-dom';
-import { Alert, Breadcrumb, Descriptions, PageHeader, Skeleton, Tag } from 'antd';
 import { HomeOutlined } from '@ant-design/icons';
+import { Alert, Breadcrumb, Descriptions, PageHeader, Skeleton, Tag } from 'antd';
+import { useEffect, useReducer, useState } from 'react';
 import { useParams } from 'react-router';
+import { Link } from 'react-router-dom';
+import extensions from '../../extensions/extensions';
+import reducer from '../../reducers';
+import { fetchJsonRpc } from '../../service/fetchJsonRpc';
+import './Execution.css';
 import { ReportTable } from './ReportTable';
 import { getStatusColor } from './status';
-import { useJsonRpc } from '../../hooks/useJsonRpc';
-import extensions from '../../extensions/extensions';
 
-import './Execution.css';
-import { useState } from 'react';
 
 function toDuration(job) {
     try {
@@ -37,10 +38,14 @@ function ExecutionBreadcrumb() {
 function Execution() {
     const { id } = useParams();
     const [idValue] = useState({ id });
-    const { loading, data, error } = useJsonRpc('yupiik-batch-execution', idValue);
-    if (loading) {
+    const [state, dispatch] = useReducer(reducer, {});
+    useEffect(() => fetchJsonRpc('yupiik-batch-execution', idValue, dispatch), [idValue]);
+
+    if (state['yupiik-batch-execution-loading-state']) {
         return (<Skeleton active />);
     }
+
+    const error = state['yupiik-batch-execution-error'];
     if (error) {
         return (
             <div className="execution">
@@ -48,6 +53,12 @@ function Execution() {
             </div>
         );
     }
+
+    const data = state['yupiik-batch-execution-data'];
+    if (!data) {
+        return (<Skeleton active />);
+    }
+
     return (
         <div className="execution">
             <PageHeader title={`Job Execution #${id}`} />

@@ -2,7 +2,7 @@ import React from 'react';
 import * as router from 'react-router-dom';
 import * as antdIcons from '@ant-design/icons';
 import * as antd from 'antd';
-import { useJsonRpc } from '../hooks/useJsonRpc';
+import { fetchJsonRpc } from '../service/fetchJsonRpc';
 
 /*
 window.yupiikBatchExtensions = {
@@ -28,7 +28,7 @@ const exts = {
 };
 
 // inject react, router, antd and antdIcons in all extensions
-const registry = { React, router, useJsonRpc, antd, antdIcons };
+const registry = { React, router, fetchJsonRpc, antd, antdIcons };
 const extensions = {
     routes: () => exts.routes(registry),
     commentWrapper: c => exts.commentWrapper(c, registry),

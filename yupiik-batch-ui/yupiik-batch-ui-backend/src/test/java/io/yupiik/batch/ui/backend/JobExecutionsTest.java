@@ -68,14 +68,14 @@ class JobExecutionsTest {
 
     @Test
     void findJobs() throws IOException, InterruptedException, SQLException {
-        final var jobs = fetchJobs(0, 10);
+        final var jobs = fetchJobs(0, 10, null);
         assertEquals(0, jobs.total());
         assertEquals(List.of(), jobs.items());
 
         // insert some data to get it - will be deleted with DatabaseSetup callback
         addJobs(10, i -> "test " + i);
 
-        final var jobsPage1 = fetchJobs(0, 5);
+        final var jobsPage1 = fetchJobs(0, 5, null);
         assertEquals(10, jobsPage1.total());
         assertEquals("[" +
                 "Job[id=9, name=test 9, status=FAILURE, comment=comment 9, started=2021-06-10T11:49Z, finished=2021-06-10T11:58:01Z, steps=null], " +
@@ -84,7 +84,7 @@ class JobExecutionsTest {
                 "Job[id=6, name=test 6, status=SUCCESS, comment=comment 6, started=2021-06-07T11:49Z, finished=2021-06-07T11:55:01Z, steps=null], " +
                 "Job[id=5, name=test 5, status=FAILURE, comment=comment 5, started=2021-06-06T11:49Z, finished=2021-06-06T11:54:01Z, steps=null]]", jobsPage1.items().toString());
 
-        final var jobsPage2 = fetchJobs(1, 5);
+        final var jobsPage2 = fetchJobs(1, 5, null);
         assertEquals(10, jobsPage2.total());
         assertEquals("[" +
                 "Job[id=4, name=test 4, status=SUCCESS, comment=comment 4, started=2021-06-05T11:49Z, finished=2021-06-05T11:53:01Z, steps=null], " +
@@ -93,13 +93,27 @@ class JobExecutionsTest {
                 "Job[id=1, name=test 1, status=FAILURE, comment=comment 1, started=2021-06-02T11:49Z, finished=2021-06-02T11:50:01Z, steps=null], " +
                 "Job[id=0, name=test 0, status=SUCCESS, comment=comment 0, started=2021-06-01T11:49Z, finished=2021-06-01T11:49:01Z, steps=null]]", jobsPage2.items().toString());
 
-        final var jobsPage3 = fetchJobs(2, 5);
+        final var jobsPage3 = fetchJobs(2, 5, null);
         assertEquals(10, jobsPage3.total());
         assertEquals(List.of(), jobsPage3.items());
     }
 
     @Test
-    void findLastJobs() throws IOException, InterruptedException, SQLException {
+    void findJobsByName() throws IOException, InterruptedException, SQLException {
+        final var jobs = fetchJobs(0, 10, "test 8");
+        assertEquals(0, jobs.total());
+        assertEquals(List.of(), jobs.items());
+
+        // insert some data to get it - will be deleted with DatabaseSetup callback
+        addJobs(10, i -> "test " + i);
+
+        final var jobsPage1 = fetchJobs(0, 5, "test 8");
+        assertEquals(1, jobsPage1.total());
+        assertEquals("[Job[id=8, name=test 8, status=SUCCESS, comment=comment 8, started=2021-06-09T11:49Z, finished=2021-06-09T11:57:01Z, steps=null]]", jobsPage1.items().toString());
+    }
+
+    @Test
+    void findLastJobs() throws SQLException {
         final Supplier<Page<Job>> fetcher = () -> {
             try {
                 return toPage(client.send(
@@ -135,7 +149,7 @@ class JobExecutionsTest {
 
     @Test
     void findJob() throws IOException, InterruptedException, SQLException {
-        final var jobs = fetchJobs(0, 10);
+        final var jobs = fetchJobs(0, 10, null);
         assertEquals(0, jobs.total());
         assertEquals(List.of(), jobs.items());
 
@@ -196,13 +210,14 @@ class JobExecutionsTest {
         }
     }
 
-    private Page<Job> fetchJobs(final int page, final int pageSize) throws IOException, InterruptedException {
+    private Page<Job> fetchJobs(final int page, final int pageSize, final String name) throws IOException, InterruptedException {
         final var fetch = client.send(
                 HttpRequest.newBuilder()
                         .POST(HttpRequest.BodyPublishers.ofString(factory.createObjectBuilder()
                                 .add("jsonrpc", "2.0")
                                 .add("method", "yupiik-batch-executions")
                                 .add("params", factory.createObjectBuilder()
+                                        .add("batch", name == null ? "" : name)
                                         .add("page", page)
                                         .add("pageSize", pageSize))
                                 .build()

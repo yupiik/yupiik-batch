@@ -95,10 +95,11 @@ public class Configuration {
 
     @Param(name = "yupiik.batch.backend.queries.findAllJobs",
             description = "Find all jobs with pagination SQL query (for portability), `${table}` is replaced by the table name. " +
-                    "Parameters can be `${pageSize}`, `${firstIndex}` - inclusive, `${lastIndex}` - exclusive.")
+                    "Parameters can be `${pageSize}`, `${firstIndex}` - inclusive, `${lastIndex}` - exclusive, or `${where}` which would be replaced by a name where clause (`WHERE name = ? `).")
     private String findAllJobs = "" +
             "SELECT id, name, status, comment, started, finished " +
             "FROM ${table} " +
+            "${where}" +
             "ORDER BY finished DESC " +
             "LIMIT ${pageSize} OFFSET ${firstIndex}";
 

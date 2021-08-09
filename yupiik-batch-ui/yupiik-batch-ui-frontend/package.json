@@ -13,6 +13,9 @@
     "react-scripts": "4.0.3",
     "web-vitals": "^1.1.2"
   },
+  "devDependencies": {
+    "json-rpc-2.0": "0.2.18"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "BUILD_PATH=target/classes/META-INF/resources react-scripts build",

@@ -33,6 +33,7 @@ import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
@@ -62,30 +63,48 @@ public class JobExecutions {
 
     @JsonRpcMethod(name = "yupiik-batch-executions", documentation = "Returns the paginated executions, not that steps are not populated.")
     public Page<Job> findJobs(@JsonRpcParam(required = true, documentation = "Page to fetch.") final int page,
+                              @JsonRpcParam(documentation = "Filter a single batch executions.") final String batch,
                               @JsonRpcParam(required = true, documentation = "Size of the page (max being 100).") final int pageSize) throws SQLException {
         final int actualPageSize = Math.max(0, Math.min(50, pageSize));
+        final var filterByName = batch != null && !batch.isBlank();
+        final var countSql = countAllJobs + (filterByName ? " WHERE name = ?" : "");
+        final var bindSelect = new AtomicBoolean();
+        final var selectSql = new Substitutor(key -> switch (key) {
+            case "table" -> configuration.getJobTable();
+            case "pageSize" -> String.valueOf(actualPageSize);
+            case "firstIndex" -> String.valueOf(actualPageSize * page);
+            case "lastIndex" -> String.valueOf(actualPageSize * (1 + page));
+            case "where" -> {
+                bindSelect.set(filterByName);
+                yield filterByName ? "WHERE name = ? " : "";
+            }
+            default -> throw new IllegalStateException("Unknown key '" + key + "'");
+        }).replace(configuration.getFindAllJobs());
+
         try (final var connection = dataSource.getConnection();
-             final var countStmt = connection.createStatement();
-             final var itemStmt = connection.createStatement();
-             final var countResult = countStmt.executeQuery(countAllJobs);
-             // no real SQL injection possible so a plain statement is fine
-             final var itemResultSet = itemStmt.executeQuery(new Substitutor(key -> switch (key) {
-                 case "table" -> configuration.getJobTable();
-                 case "pageSize" -> String.valueOf(actualPageSize);
-                 case "firstIndex" -> String.valueOf(actualPageSize * page);
-                 case "lastIndex" -> String.valueOf(actualPageSize * (1 + page));
-                 default -> throw new IllegalStateException("Unknown key '" + key + "'");
-             }).replace(configuration.getFindAllJobs()))) {
-            final long total = countResult.next() ? countResult.getLong(1) : 0;
-            final var items = IteratingResultset.toList(itemResultSet, r -> new Job(
-                    r.getString(1),
-                    r.getString(2),
-                    ofNullable(r.getString(3)).map(Status::valueOf).orElse(null),
-                    r.getString(4),
-                    r.getObject(5, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
-                    r.getObject(6, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
-                    null));
-            return new Page<>(total, items);
+             final var countStmt = connection.prepareStatement(countSql);
+             final var itemStmt = connection.prepareStatement(selectSql)) {
+
+            if (filterByName) {
+                countStmt.setString(1, batch);
+                if (bindSelect.get()) {
+                    itemStmt.setString(1, batch);
+                }
+            }
+
+            try (final var countResult = countStmt.executeQuery();
+                 final var itemResultSet = itemStmt.executeQuery()) {
+                final long total = countResult.next() ? countResult.getLong(1) : 0;
+                final var items = IteratingResultset.toList(itemResultSet, r -> new Job(
+                        r.getString(1),
+                        r.getString(2),
+                        ofNullable(r.getString(3)).map(Status::valueOf).orElse(null),
+                        r.getString(4),
+                        r.getObject(5, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
+                        r.getObject(6, OffsetDateTime.class).withOffsetSameInstant(ZoneOffset.UTC),
+                        null));
+                return new Page<>(total, items);
+            }
         }
     }
 
