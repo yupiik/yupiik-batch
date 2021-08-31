@@ -41,35 +41,9 @@ class BinderTest {
     }
 
     @Test
-    void list() {
-        assertEquals(
-                "Configuration[list=[a, b]]",
-                new Binder("a", List.of()).bind(ListConfiguration.class).toString());
-    }
-
-    @Test
-    void listWithConfig() {
-        assertEquals(
-                "Configuration[list=[c]]",
-                new Binder("a", List.of("--a-list", "c")).bind(ListConfiguration.class).toString());
-    }
-
-    @Test
     void missingParam() {
         assertEquals("Missing parameter --ds-driver",
                 assertThrows(IllegalArgumentException.class, () -> new Binder(null, List.of()).bind(Configuration.class)).getMessage());
-    }
-
-    public static class ListConfiguration {
-        @Param(name = "list", description = "")
-        List<String> values = List.of("a", "b");
-
-        @Override
-        public String toString() {
-            return new StringJoiner(", ", Configuration.class.getSimpleName() + "[", "]")
-                    .add("list=" + values)
-                    .toString();
-        }
     }
 
     public static class Configuration extends DataSourceConfiguration {

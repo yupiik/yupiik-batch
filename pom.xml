@@ -38,6 +38,7 @@
     <module>yupiik-batch-ui</module>
     <module>documentation</module>
     <module>iterators</module>
+    <module>simple-configuration</module>
   </modules>
 
   <dependencyManagement>

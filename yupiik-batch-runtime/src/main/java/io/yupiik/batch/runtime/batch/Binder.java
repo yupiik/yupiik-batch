@@ -15,181 +15,58 @@
  */
 package io.yupiik.batch.runtime.batch;
 
+import io.yupiik.batch.runtime.configuration.Param;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.lang.reflect.Proxy;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Stream;
 
-import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
+import static java.util.Optional.ofNullable;
 
-public class Binder {
-    private final String prefix;
-    private final List<String> args;
-
+/**
+ * @see {@link io.yupiik.batch.runtime.configuration.Binder} too.
+ * This one only maintain the compatibility with the old {@link io.yupiik.batch.runtime.batch.Param}.
+ */
+public class Binder extends io.yupiik.batch.runtime.configuration.Binder {
     public Binder(final String prefix, final List<String> args) {
-        this.prefix = prefix;
-        this.args = args;
+        super(prefix, args);
     }
 
-    public <T> T bind(final Class<T> instance) {
-        try {
-            return bind(instance.getConstructor().newInstance());
-        } catch (final InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
-    public <T> T bind(final T instance) {
-        bind(instance, instance.getClass());
-        return instance;
-    }
-
-    private void bind(final Object instance, final Class<?> type) {
-        if (type == Object.class || type == null) {
-            return;
-        }
-        Stream.of(type.getDeclaredFields())
-                .filter(it -> it.isAnnotationPresent(Param.class))
-                .sorted(comparing(it -> toName(it, it.getAnnotation(Param.class))))
-                .forEach(param -> {
-                    final var conf = param.getAnnotation(Param.class);
-                    final var paramName = toName(param, conf);
-                    doBind(instance, param, conf, paramName);
-                });
-        bind(instance, type.getSuperclass());
-    }
-
-    protected String toName(final Field param, final Param conf) {
-        return (prefix == null || prefix.isBlank() ? "" : prefix + "-") + (conf.name().isBlank() ? param.getName() : conf.name());
-    }
-
-    protected void doBind(final Object instance, final Field param, final Param conf, final String paramName) {
-        final var value = findParam(paramName);
-        final Object toSet;
-        if (isList(param)) {
-            final var listType = ParameterizedType.class.cast(param.getGenericType()).getActualTypeArguments()[0];
-            final var list = value.map(it -> coerce(it, Class.class.cast(listType))).collect(toList());
-            if (list.isEmpty()) {
-                if (!param.canAccess(instance)) {
-                    param.setAccessible(true);
-                }
-                Object defaultValue = null;
-                try {
-                    defaultValue = param.get(instance);
-                } catch (final IllegalAccessException e) {
-                    // no-op
-                }
-                toSet = defaultValue;
-                if (conf.required() && (toSet == null || Collection.class.cast(toSet).isEmpty())) {
-                    throw new IllegalArgumentException("Missing parameter --" + paramName);
-                }
-            } else {
-                toSet = list;
+    @Override
+    protected Binder newNestedBinder(final String paramName, final List<String> args) {
+        return new Binder(paramName, args) {
+            @Override // enables to keep the overridden behavior when the root binder is a child
+            protected void doBind(final Object instance, final Field param, final Param conf, final String paramName) {
+                Binder.this.doBind(instance, param, conf, paramName);
             }
-        } else { // singular value
-            final var fieldType = param.getType().getTypeName();
-            if (isNestedModel(instance, fieldType)) {
-                toSet = new Binder(paramName, args) {
-                    @Override // enables to keep the overriden behavior when the root binder is a child
-                    protected void doBind(final Object instance, final Field param, final Param conf, final String paramName) {
-                        Binder.this.doBind(instance, param, conf, paramName);
+        };
+    }
+
+    @Override
+    protected boolean isParam(final Field field) {
+        return super.isParam(field) || field.isAnnotationPresent(io.yupiik.batch.runtime.batch.Param.class);
+    }
+
+    @Override
+    protected Param getParam(final Field field) {
+        return ofNullable(super.getParam(field))
+                .or(() -> ofNullable(field.getAnnotation(io.yupiik.batch.runtime.batch.Param.class))
+                        .map(this::toNewParam))
+                .orElse(null);
+    }
+
+    private Param toNewParam(final io.yupiik.batch.runtime.batch.Param param) {
+        return Param.class.cast(Proxy.newProxyInstance(
+                Thread.currentThread().getContextClassLoader(), new Class<?>[]{Param.class},
+                (proxy, method, args) -> {
+                    try {
+                        return io.yupiik.batch.runtime.batch.Param.class
+                                .getMethod(method.getName(), method.getParameterTypes())
+                                .invoke(param, args);
+                    } catch (final InvocationTargetException ite) {
+                        throw ite.getTargetException();
                     }
-                }.bind(param.getType());
-            } else { // "primitive"
-                toSet = value.findFirst()
-                        .map(it -> coerce(it, param.getType()))
-                        .orElseGet(() -> {
-                            final var env = System.getenv(paramName.replaceAll("[^A-Za-z0-9]", "_").toUpperCase(Locale.ROOT));
-                            if (env != null) {
-                                return coerce(env, param.getType());
-                            }
-                            if (conf.required()) {
-                                throw new IllegalArgumentException("Missing parameter --" + paramName);
-                            }
-                            // let's keep field's default
-                            return null;
-                        });
-            }
-        }
-        if (toSet != null) {
-            if (!param.canAccess(instance)) {
-                param.setAccessible(true);
-            }
-            try {
-                param.set(instance, toSet);
-            } catch (IllegalAccessException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-    }
-
-    protected boolean isList(final Field param) {
-        return ParameterizedType.class.isInstance(param.getGenericType()) &&
-                List.class == ParameterizedType.class.cast(param.getGenericType()).getRawType();
-    }
-
-    // todo: relax?
-    protected boolean isNestedModel(final Object instance, final String fieldType) {
-        return fieldType.startsWith(instance.getClass().getPackageName()) || // assume nested classes are in the same package
-                fieldType.equals("io.yupiik.batch.runtime.sql.DataSourceConfiguration");
-    }
-
-    private Object coerce(final String value, final Class<?> type) {
-        if (type == boolean.class || type == Boolean.class) {
-            return Boolean.parseBoolean(value);
-        }
-        if (type == byte.class || type == Byte.class) {
-            return Byte.parseByte(value);
-        }
-        if (type == short.class || type == Short.class) {
-            return Short.parseShort(value);
-        }
-        if (type == int.class || type == Integer.class) {
-            return Integer.parseInt(value);
-        }
-        if (type == long.class || type == Long.class) {
-            return Long.parseLong(value);
-        }
-        if (type == double.class || type == Double.class) {
-            return Double.parseDouble(value);
-        }
-        if (type == float.class || type == Float.class) {
-            return Float.parseFloat(value);
-        }
-        if (type == String.class || type == Object.class) {
-            return value;
-        }
-        if (type == Path.class) {
-            return Paths.get(value);
-        }
-        throw new IllegalArgumentException("Unsupported parameter type: " + type);
-    }
-
-    private Stream<String> findParam(final String name) {
-        final var result = new ArrayList<String>();
-        final var neg = "--no-" + name;
-        final var expected = List.of("--" + name, "-" + name);
-        for (int i = 0; i < args.size(); i++) {
-            final var current = args.get(i);
-            if (expected.contains(current)) {
-                if (args.size() - 1 == i) {
-                    result.add("false");
-                } else {
-                    result.add(args.get(i + 1));
-                    i++;
-                }
-            } else if (neg.equals(current)) {
-                result.add("false");
-            }
-        }
-        return result.stream();
+                }));
     }
 }

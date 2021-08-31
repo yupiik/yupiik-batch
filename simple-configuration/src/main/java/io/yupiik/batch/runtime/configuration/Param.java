@@ -13,7 +13,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.yupiik.batch.runtime.batch;
+package io.yupiik.batch.runtime.configuration;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -27,12 +27,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  *
  * Note that if the command line does not have the parameter and it is not a list, it is also read from the environment variables.
  * (normalized,  {@code foo.bar} becomes {@code FOO_BAR} for example).
- *
- * @deprecated prefer {@link io.yupiik.batch.runtime.configuration.Param}.
  */
 @Target(FIELD)
 @Retention(RUNTIME)
-@Deprecated // use @io.yupiik.batch.runtime.configuration.Param
 public @interface Param {
     /**
      * The name of the parameter in the CLI without leading {@code -}.

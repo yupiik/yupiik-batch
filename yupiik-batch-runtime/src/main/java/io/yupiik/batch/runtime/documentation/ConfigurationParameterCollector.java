@@ -18,9 +18,10 @@ package io.yupiik.batch.runtime.documentation;
 import io.yupiik.batch.runtime.batch.Batch;
 import io.yupiik.batch.runtime.batch.Batches;
 import io.yupiik.batch.runtime.batch.Binder;
-import io.yupiik.batch.runtime.batch.Param;
+import io.yupiik.batch.runtime.configuration.Param;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -62,7 +63,9 @@ public record ConfigurationParameterCollector(
                                 }
                                 try {
                                     final var defValue = param.get(instance);
-                                    doc.put(paramName, new Parameter(conf, defValue == null ? null : String.valueOf(defValue)));
+                                    doc.put(paramName, new Parameter(
+                                            conf, defValue == null ? null : String.valueOf(defValue), param.getGenericType(),
+                                            paramName));
                                 } catch (final IllegalAccessException e) {
                                     throw new IllegalStateException(e);
                                 }
@@ -100,6 +103,6 @@ public record ConfigurationParameterCollector(
                 "|===\n";
     }
 
-    public static record Parameter(Param param, String defaultValue) {
+    public static record Parameter(Param param, String defaultValue, Type type, String name) {
     }
 }

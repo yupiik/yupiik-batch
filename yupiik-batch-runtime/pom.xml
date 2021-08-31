@@ -28,6 +28,11 @@
   <name>Yupiik Batch :: Runtime</name>
 
   <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>simple-configuration</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- for the doc package -->
     <dependency>
       <groupId>org.apache.xbean</groupId>

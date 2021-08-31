@@ -54,6 +54,8 @@ NOTE: fields are injected so they shouldn't be `final` but there is no constrain
 
 TIP: `io.yupiik.batch.runtime.documentation.ConfigurationParameterCollector` class enables to extract all parameters for a batch and then map this extraction to a documentation if needed.
 
+TIP: `simple-configuration` package enables to use this configuration without all the batch stack.
+
 == Reusable batch components
 
 Reusable components are in `io.yupiik.batch.runtime.component` package.
