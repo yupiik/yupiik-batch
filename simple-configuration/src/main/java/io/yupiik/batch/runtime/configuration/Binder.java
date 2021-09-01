@@ -85,6 +85,12 @@ public class Binder {
         if (isList(param)) {
             final var listType = ParameterizedType.class.cast(param.getGenericType()).getActualTypeArguments()[0];
             final var list = value.flatMap(this::splitListValue).map(it -> coerce(it, Class.class.cast(listType))).collect(toList());
+            if (list.isEmpty()) { // try env
+                final var env = System.getenv(toEnvKey(paramName));
+                if (env != null) {
+                    list.addAll(splitListValue(env).map(it -> coerce(it, Class.class.cast(listType))).collect(toList()));
+                }
+            }
             if (list.isEmpty()) {
                 if (!param.canAccess(instance)) {
                     param.setAccessible(true);
@@ -110,7 +116,7 @@ public class Binder {
                 toSet = value.findFirst()
                         .map(it -> coerce(it, param.getType()))
                         .orElseGet(() -> {
-                            final var env = System.getenv(paramName.replaceAll("[^A-Za-z0-9]", "_").toUpperCase(Locale.ROOT));
+                            final var env = System.getenv(toEnvKey(paramName));
                             if (env != null) {
                                 return coerce(env, param.getType());
                             }
@@ -134,6 +140,10 @@ public class Binder {
         }
     }
 
+    protected String toEnvKey(String paramName) {
+        return paramName.replaceAll("[^A-Za-z0-9]", "_").toUpperCase(Locale.ROOT);
+    }
+
     protected Binder newNestedBinder(final String paramName, final List<String> args) {
         return new Binder(paramName, args) {
             @Override // enables to keep the overridden behavior when the root binder is a child
@@ -143,7 +153,7 @@ public class Binder {
         };
     }
 
-    protected Stream<String> splitListValue(String it) {
+    protected Stream<String> splitListValue(final String it) {
         return Stream.of(it.split(","));
     }
 
