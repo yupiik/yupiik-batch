@@ -1,10 +1,11 @@
 import { HomeOutlined } from '@ant-design/icons';
 import { Alert, Breadcrumb, PageHeader, Select, Skeleton } from 'antd';
-import { useEffect, useReducer } from 'react';
+import {useContext, useEffect, useReducer} from 'react';
 import { Link, useLocation, withRouter } from 'react-router-dom';
 import reducer from '../../reducers';
 import { fetchJsonRpc } from '../../service/fetchJsonRpc';
 import { ReportTable } from './ReportTable';
+import {ReducerContext} from "../../App";
 
 function forgeRequest({ method, showSelectBatch, queryPage, queryPageSize, batchName }) {
     const params = {
@@ -167,7 +168,7 @@ function ExecutionsBreadcrumb() {
 }
 function Executions(props) {
     const location = useLocation();
-    const [state, dispatch] = useReducer(reducer, {});
+    const {state, dispatch}= useContext(ReducerContext);
     return (
         <BaseExecutions
             {...props}

@@ -1,14 +1,14 @@
 import { HomeOutlined } from '@ant-design/icons';
 import { Alert, Breadcrumb, Descriptions, PageHeader, Skeleton, Tag } from 'antd';
-import { useEffect, useReducer, useState } from 'react';
+import {useContext, useEffect, useState} from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import extensions from '../../extensions/extensions';
-import reducer from '../../reducers';
 import { fetchJsonRpc } from '../../service/fetchJsonRpc';
 import './Execution.css';
 import { ReportTable } from './ReportTable';
 import { getStatusColor } from './status';
+import {ReducerContext} from "../../App";
 
 
 function toDuration(job) {
@@ -38,8 +38,8 @@ function ExecutionBreadcrumb() {
 function Execution() {
     const { id } = useParams();
     const [idValue] = useState({ id });
-    const [state, dispatch] = useReducer(reducer, {});
-    useEffect(() => fetchJsonRpc('yupiik-batch-execution', idValue, dispatch), [idValue]);
+    const {state, dispatch}= useContext(ReducerContext);
+    useEffect(() => fetchJsonRpc('yupiik-batch-execution', idValue, dispatch), [idValue,dispatch]);
 
     if (state['yupiik-batch-execution-loading-state']) {
         return (<Skeleton active />);
