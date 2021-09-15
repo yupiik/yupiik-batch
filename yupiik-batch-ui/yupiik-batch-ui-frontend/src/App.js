@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useReducer, useState } from 'react';
 import { Layout, Menu } from 'antd';
 import { Redirect, Route, Switch } from 'react-router';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { ReactComponent as Logo } from './logo.svg';
 import './App.css';
 
 import routes from './routes';
+import reducer from "./reducers";
 
 function SwitchRoutes({ component, includeRedirect, filter }) {
   return (
@@ -45,11 +46,14 @@ function SideMenu() {
 }
 
 function Content() {
+  const [state, dispatch] = useReducer(reducer, {});
   return (
     <Layout.Content>
-      <SwitchRoutes filter={route => route.component.Breadcrumb} component={route => (<route.component.Breadcrumb />)} />
+      <SwitchRoutes filter={route => route.component.Breadcrumb}
+                    component={route => (<route.component.Breadcrumb/>)}/>
       <div className="site-layout-background">
-        <SwitchRoutes component={route => (<route.component />)} includeRedirect={true} />
+        <SwitchRoutes component={route => (<route.component state={state} dispatch={dispatch}/>)}
+                      includeRedirect={true}/>
       </div>
     </Layout.Content>
   );

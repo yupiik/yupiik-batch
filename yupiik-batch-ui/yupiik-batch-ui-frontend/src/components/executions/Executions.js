@@ -1,8 +1,7 @@
 import { HomeOutlined } from '@ant-design/icons';
 import { Alert, Breadcrumb, PageHeader, Select, Skeleton } from 'antd';
-import { useEffect, useReducer } from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation, withRouter } from 'react-router-dom';
-import reducer from '../../reducers';
 import { fetchJsonRpc } from '../../service/fetchJsonRpc';
 import { ReportTable } from './ReportTable';
 
@@ -167,17 +166,14 @@ function ExecutionsBreadcrumb() {
 }
 function Executions(props) {
     const location = useLocation();
-    const [state, dispatch] = useReducer(reducer, {});
     return (
         <BaseExecutions
             {...props}
             location={location}
-            state={state}
-            dispatch={dispatch}
             showDuration={true}
             showSelectBatch={true}
             method="yupiik-batch-executions"
-            pageSize={(state['yupiik-batch-executions-pagination'] || {}).pageSize}
+            pageSize={(props.state['yupiik-batch-executions-pagination'] || {}).pageSize}
         />
     );
 }
@@ -194,17 +190,14 @@ function LastExecutionsViewBreadcrumb() {
 }
 function LastExecutionsView(props) {
     const location = useLocation();
-    const [state, dispatch] = useReducer(reducer, {});
     return (
         <BaseExecutions
             {...props}
             location={location}
-            state={state}
-            dispatch={dispatch}
             showDuration={true}
             sortAttribute={false}
             method="yupiik-batch-last-executions"
-            pageSize={state.pageSize}
+            pageSize={props.state.pageSize}
         />
     );
 }
