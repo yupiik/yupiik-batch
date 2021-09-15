@@ -32,6 +32,17 @@ class MapperTableFilterTest {
         assertFalse(filter.test("whatever"));
     }
 
+    @Test
+    void override() {
+        final var overrideKey = "io.yupiik.batch.runtime.component.mapping.MapperTableFilterTest.Spec.test";
+        System.setProperty(overrideKey, "a=b\nc=d");
+        final var filter = new MapperTableFilter(Spec.class, "test");
+        System.clearProperty(overrideKey);
+        assertTrue(filter.test("a"));
+        assertTrue(filter.test("c"));
+        assertFalse(filter.test("foo"));
+    }
+
     @Mapping(to = Record.class, tables = @Mapping.MappingTable(name = "test", entries = {
             @Mapping.Entry(input = "foo", output = "bar"),
             @Mapping.Entry(input = "dummy", output = "true")

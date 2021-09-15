@@ -15,14 +15,15 @@
  */
 package io.yupiik.batch.runtime.component.mapping;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toSet;
+import static io.yupiik.batch.runtime.component.mapping.MapperTableLoader.collectMappingTables;
+import static java.util.Optional.ofNullable;
 
 public class MapperTableFilter implements Predicate<String> {
     private final Set<String> keys;
@@ -35,12 +36,9 @@ public class MapperTableFilter implements Predicate<String> {
     public MapperTableFilter(final Class<?> mapperSpec,
                              final String tableName,
                              final boolean useInput) {
-        keys = Stream.of(mapperSpec.getAnnotation(Mapping.class).tables())
-                .filter(t -> tableName.equals(t.name()))
-                .findFirst()
-                .map(t -> Stream.of(t.entries())
-                        .map(useInput ? Mapping.Entry::input : Mapping.Entry::output)
-                        .collect(toSet()))
+        keys = ofNullable(collectMappingTables(mapperSpec.getName(), mapperSpec.getAnnotation(Mapping.class), tableName::equals))
+                .map(map -> map.get(tableName))
+                .map(it -> useInput ? it.keySet() : new HashSet<>(it.values()))
                 .orElseThrow(() -> new IllegalArgumentException("No table '" + tableName + "' found on " + mapperSpec));
     }
 
