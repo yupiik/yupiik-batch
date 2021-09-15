@@ -15,8 +15,8 @@
  */
 package io.yupiik.batch.runtime.component;
 
-import io.yupiik.batch.runtime.documentation.Component;
 import io.yupiik.batch.runtime.component.mapping.Mapping;
+import io.yupiik.batch.runtime.documentation.Component;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static io.yupiik.batch.runtime.component.mapping.MapperTableLoader.collectMappingTables;
 import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
@@ -66,11 +67,11 @@ import static java.util.stream.Collectors.toMap;
             }
         }
         ----
-        
+                
         To get a mapper, you simply call `Mapper.mapper(MyMapperSpec.class)` and then can insert this mapper in any `BatchChain`.
-        
+                
         The specification API enables static mapping (`properties`) or custom mapping - `@Mapping.Custom` - for more advanced logic.
-        
+                
         The companion class `io.yupiik.batch.runtime.documentation.MapperDocGenerator` enables to generate an asciidoctor documentation for a mapper class.""")
 public class Mapper<A, B, C> implements Function<A, B> {
     private final Function<A, B> delegate;
@@ -113,7 +114,7 @@ public class Mapper<A, B, C> implements Function<A, B> {
         final var from = conf.from();
         final var to = conf.to();
 
-        final var tableMappings = collectMappingTables(conf);
+        final var tableMappings = collectMappingTables(spec.getName(), conf, n -> true);
 
         final var toConstructor = Stream.of(to.getDeclaredConstructors())
                 .max(comparing(Constructor::getParameterCount)) // a bit random but likely works for "pure" records
@@ -171,12 +172,6 @@ public class Mapper<A, B, C> implements Function<A, B> {
                         }, i -> toCustomPropertyMapper(from, i, tableMappings))))
                 .flatMap(m -> m.entrySet().stream())
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
-
-    private Map<String, Map<String, String>> collectMappingTables(final Mapping conf) {
-        return Stream.of(conf.tables())
-                .collect(toMap(Mapping.MappingTable::name, mt -> Stream.of(mt.entries())
-                        .collect(toMap(Mapping.Entry::input, Mapping.Entry::output))));
     }
 
     private Stream<Method> findMethods(final Class<?> spec) {
