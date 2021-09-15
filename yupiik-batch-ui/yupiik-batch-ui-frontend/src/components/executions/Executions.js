@@ -160,7 +160,7 @@ function ExecutionsBreadcrumb() {
     return (
         <Breadcrumb>
             <Breadcrumb.Item><Link to='/'><HomeOutlined /></Link></Breadcrumb.Item>
-            <Breadcrumb.Item>Executiones</Breadcrumb.Item>
+            <Breadcrumb.Item>Executions</Breadcrumb.Item>
         </Breadcrumb>
     );
 }
@@ -170,8 +170,6 @@ function Executions(props) {
         <BaseExecutions
             {...props}
             location={location}
-            state={props.state}
-            dispatch={props.dispatch}
             showDuration={true}
             showSelectBatch={true}
             method="yupiik-batch-executions"
@@ -196,8 +194,6 @@ function LastExecutionsView(props) {
         <BaseExecutions
             {...props}
             location={location}
-            state={props.state}
-            dispatch={props.dispatch}
             showDuration={true}
             sortAttribute={false}
             method="yupiik-batch-last-executions"

@@ -1,4 +1,4 @@
-import React, {useReducer, useState} from 'react';
+import React, { useReducer, useState } from 'react';
 import { Layout, Menu } from 'antd';
 import { Redirect, Route, Switch } from 'react-router';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
