@@ -44,22 +44,19 @@ function SideMenu() {
     </Layout.Sider>
   );
 }
-export const ReducerContext = React.createContext();
 
 function Content() {
 
   const [state, dispatch] = useReducer(reducer, {});
 
   return (
-      <ReducerContext.Provider value={{state, dispatch}}>
           <Layout.Content>
           <SwitchRoutes filter={route => route.component.Breadcrumb}
                         component={route => (<route.component.Breadcrumb/>)}/>
           <div className="site-layout-background">
-            <SwitchRoutes component={route => (<route.component/>)} includeRedirect={true}/>
+            <SwitchRoutes component={route => (<route.component state={state} dispatch={dispatch}/>)} includeRedirect={true}/>
           </div>
         </Layout.Content>
-      </ReducerContext.Provider>
   );
 }
 

@@ -1,11 +1,9 @@
 import { HomeOutlined } from '@ant-design/icons';
 import { Alert, Breadcrumb, PageHeader, Select, Skeleton } from 'antd';
-import {useContext, useEffect, useReducer} from 'react';
+import { useEffect } from 'react';
 import { Link, useLocation, withRouter } from 'react-router-dom';
-import reducer from '../../reducers';
 import { fetchJsonRpc } from '../../service/fetchJsonRpc';
 import { ReportTable } from './ReportTable';
-import {ReducerContext} from "../../App";
 
 function forgeRequest({ method, showSelectBatch, queryPage, queryPageSize, batchName }) {
     const params = {
@@ -162,23 +160,22 @@ function ExecutionsBreadcrumb() {
     return (
         <Breadcrumb>
             <Breadcrumb.Item><Link to='/'><HomeOutlined /></Link></Breadcrumb.Item>
-            <Breadcrumb.Item>Executions</Breadcrumb.Item>
+            <Breadcrumb.Item>Executiones</Breadcrumb.Item>
         </Breadcrumb>
     );
 }
 function Executions(props) {
     const location = useLocation();
-    const {state, dispatch}= useContext(ReducerContext);
     return (
         <BaseExecutions
             {...props}
             location={location}
-            state={state}
-            dispatch={dispatch}
+            state={props.state}
+            dispatch={props.dispatch}
             showDuration={true}
             showSelectBatch={true}
             method="yupiik-batch-executions"
-            pageSize={(state['yupiik-batch-executions-pagination'] || {}).pageSize}
+            pageSize={(props.state['yupiik-batch-executions-pagination'] || {}).pageSize}
         />
     );
 }
@@ -195,17 +192,16 @@ function LastExecutionsViewBreadcrumb() {
 }
 function LastExecutionsView(props) {
     const location = useLocation();
-    const [state, dispatch] = useReducer(reducer, {});
     return (
         <BaseExecutions
             {...props}
             location={location}
-            state={state}
-            dispatch={dispatch}
+            state={props.state}
+            dispatch={props.dispatch}
             showDuration={true}
             sortAttribute={false}
             method="yupiik-batch-last-executions"
-            pageSize={state.pageSize}
+            pageSize={props.state.pageSize}
         />
     );
 }
