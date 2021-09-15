@@ -46,17 +46,16 @@ function SideMenu() {
 }
 
 function Content() {
-
   const [state, dispatch] = useReducer(reducer, {});
-
   return (
-          <Layout.Content>
-          <SwitchRoutes filter={route => route.component.Breadcrumb}
-                        component={route => (<route.component.Breadcrumb/>)}/>
-          <div className="site-layout-background">
-            <SwitchRoutes component={route => (<route.component state={state} dispatch={dispatch}/>)} includeRedirect={true}/>
-          </div>
-        </Layout.Content>
+    <Layout.Content>
+      <SwitchRoutes filter={route => route.component.Breadcrumb}
+                    component={route => (<route.component.Breadcrumb/>)}/>
+      <div className="site-layout-background">
+        <SwitchRoutes component={route => (<route.component state={state} dispatch={dispatch}/>)}
+                      includeRedirect={true}/>
+      </div>
+    </Layout.Content>
   );
 }
 
