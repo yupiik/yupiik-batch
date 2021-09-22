@@ -92,6 +92,25 @@ window.yupiikBatchExtensions = (function () {
         tableColumnsWrapper: function ({ columns, method }) {
             return columns;
         },
+        // enables to add headers into your fetchJsonRPC calls
+        fetchjsonRpcHeaders: function() {
+          return {
+            'header1':'value',
+            'header2':'value',
+          }
+        },
+        // Enables to wrap the Yupiik Batch App in high order component, for logging or else
+        // React and antd must be passed to the components  (library import will not work)
+        bootstrap: function ({ ReactDOM, React , App, antd }) {
+        /*            ReactDOM.render(
+                        <React.StrictMode>
+                            <ExampleWrapper app={App}  />
+                        </React.StrictMode>,
+                        document.getElementById('root')
+                  );*/
+
+        },
+
     };
 })();
 ----

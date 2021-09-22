@@ -1,3 +1,4 @@
+import extensions from '../extensions/extensions';
 
 // todo: move to useReducer which would enable extensions to access more easily data too
 let idCounter = 0;
@@ -15,6 +16,7 @@ export function fetchJsonRpc(method, params, dispatch) {
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
+                ...(extensions.fetchjsonRpcHeaders || (function () {return {};}))(),
             },
             body: JSON.stringify(Array.isArray(params) /* assumed already wrapped */ ? params : {
                 jsonrpc: '2.0',

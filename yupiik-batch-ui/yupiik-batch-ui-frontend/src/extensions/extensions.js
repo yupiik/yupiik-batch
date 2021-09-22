@@ -30,6 +30,7 @@ const exts = {
 // inject react, router, antd and antdIcons in all extensions
 const registry = { React, router, fetchJsonRpc, antd, antdIcons };
 const extensions = {
+    ...exts,
     routes: () => exts.routes(registry),
     commentWrapper: c => exts.commentWrapper(c, registry),
     routeDecorator: r => exts.routeDecorator(r, registry),
