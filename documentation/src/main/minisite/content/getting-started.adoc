@@ -10,7 +10,7 @@ It provides a fluent API which is auditable.
 
 == Installation
 
-. Ensure to use java >= 16.
+. Ensure to use java >= 17.
 . If you want to compile the project you need Git and Apache Maven.
 
 TIP: you can use SDKMan to install Java and Maven.
