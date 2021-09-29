@@ -61,6 +61,19 @@
           <logoText>Yupiik Batch</logoText>
           <indexText>Yupiik Batch</indexText>
           <indexSubTitle>A light Java batch API.</indexSubTitle>
+          <customHead>
+            <![CDATA[
+            <style>
+            table {
+              table-layout: fixed;
+              width: 100%;
+            }
+            tbody > td {
+              overflow-x: auto;
+            }
+            </style>
+            ]]>
+          </customHead>
           <preActions>
             <preAction>
               <type>io.yupiik.batch.documentation.DocumentComponents</type>
