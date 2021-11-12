@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparing;
@@ -232,5 +233,18 @@ public class Binder {
             }
         }
         return result.stream();
+    }
+
+    public static <T> T bindPrefixed(final T instance) {
+        return bindPrefixed(System.getProperties(), instance);
+    }
+
+    public static <T> T bindPrefixed(final Properties properties, final T instance) {
+        final var prefix = instance.getClass().getAnnotation(Prefix.class).value() + '-';
+        return new Binder(null, properties.stringPropertyNames().stream()
+                .filter(it -> it.startsWith(prefix))
+                .flatMap(it -> Stream.of("--" + it, properties.getProperty(it)))
+                .collect(toList()))
+                .bind(instance);
     }
 }
