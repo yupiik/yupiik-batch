@@ -63,7 +63,7 @@ function BaseExecutions({ location, history, method, pageSize, showDuration, sho
             });
         }
         if (request) {
-            fetchJsonRpc(method, request, dispatch);
+            return fetchJsonRpc(method, request, dispatch);
         }
     }, [method, pagination, request, dispatch, location, showSelectBatch]);
 
