@@ -1,5 +1,5 @@
 {
-    "comment": "(log) batch-id: 49042fb4-3aef-4064-8a15-7e842a7fe602\nBanfico-ArtifactId: aggregator\nBanfico-Build-Timestamp: 20210809085400\nBanfico-Git-Branch: develop\nBanfico-Git-Origin: https://gitlab.com/tppwise2/tppwise-data-parent.git\nBanfico-Git-Sha: 221b42b17fea715719eb0517971b23dd6528069a\nBanfico-Git-Time: 2021-08-09T07:19:48Z\nBanfico-GroupId: com.banfico.tppwise.data\nBanfico-Version: 1.0.2-SNAPSHOT\n",
+    "comment": "(log) batch-id: 49042fb4-3aef-4064-8a15-7e842a7fe602\nArtifactId: aggregator\nBuild-Timestamp: 20210809085400\nGit-Branch: develop\nGit-Origin: https://github.com/yupiik/batch-sample-data.git\nGit-Sha: 221b42b17fea715719eb0517971b23dd6528069a\nGit-Time: 2021-08-09T07:19:48Z\nGroupId: com.yupiik.batch\nVersion: 1.0.2-SNAPSHOT\n",
     "finished": "2021-08-09T10:00:30.913777Z",
     "id": "1f7ac191-821c-4c2c-911a-abf675498026",
     "name": "aggregator",
@@ -7,7 +7,7 @@
     "status": "SUCCESS",
     "steps": [
         {
-            "comment": "Banfico: Diff[deleted=[], added=[], updated=[], initialTotal=0, newSize=0]\nBelgium: Diff[deleted=[], added=[], updated=[], initialTotal=70, newSize=70]\nFinland: Diff[deleted=[], added=[], updated=[], initialTotal=202, newSize=202]\nFrance: Diff[deleted=[], added=[], updated=[], initialTotal=397, newSize=397]\nGermany: Diff[deleted=[], added=[], updated=[], initialTotal=1450, newSize=1450]\nNetherlands: Diff[deleted=[], added=[], updated=[], initialTotal=184, newSize=184]\nSweden: Diff[deleted=[], added=[], updated=[], initialTotal=191, newSize=191]\nUnitedKingdom: Diff[deleted=[], added=[], updated=[], initialTotal=218, newSize=218]",
+            "comment": "Manual: Diff[deleted=[], added=[], updated=[], initialTotal=0, newSize=0]\nBelgium: Diff[deleted=[], added=[], updated=[], initialTotal=70, newSize=70]\nFinland: Diff[deleted=[], added=[], updated=[], initialTotal=202, newSize=202]\nFrance: Diff[deleted=[], added=[], updated=[], initialTotal=397, newSize=397]\nGermany: Diff[deleted=[], added=[], updated=[], initialTotal=1450, newSize=1450]\nNetherlands: Diff[deleted=[], added=[], updated=[], initialTotal=184, newSize=184]\nSweden: Diff[deleted=[], added=[], updated=[], initialTotal=191, newSize=191]\nUnitedKingdom: Diff[deleted=[], added=[], updated=[], initialTotal=218, newSize=218]",
             "finished": "2021-08-09T10:00:21.556970Z",
             "id": "9cf01bec-1ef0-4039-bd44-27158e5e3011",
             "name": "compute-providers-diff",
@@ -19,7 +19,7 @@
             "comment": "\ndatabase-size=0\ndeleted: 0, added: 0, updated: 0, initial-size=0, new-size=0",
             "finished": "2021-08-09T10:00:14.442279Z",
             "id": "f10c05bf-d9c0-48ff-b391-b6000933445b",
-            "name": "Banfico diff",
+            "name": "Manual diff",
             "started": "2021-08-09T10:00:13.041963Z",
             "status": "SUCCESS"
         },
@@ -329,7 +329,7 @@
             "status": "SUCCESS"
         },
         {
-            "comment": "Banfico: No change.\nBelgium: No change.\nFinland: No change.\nFrance: No change.\nGermany: No change.\nNetherlands: No change.\nSweden: No change.\nUnitedKingdom: No change.\nAustria: No change.\nBulgaria: No change.\nCroatia: No change.\nCyprus: No change.\nCzechRepublic: No change.\nDenmark: No change.\nEstonia: No change.\nGreece: No change.\nHungary: No change.\nIceland: No change.\nIreland: No change.\nItaly: No change.\nLatvia: No change.\nLiechtenstein: No change.\nLithuania: No change.\nLuxembourg: No change.\nMalta: No change.\nNorway: No change.\nPoland: No change.\nPortugal: No change.\nRomania: No change.\nSlovakia: No change.\nSlovenia: No change.\nSpain: No change.",
+            "comment": "Manual: No change.\nBelgium: No change.\nFinland: No change.\nFrance: No change.\nGermany: No change.\nNetherlands: No change.\nSweden: No change.\nUnitedKingdom: No change.\nAustria: No change.\nBulgaria: No change.\nCroatia: No change.\nCyprus: No change.\nCzechRepublic: No change.\nDenmark: No change.\nEstonia: No change.\nGreece: No change.\nHungary: No change.\nIceland: No change.\nIreland: No change.\nItaly: No change.\nLatvia: No change.\nLiechtenstein: No change.\nLithuania: No change.\nLuxembourg: No change.\nMalta: No change.\nNorway: No change.\nPoland: No change.\nPortugal: No change.\nRomania: No change.\nSlovakia: No change.\nSlovenia: No change.\nSpain: No change.",
             "finished": "2021-08-09T10:00:30.910901Z",
             "id": "267fac4b-847d-49ac-8766-e724c02d1563",
             "name": "increment-version-for-updates",
@@ -338,7 +338,7 @@
             "status": "SUCCESS"
         },
         {
-            "comment": "[AD][S][E] Skipping diff for Banfico since it is empty\n[AD][S][E] Skipping diff for Belgium since it is empty\n[AD][S][E] Skipping diff for Finland since it is empty\n[AD][S][E] Skipping diff for France since it is empty\n[AD][S][E] Skipping diff for Germany since it is empty\n[AD][S][E] Skipping diff for Netherlands since it is empty\n[AD][S][E] Skipping diff for Sweden since it is empty\n[AD][S][E] Skipping diff for UnitedKingdom since it is empty\n[AD][S][E] Skipping diff for Austria since it is empty\n[AD][S][E] Skipping diff for Bulgaria since it is empty\n[AD][S][E] Skipping diff for Croatia since it is empty\n[AD][S][E] Skipping diff for Cyprus since it is empty\n[AD][S][E] Skipping diff for CzechRepublic since it is empty\n[AD][S][E] Skipping diff for Denmark since it is empty\n[AD][S][E] Skipping diff for Estonia since it is empty\n[AD][S][E] Skipping diff for Greece since it is empty\n[AD][S][E] Skipping diff for Hungary since it is empty\n[AD][S][E] Skipping diff for Iceland since it is empty\n[AD][S][E] Skipping diff for Ireland since it is empty\n[AD][S][E] Skipping diff for Italy since it is empty\n[AD][S][E] Skipping diff for Latvia since it is empty\n[AD][S][E] Skipping diff for Liechtenstein since it is empty\n[AD][S][E] Skipping diff for Lithuania since it is empty\n[AD][S][E] Skipping diff for Luxembourg since it is empty\n[AD][S][E] Skipping diff for Malta since it is empty\n[AD][S][E] Skipping diff for Norway since it is empty\n[AD][S][E] Skipping diff for Poland since it is empty\n[AD][S][E] Skipping diff for Portugal since it is empty\n[AD][S][E] Skipping diff for Romania since it is empty\n[AD][S][E] Skipping diff for Slovakia since it is empty\n[AD][S][E] Skipping diff for Slovenia since it is empty\n[AD][S][E] Skipping diff for Spain since it is empty\n",
+            "comment": "[AD][S][E] Skipping diff for Manual since it is empty\n[AD][S][E] Skipping diff for Belgium since it is empty\n[AD][S][E] Skipping diff for Finland since it is empty\n[AD][S][E] Skipping diff for France since it is empty\n[AD][S][E] Skipping diff for Germany since it is empty\n[AD][S][E] Skipping diff for Netherlands since it is empty\n[AD][S][E] Skipping diff for Sweden since it is empty\n[AD][S][E] Skipping diff for UnitedKingdom since it is empty\n[AD][S][E] Skipping diff for Austria since it is empty\n[AD][S][E] Skipping diff for Bulgaria since it is empty\n[AD][S][E] Skipping diff for Croatia since it is empty\n[AD][S][E] Skipping diff for Cyprus since it is empty\n[AD][S][E] Skipping diff for CzechRepublic since it is empty\n[AD][S][E] Skipping diff for Denmark since it is empty\n[AD][S][E] Skipping diff for Estonia since it is empty\n[AD][S][E] Skipping diff for Greece since it is empty\n[AD][S][E] Skipping diff for Hungary since it is empty\n[AD][S][E] Skipping diff for Iceland since it is empty\n[AD][S][E] Skipping diff for Ireland since it is empty\n[AD][S][E] Skipping diff for Italy since it is empty\n[AD][S][E] Skipping diff for Latvia since it is empty\n[AD][S][E] Skipping diff for Liechtenstein since it is empty\n[AD][S][E] Skipping diff for Lithuania since it is empty\n[AD][S][E] Skipping diff for Luxembourg since it is empty\n[AD][S][E] Skipping diff for Malta since it is empty\n[AD][S][E] Skipping diff for Norway since it is empty\n[AD][S][E] Skipping diff for Poland since it is empty\n[AD][S][E] Skipping diff for Portugal since it is empty\n[AD][S][E] Skipping diff for Romania since it is empty\n[AD][S][E] Skipping diff for Slovakia since it is empty\n[AD][S][E] Skipping diff for Slovenia since it is empty\n[AD][S][E] Skipping diff for Spain since it is empty\n",
             "finished": "2021-08-09T10:00:30.913253Z",
             "id": "a51cd852-dee2-4d3f-8330-309fb4c765e0",
             "name": "apply-diffs",

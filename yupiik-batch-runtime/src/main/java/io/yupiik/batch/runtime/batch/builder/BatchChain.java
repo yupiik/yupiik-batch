@@ -26,7 +26,7 @@ import static java.util.Optional.ofNullable;
 
 /**
  * Very trivial way to define common operations simply.
- * A more advanced fluent API could be inspired from Stream API but this one is sufficient for most tppwise data batches.
+ * A more advanced fluent API could be inspired from Stream API but this one is sufficient for most data batches.
  *
  * @param <R> data type.
  */
