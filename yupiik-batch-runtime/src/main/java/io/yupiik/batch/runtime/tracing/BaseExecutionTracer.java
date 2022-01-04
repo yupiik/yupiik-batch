@@ -28,19 +28,25 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public abstract class BaseExecutionTracer {
     private final Clock clock;
     private final String batchName;
+    protected final boolean forceSkip;
 
     private final List<StepExecution> steps = new CopyOnWriteArrayList<>();
 
     public BaseExecutionTracer(final String batchName, final Clock clock) {
+        this(batchName, clock, false);
+    }
+
+    public BaseExecutionTracer(final String batchName, final Clock clock, final boolean forceSkip) {
         this.clock = clock;
         this.batchName = batchName;
+        this.forceSkip = forceSkip;
     }
 
     protected abstract void save(final JobExecution execution, final List<StepExecution> steps);
 
     public Executable.Result<?> traceStep(final RunConfiguration configuration,
                                           final BatchChain<?, ?, ?> batchChain, final BatchChain.Result<?> previous) {
-        if (batchChain.skipTracing()) {
+        if (forceSkip || batchChain.skipTracing()) {
             return batchChain.execute(configuration, Executable.Result.class.cast(previous));
         }
 
@@ -95,12 +101,12 @@ public abstract class BaseExecutionTracer {
         SUCCESS, FAILURE
     }
 
-    public static record StepExecution(
+    public record StepExecution(
             String id, String name, Status status, String comment,
             LocalDateTime started, LocalDateTime finished, String previous) {
     }
 
-    public static record JobExecution(
+    public record JobExecution(
             String id, String name, Status status, String comment,
             LocalDateTime started, LocalDateTime finished) {
     }

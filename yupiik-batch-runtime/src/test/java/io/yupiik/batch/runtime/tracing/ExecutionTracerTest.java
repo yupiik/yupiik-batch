@@ -65,59 +65,58 @@ class ExecutionTracerTest {
                 connection.commit();
             }
 
-            assertThrows(IllegalStateException.class, () -> {
-                final var tracer = new ExecutionTracer(dataSource::getConnection, "test", systemUTC());
-                tracer.traceExecution(() -> {
-                    tracer.traceStep(null, new BatchChain() {
-                        @Override
-                        public Result execute(final RunConfiguration configuration, final Result previous) {
-                            return null;
-                        }
+            final var tracer = new ExecutionTracer(dataSource::getConnection, "test", systemUTC());
+            assertThrows(IllegalStateException.class, () -> tracer.traceExecution(() -> {
+                tracer.traceStep(null, new BatchChain() {
+                    @Override
+                    public Result execute(final RunConfiguration configuration, final Result previous) {
+                        return null;
+                    }
 
-                        @Override
-                        public Optional<BatchChain> previous() {
-                            return Optional.empty();
-                        }
+                    @Override
+                    public Optional<BatchChain> previous() {
+                        return Optional.empty();
+                    }
 
-                        @Override
-                        public String name() {
-                            return "step1";
-                        }
-                    }, null);
-                    tracer.traceStep(null, new BatchChain() {
-                        @Override
-                        public Result execute(final RunConfiguration configuration, final Result previous) {
-                            return null;
-                        }
+                    @Override
+                    public String name() {
+                        return "step1";
+                    }
+                }, null);
+                tracer.traceStep(null, new BatchChain() {
+                    @Override
+                    public Result execute(final RunConfiguration configuration, final Result previous) {
+                        return null;
+                    }
 
-                        @Override
-                        public Optional<BatchChain> previous() {
-                            return Optional.empty();
-                        }
+                    @Override
+                    public Optional<BatchChain> previous() {
+                        return Optional.empty();
+                    }
 
-                        @Override
-                        public String name() {
-                            return "step2";
-                        }
-                    }, null);
-                    tracer.traceStep(null, new BatchChain() {
-                        @Override
-                        public Result execute(final RunConfiguration configuration, final Result previous) {
-                            throw new IllegalStateException("error for test");
-                        }
+                    @Override
+                    public String name() {
+                        return "step2";
+                    }
+                }, null);
+                tracer.traceStep(null, new BatchChain() {
+                    @Override
+                    public Result execute(final RunConfiguration configuration, final Result previous) {
+                        throw new IllegalStateException("error for test");
+                    }
 
-                        @Override
-                        public Optional<BatchChain> previous() {
-                            return Optional.empty();
-                        }
+                    @Override
+                    public Optional<BatchChain> previous() {
+                        return Optional.empty();
+                    }
 
-                        @Override
-                        public String name() {
-                            return "step3";
-                        }
-                    }, null);
-                }).run();
-            });
+                    @Override
+                    public String name() {
+                        return "step3";
+                    }
+                }, null);
+            }).run());
+            assertTrue(tracer.isAlreadySaved());
 
             try (final var connection = dataSource.getConnection();
                  final var statement = connection.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY)) {

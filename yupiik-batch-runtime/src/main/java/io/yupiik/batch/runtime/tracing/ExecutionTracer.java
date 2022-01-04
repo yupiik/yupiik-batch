@@ -31,15 +31,35 @@ import java.util.logging.Logger;
 
 public class ExecutionTracer extends BaseExecutionTracer {
     private final SQLSupplier<Connection> dataSource;
+    private volatile boolean alreadySaved; // when using a shutdown hook to all it there can be some concurrency
 
     public ExecutionTracer(final SQLSupplier<Connection> dataSource,
                            final String batchName, final Clock clock) {
-        super(batchName, clock);
+        this(dataSource, batchName, clock, false);
+    }
+
+    public ExecutionTracer(final SQLSupplier<Connection> dataSource,
+                           final String batchName, final Clock clock,
+                           final boolean forceSkip) {
+        super(batchName, clock, forceSkip);
         this.dataSource = dataSource;
+    }
+
+    public boolean isAlreadySaved() {
+        return alreadySaved;
     }
 
     @Override
     protected void save(final JobExecution job, final List<StepExecution> steps) {
+        if (forceSkip || alreadySaved) {
+            return;
+        }
+        alreadySaved = true;
+
+        doSave(job, steps);
+    }
+
+    private void doSave(final JobExecution job, final List<StepExecution> steps) {
         try (final var connection = dataSource.get();
              final var statement = connection.prepareStatement("" +
                      "INSERT INTO BATCH_JOB_EXECUTION_TRACE" +
