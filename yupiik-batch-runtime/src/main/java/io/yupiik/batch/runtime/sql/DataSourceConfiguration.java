@@ -15,7 +15,7 @@
  */
 package io.yupiik.batch.runtime.sql;
 
-import io.yupiik.batch.runtime.batch.Param;
+import io.yupiik.batch.runtime.configuration.Param;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
