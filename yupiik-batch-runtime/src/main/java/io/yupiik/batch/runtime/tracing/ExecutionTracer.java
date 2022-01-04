@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.util.logging.Level.SEVERE;
+
 public class ExecutionTracer extends BaseExecutionTracer {
     private final SQLSupplier<Connection> dataSource;
     private volatile boolean alreadySaved; // when using a shutdown hook to all it there can be some concurrency
@@ -161,7 +163,14 @@ public class ExecutionTracer extends BaseExecutionTracer {
                                          final SQLSupplier<Connection> dataSource, final String batch, final Clock clock) {
         final var tracer = new ExecutionTracer(dataSource, batch, clock);
         configuration.setExecutionWrapper(tracer::traceExecution);
-        configuration.setElementExecutionWrapper(e -> (c, r) -> Executable.Result.class.cast(tracer.traceStep(c, e, r)));
+        configuration.setElementExecutionWrapper(e -> (c, r) -> {
+            try {
+                return Executable.Result.class.cast(tracer.traceStep(c, e, r));
+            } catch (final RuntimeException re) {
+                Logger.getLogger(ExecutionTracer.class.getName()).log(SEVERE, re, re::getMessage);
+                throw re;
+            }
+        });
         return configuration;
     }
 }
