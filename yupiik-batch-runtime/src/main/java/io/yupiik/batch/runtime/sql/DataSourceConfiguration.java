@@ -36,6 +36,10 @@ public class DataSourceConfiguration {
     private String password;
 
     // no need of pool for the batches normally
+    public ReusedSQLSupplierDataSource toDataSource() {
+        return new ReusedSQLSupplierDataSource(toConnectionProvider());
+    }
+
     public SQLSupplier<Connection> toConnectionProvider() {
         final var properties = new Properties();
         if (username != null) {
