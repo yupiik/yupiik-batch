@@ -16,14 +16,18 @@
 package io.yupiik.batch.runtime.component.uship;
 
 import io.yupiik.batch.runtime.component.BaseDiffExecutor;
+import io.yupiik.batch.runtime.documentation.Component;
 import io.yupiik.uship.persistence.api.Database;
 
 import java.util.Iterator;
-import java.util.logging.Logger;
 
+@Component("""
+        Enables to apply a `Diff` - from a `DatasetDiffComputer` when the entities (diff model) are Yupiik UShip Persistence models.
+                
+        It will apply it in a database with the provided `commitInterval`.
+
+        `dryRun` toggle enables to simulate the processing without issuing any modification in the database.""")
 public class DatabaseDiffExecutor<T> extends BaseDiffExecutor<T> {
-    private final Logger logger = Logger.getLogger(getClass().getName());
-    private final StringBuilder comments = new StringBuilder();
     private final Database database;
     private final String table;
 
