@@ -15,7 +15,6 @@
  */
 package io.yupiik.batch.runtime.component;
 
-import io.yupiik.batch.runtime.component.diff.Diff;
 import io.yupiik.batch.runtime.documentation.Component;
 import io.yupiik.batch.runtime.sql.SQLBiConsumer;
 import io.yupiik.batch.runtime.sql.SQLSupplier;
@@ -23,25 +22,20 @@ import io.yupiik.batch.runtime.sql.SQLSupplier;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static io.yupiik.batch.runtime.sql.SQLBiConsumer.noop;
-
 @Component("""
         Enables to apply a `Diff` - from a `DatasetDiffComputer`.
-        
+                
         It will apply it in a database represented by the `connectionSupplier` with the provided `commitInterval`.
         The statements are creating using the related factories - `insertFactory`, `updateFactory`, `deleteFactory`.
-        
+                
         Finally, `dryRun` toggle enables to simulate the processing without issuing any modification in the database.""")
-public class DiffExecutor<A> implements Consumer<Diff<A>> {
+public class DiffExecutor<A> extends BaseDiffExecutor<A> {
     private final Logger logger = Logger.getLogger(getClass().getName());
     private final SQLSupplier<Connection> connectionSupplier;
-    private final int commitInterval;
-    private final boolean dryRun;
     private final Supplier<? extends SQLBiConsumer<Connection, A>> insertFactory;
     private final Supplier<? extends SQLBiConsumer<Connection, A>> updateFactory;
     private final Supplier<? extends SQLBiConsumer<Connection, A>> deleteFactory;
@@ -51,31 +45,26 @@ public class DiffExecutor<A> implements Consumer<Diff<A>> {
                         final Supplier<? extends SQLBiConsumer<Connection, A>> insertFactory,
                         final Supplier<? extends SQLBiConsumer<Connection, A>> updateFactory,
                         final Supplier<? extends SQLBiConsumer<Connection, A>> deleteFactory) {
+        super(dryRun, commitInterval);
         this.connectionSupplier = connectionSupplier;
-        this.commitInterval = commitInterval;
-        this.dryRun = dryRun;
         this.insertFactory = insertFactory;
         this.updateFactory = updateFactory;
         this.deleteFactory = deleteFactory;
     }
 
     @Override
-    public void accept(final Diff<A> referenceRowDiff) {
-        logger.info(() -> "" +
-                "Diff summary:\n" +
-                "     To Add: " + referenceRowDiff.added().size() + "\n" +
-                "  To Remove: " + referenceRowDiff.deleted().size() + "\n" +
-                "  To Update: " + referenceRowDiff.updated().size());
-        final var prefix = dryRun ? "[d]" : "";
-        withCommitInterval(
-                referenceRowDiff.added().iterator(), prefix + "[A] Adding ",
-                dryRun ? noop() : newInsert());
-        withCommitInterval(
-                referenceRowDiff.updated().iterator(), prefix + "[U] Updating ",
-                dryRun ? noop() : newUpdate());
-        withCommitInterval(
-                referenceRowDiff.deleted().iterator(), prefix + "[D] Deleting ",
-                dryRun ? noop() : newDelete());
+    protected void batchInsert(final Class<A> type, final Iterator<A> iterator) {
+        handle(iterator, newInsert());
+    }
+
+    @Override
+    protected void batchUpdate(Class<A> type, final Iterator<A> iterator) {
+        handle(iterator, newUpdate());
+    }
+
+    @Override
+    protected void batchDelete(final Class<A> type, final Iterator<A> iterator) {
+        handle(iterator, newDelete());
     }
 
     protected SQLBiConsumer<Connection, A> newDelete() {
@@ -90,9 +79,8 @@ public class DiffExecutor<A> implements Consumer<Diff<A>> {
         return insertFactory.get();
     }
 
-    private void withCommitInterval(final Iterator<A> rows,
-                                    final String logPrefix,
-                                    final SQLBiConsumer<Connection, A> onRow) {
+    private void handle(final Iterator<A> rows,
+                        final SQLBiConsumer<Connection, A> onRow) {
         if (!rows.hasNext()) {
             return;
         }
@@ -100,14 +88,9 @@ public class DiffExecutor<A> implements Consumer<Diff<A>> {
             while (rows.hasNext()) {
                 final boolean autoCommit = connection.getAutoCommit();
                 connection.setAutoCommit(false);
-                logger.info("[C][S] Starting transaction");
                 try {
-                    for (int i = 0; i < commitInterval && rows.hasNext(); i++) {
-                        final var row = rows.next();
-                        logger.info(() -> logPrefix + row);
-                        if (onRow != null) {
-                            onRow.accept(connection, row);
-                        }
+                    while (rows.hasNext()) {
+                        onRow.accept(connection, rows.next());
                     }
                     if (AutoCloseable.class.isInstance(onRow)) {
                         AutoCloseable.class.cast(onRow).close();
@@ -120,7 +103,6 @@ public class DiffExecutor<A> implements Consumer<Diff<A>> {
                     onException(connection, ex);
                     throw new IllegalStateException(ex);
                 } finally {
-                    logger.info("[C][E] Finished transaction");
                     connection.setAutoCommit(autoCommit);
                 }
             }
