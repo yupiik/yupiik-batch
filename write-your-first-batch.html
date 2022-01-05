@@ -18,8 +18,16 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/asciidoctor.js/1.5.5-5/css/asciidoctor.min.css" integrity="sha512-kI7tn5cuEg16kMeXnYmg8rEJPxbxzEM7Gsr191iQdLDevFBLXPCSU9aZWSVuP61tMZWU3nBAR1cJ7SmXnOGLZw==" crossorigin="anonymous" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" integrity="sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/vs2015.min.css" integrity="sha512-w8aclkBlN3Ha08SMwFKXFJqhSUx2qlvTBFLLelF8sm4xQnlg64qmGB/A6pBIKy0W8Bo51yDMDtQiPLNRq1WMcQ==" crossorigin="anonymous" />
-    <link id="theme-style" rel="stylesheet" href="//yupiik.github.io/yupiik-batch/css/theme.css?v=0.0.2-SNAPSHOT">
-    
+    <link id="theme-style" rel="stylesheet" href="//yupiik.github.io/yupiik-batch/css/theme.css?v=0.0.24">
+    <style>
+            table {
+              table-layout: fixed;
+              width: 100%;
+            }
+            tbody > td {
+              overflow-x: auto;
+            }
+            </style>
 </head>
     <header class="header fixed-top">
         <div class="branding docs-branding">
@@ -150,6 +158,18 @@ fields are injected so they shouldn&#8217;t be <code>final</code> but there is n
 </tr>
 </table>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<code>simple-configuration</code> package enables to use this configuration without all the batch stack.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -250,6 +270,18 @@ public class MyMapperSpec {
 </div>
 </div>
 <div class="sect2">
+<h3 id="_io_yupiik_batch_runtime_component_uship_databasediffexecutor">io.yupiik.batch.runtime.component.uship.DatabaseDiffExecutor</h3>
+<div class="paragraph">
+<p>Enables to apply a <code>Diff</code> - from a <code>DatasetDiffComputer</code> when the entities (diff model) are Yupiik UShip Persistence models.</p>
+</div>
+<div class="paragraph">
+<p>It will apply it in a database with the provided <code>commitInterval</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>dryRun</code> toggle enables to simulate the processing without issuing any modification in the database.</p>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_combine_components">Combine components</h3>
 <div class="paragraph">
 <p>Combining components can be done in a plain main:</p>
@@ -346,6 +378,49 @@ Combined with <code>ExecutionTracer</code>, it will let you store any execution 
 </div>
 </div>
 <div class="sect1">
+<h2 id="_reusable_iterators">Reusable Iterators</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Reusable iterators are either provided through <code>FluentIterator</code> or extensions (in this case you must add a dependency to get it).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_io_yupiik_batch_iterator_excel_component_exceliterator">io.yupiik.batch.iterator.excel.component.ExcelIterator</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Reads an excel file sheet row by row.</p>
+</div>
+<div class="sect2">
+<h3 id="_factories">Factories</h3>
+<div class="sect3">
+<h4 id="_a_exceliteratora_exceliterator_ofpathintrowmappera">&lt;A&gt; ExcelIterator&lt;A&gt; ExcelIterator.of(Path,int,RowMapper&lt;A&gt;)</h4>
+<div class="paragraph">
+<p>Creates a new <code>ExcelIterator</code> with a custom row mapper.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_exceliteratorliststring_exceliterator_oflinespathint">ExcelIterator&lt;List&lt;String&gt;&gt; ExcelIterator.ofLines(Path,int)</h4>
+<div class="paragraph">
+<p>Creates a new <code>ExcelIterator</code> with a default row mapper mapping lines as <code>List&lt;String&gt;</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_dependency">Dependency</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+  &lt;groupId&gt;io.yupiik.batch&lt;/groupId&gt;
+  &lt;artifactId&gt;excel-iterator&lt;/artifactId&gt;
+  &lt;version&gt;${yupiik-batch.version}&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_tip">TIP</h2>
 <div class="sectionbody">
 <div class="ulist">
@@ -436,7 +511,7 @@ Combined with <code>ExecutionTracer</code>, it will let you store any execution 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/json.min.js" integrity="sha512-37sW1XqaJmseHAGNg4N4Y01u6g2do6LZL8tsziiL5CMXGy04Th65OXROw2jeDeXLo5+4Fsx7pmhEJJw77htBFg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/dockerfile.min.js" integrity="sha512-eRNl3ty7GOJPBN53nxLgtSSj2rkYj5/W0Vg0MFQBw8xAoILeT6byOogENHHCRRvHil4pKQ/HbgeJ5DOwQK3SJA==" crossorigin="anonymous"></script>
     <script>if (!(window.minisite || {}).skipHighlightJs) { hljs.highlightAll(); }</script>
-    <script src="//yupiik.github.io/yupiik-batch/js/minisite.js?v=0.0.2-SNAPSHOT"></script>
+    <script src="//yupiik.github.io/yupiik-batch/js/minisite.js?v=0.0.24"></script>
     <script>$('.page-content-body').generatedNavMenu();</script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.3/fuse.min.js" integrity="sha512-neoBxVNv0UMXjoilAYGxfWrSsW6iAVclx7vQKdPJ9Peet1bM5YQjU0aIB8LtH8iNPa+pAyMZprBBw2ZQ/Q1LjQ==" crossorigin="anonymous"></script>
