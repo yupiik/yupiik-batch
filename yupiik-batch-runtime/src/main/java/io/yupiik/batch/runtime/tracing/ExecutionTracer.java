@@ -52,7 +52,7 @@ public class ExecutionTracer extends BaseExecutionTracer {
     }
 
     @Override
-    protected void save(final JobExecution job, final List<StepExecution> steps) {
+    public void save(final JobExecution job, final List<StepExecution> steps) {
         if (forceSkip || alreadySaved) {
             return;
         }
