@@ -24,6 +24,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BinderTest {
     @Test
+    void unset() {
+        assertEquals(
+                "ListConfiguration[list=[a, b]]",
+                new Binder("a", List.of("--a-list", "yupiik.binder.unset")).bind(ListConfiguration.class).toString());
+    }
+
+    @Test
     void list() {
         assertEquals(
                 "ListConfiguration[list=[a, b]]",

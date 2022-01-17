@@ -32,6 +32,8 @@ import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 public class Binder {
+    private static final String UNSET = "yupiik.binder.unset";
+
     private final String prefix;
     private final List<String> args;
 
@@ -142,7 +144,8 @@ public class Binder {
     }
 
     protected String getenv(final String key) {
-        return System.getenv(key);
+        final var env = System.getenv(key);
+        return UNSET.equals(env) ? null : env;
     }
 
     protected String toEnvKey(String paramName) {
@@ -219,7 +222,7 @@ public class Binder {
         throw new IllegalArgumentException("Unsupported parameter type: " + type);
     }
 
-    private Stream<String> findParam(final String name) {
+    protected Stream<String> findParam(final String name) {
         final var result = new ArrayList<String>();
         final var neg = "--no-" + name;
         final var expected = List.of("--" + name, "-" + name);
@@ -229,7 +232,10 @@ public class Binder {
                 if (args.size() - 1 == i) {
                     result.add("false");
                 } else {
-                    result.add(args.get(i + 1));
+                    final var value = args.get(i + 1);
+                    if (!UNSET.equals(value)) {
+                        result.add(value);
+                    }
                     i++;
                 }
             } else if (neg.equals(current)) {
