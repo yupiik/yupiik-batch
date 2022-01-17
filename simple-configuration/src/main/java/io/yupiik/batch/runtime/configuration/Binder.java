@@ -87,7 +87,7 @@ public class Binder {
             final var listType = ParameterizedType.class.cast(param.getGenericType()).getActualTypeArguments()[0];
             final var list = value.flatMap(this::splitListValue).map(it -> coerce(it, Class.class.cast(listType))).collect(toList());
             if (list.isEmpty()) { // try env
-                final var env = System.getenv(toEnvKey(paramName));
+                final var env = getenv(toEnvKey(paramName));
                 if (env != null) {
                     list.addAll(splitListValue(env).map(it -> coerce(it, Class.class.cast(listType))).collect(toList()));
                 }
@@ -117,7 +117,7 @@ public class Binder {
                 toSet = value.findFirst()
                         .map(it -> coerce(it, param.getType()))
                         .orElseGet(() -> {
-                            final var env = System.getenv(toEnvKey(paramName));
+                            final var env = getenv(toEnvKey(paramName));
                             if (env != null) {
                                 return coerce(env, param.getType());
                             }
@@ -139,6 +139,10 @@ public class Binder {
                 throw new IllegalStateException(e);
             }
         }
+    }
+
+    protected String getenv(final String key) {
+        return System.getenv(key);
     }
 
     protected String toEnvKey(String paramName) {
