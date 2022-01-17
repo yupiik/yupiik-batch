@@ -17,92 +17,73 @@ package io.yupiik.batch.runtime.documentation;
 
 import io.yupiik.batch.runtime.batch.Batch;
 import io.yupiik.batch.runtime.batch.Batches;
-import io.yupiik.batch.runtime.batch.Binder;
+import io.yupiik.batch.runtime.configuration.Binder;
 import io.yupiik.batch.runtime.configuration.Param;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static java.util.Locale.ROOT;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toMap;
 
+@Deprecated // use simple-configuration one
 public record ConfigurationParameterCollector(
-        List<Class<Batch<?>>> batchClasses,
+        List<Class<?>> batchClasses,
         BiPredicate<Object, String> isNested) implements Supplier<Map<String, ConfigurationParameterCollector.Parameter>> {
-    public ConfigurationParameterCollector(final List<Class<Batch<?>>> batchClasses) {
+    public ConfigurationParameterCollector(final List<Class<?>> batchClasses) {
         this(batchClasses, null);
     }
 
     @Override
     public Map<String, Parameter> get() {
-        return getWithPrefix(batchType -> batchType.getSimpleName().toLowerCase(Locale.ROOT));
-    }
-
-    public Map<String, Parameter> getWithPrefix(final Function<Class<?>, String> prefix) {
-        return batchClasses.stream()
-                .flatMap(batchType -> {
-                    final var doc = new HashMap<String, Parameter>();
-                    new Binder(prefix.apply(batchType), List.of()) {
-                        @Override
-                        protected void doBind(final Object instance, final Field param, final Param conf, final String paramName) {
-                            onParam(instance, param, conf, paramName);
-                        }
-
-                        private void onParam(final Object instance, final Field param, final Param conf, final String paramName) {
-                            if (isList(param) || !isNestedModel(instance, param.getType().getTypeName())) {
-                                if (!param.canAccess(instance)) {
-                                    param.setAccessible(true);
-                                }
-                                try {
-                                    final var defValue = param.get(instance);
-                                    doc.put(paramName, new Parameter(
-                                            conf, defValue == null ? null : String.valueOf(defValue), param.getGenericType(),
-                                            paramName));
-                                } catch (final IllegalAccessException e) {
-                                    throw new IllegalStateException(e);
-                                }
-                            } else { // recursive call
-                                new Binder(paramName, List.of()) {
-                                    @Override
-                                    protected void doBind(final Object instance, final Field param, final Param conf, final String paramName) {
-                                        onParam(instance, param, conf, paramName);
-                                    }
-                                }.bind(param.getType());
-                            }
-                        }
-
-                        @Override
-                        protected boolean isNestedModel(final Object instance, final String fieldType) {
-                            return super.isNestedModel(instance, fieldType) || (isNested != null && isNested.test(instance, fieldType));
-                        }
-                    }.bind(Batches.findConfType(batchType));
-                    return doc.entrySet().stream();
-                })
-                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return mapParams(collector().get());
     }
 
     public String toAsciidoc() {
-        return "[options=\"header\",cols=\"a,a,2\"]\n" +
-                "|===\n" +
-                "|Name|Env Variable|Description\n" +
-                getWithPrefix(c -> "").entrySet().stream()
-                        .sorted(Map.Entry.comparingByKey())
-                        .map(e -> "" +
-                                "| `" + e.getKey() + "` " + (e.getValue().param().required() ? "*" : "") +
-                                "| `" + e.getKey().replaceAll("[^A-Za-z0-9]", "_").toUpperCase(ROOT) + "` " +
-                                "| " + e.getValue().param().description() + "\n")
-                        .collect(joining()) + "\n" +
-                "|===\n";
+        return collector().toAsciidoc();
     }
 
-    public static record Parameter(Param param, String defaultValue, Type type, String name) {
+    public Map<String, Parameter> getWithPrefix(final Function<Class<?>, String> prefix) {
+        return mapParams(collector().getWithPrefix(prefix));
+    }
+
+    private io.yupiik.batch.runtime.configuration.documentation.ConfigurationParameterCollector collector() {
+        return new io.yupiik.batch.runtime.configuration.documentation.ConfigurationParameterCollector(mapClasses()) {
+            @Override
+            protected Binder visitor(final String prefix, final Map<String, Parameter> doc) {
+                return new io.yupiik.batch.runtime.batch.Binder(prefix, List.of()) { // handle both @Param
+                    @Override
+                    protected void doBind(final Object instance, final Field param, final Param conf, final String paramName) {
+                        onParam(instance, param, conf, paramName, this::isList, this::isNestedModel, this::newNestedBinder, doc);
+                    }
+
+                    @Override
+                    protected boolean isNestedModel(final Object instance, final String fieldType) {
+                        return super.isNestedModel(instance, fieldType) || (isNested != null && isNested.test(instance, fieldType));
+                    }
+                };
+            }
+        };
+    }
+
+    private Map<String, Parameter> mapParams(final Map<String, io.yupiik.batch.runtime.configuration.documentation.ConfigurationParameterCollector.Parameter> params) {
+        return params.entrySet().stream()
+                .collect(toMap(Map.Entry::getKey, p -> new Parameter(
+                        p.getValue().param(), p.getValue().defaultValue(), p.getValue().type(), p.getValue().name())));
+    }
+
+    private List<Class<?>> mapClasses() {
+        return List.of(
+                batchClasses.stream()
+                        .map(batchType -> (Class<?>) (Batch.class.isAssignableFrom(batchType) ?
+                                Batches.findConfType(Class.class.cast(batchType)) : batchType))
+                        .toArray(Class[]::new));
+    }
+
+    public record Parameter(Param param, String defaultValue, Type type, String name) {
     }
 }
