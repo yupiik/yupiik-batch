@@ -57,7 +57,7 @@
         <artifactId>yupiik-tools-maven-plugin</artifactId>
         <version>1.0.20</version>
         <configuration>
-          <siteBase>//yupiik.github.io/yupiik-batch</siteBase>
+          <siteBase>//www.yupiik.io/yupiik-batch</siteBase>
           <logoText>Yupiik Batch</logoText>
           <indexText>Yupiik Batch</indexText>
           <indexSubTitle>A light Java batch API.</indexSubTitle>
