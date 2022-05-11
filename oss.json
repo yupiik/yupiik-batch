@@ -2,7 +2,7 @@
   "skip": false,
   "name": "Batch",
   "description": "Batch runtime framework.",
-  "website": "https://github.com/yupiik/yupiik-batch",
+  "website": "https://www.yupiik.io/yupiik-batch",
   "logo": "https://www.yupiik.com/img/logo.png",
   "categories": [
     "java",
