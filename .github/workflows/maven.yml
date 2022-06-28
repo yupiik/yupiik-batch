@@ -36,7 +36,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: '11.0.9'
+          java-version: '17.0.3'
       - name: Build
         run: mvn install -Dm2.location=/home/runner/work/yupiik-batch/yupiik-batch/.m2
       - name: Remove Snapshots Before Caching
@@ -55,7 +55,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: '11.0.9'
+          java-version: '17.0.3'
       - name: Build
         run: mvn install -DskipTests ossindex:audit
       - name: Remove Snapshots Before Caching
