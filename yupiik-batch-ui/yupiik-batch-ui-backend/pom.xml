@@ -36,7 +36,7 @@
     <dependency>
       <groupId>io.yupiik.uship</groupId>
       <artifactId>jsonrpc-core</artifactId>
-      <version>1.0.8</version>
+      <version>${uship.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>

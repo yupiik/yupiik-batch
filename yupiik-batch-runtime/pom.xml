@@ -45,7 +45,7 @@
     <dependency>
       <groupId>io.yupiik.uship</groupId>
       <artifactId>persistence</artifactId>
-      <version>1.0.8</version>
+      <version>${uship.version}</version>
       <scope>provided</scope>
     </dependency>
 
