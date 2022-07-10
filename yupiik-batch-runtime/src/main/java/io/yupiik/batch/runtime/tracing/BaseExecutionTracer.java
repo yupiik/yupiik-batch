@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - Yupiik SAS - https://www.yupiik.com
+ * Copyright (c) 2021-2022 - Yupiik SAS - https://www.yupiik.com
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -15,11 +15,13 @@
  */
 package io.yupiik.batch.runtime.tracing;
 
+import io.yupiik.batch.runtime.batch.BatchPromise;
 import io.yupiik.batch.runtime.batch.builder.BatchChain;
 import io.yupiik.batch.runtime.batch.builder.Executable;
 import io.yupiik.batch.runtime.batch.builder.RunConfiguration;
 
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -53,27 +55,62 @@ public abstract class BaseExecutionTracer {
         final var start = clock.instant();
         var status = Status.SUCCESS;
         String comment = null;
+        boolean async = false;
         try {
             final var executed = batchChain.execute(configuration, Executable.Result.class.cast(previous));
-            if (BatchChain.Commentifiable.class.isInstance(batchChain)) {
+            final var hasValue = executed != null && executed.value() != null;
+            final var chainIsCommentiafiable = BatchChain.Commentifiable.class.isInstance(batchChain);
+            if (hasValue && chainIsCommentiafiable && !(executed.value() instanceof BatchPromise<?>)) {
                 comment = BatchChain.Commentifiable.class.cast(batchChain).toComment();
             }
-            if (executed != null && executed.value() != null && BatchChain.Commentifiable.class.isInstance(executed.value())) {
-                comment = (comment == null || comment.isBlank() ? "" : (comment + '\n')) + BatchChain.Commentifiable.class.cast(executed.value()).toComment();
+            if (hasValue) {
+                if (executed.value() instanceof BatchPromise<?> promise) {
+                    async = true;
+                    promise.end().whenComplete((ok, ko) -> {
+                        String asyncComment = null;
+                        if (chainIsCommentiafiable) {
+                            asyncComment = BatchChain.Commentifiable.class.cast(batchChain).toComment();
+                        }
+
+                        if (executed.value() instanceof BatchChain.Commentifiable c) {
+                            asyncComment = (asyncComment == null || asyncComment.isBlank() ? "" : (asyncComment + '\n')) + c.toComment();
+                        }
+                        if (ko != null) {
+                            endStep(batchChain, start, Status.FAILURE, getErrorMessage(asyncComment, ko));
+                        } else {
+                            endStep(batchChain, start, Status.SUCCESS, asyncComment);
+                        }
+                    });
+                } else if (executed.value() instanceof BatchChain.Commentifiable c) {
+                    comment = (comment == null || comment.isBlank() ? "" : (comment + '\n')) + c.toComment();
+                }
             }
             return executed;
         } catch (final Error | RuntimeException err) {
             status = Status.FAILURE;
-            comment = err.getMessage();
+            comment = getErrorMessage(comment, err);
+            async = false;
             throw err;
         } finally {
-            final var end = clock.instant();
-            final var execution = new StepExecution(
-                    UUID.randomUUID().toString(), batchChain.name(), status, comment,
-                    LocalDateTime.ofInstant(start, clock.getZone()), LocalDateTime.ofInstant(end, clock.getZone()),
-                    steps.isEmpty() ? null : steps.get(steps.size() - 1).id());
-            steps.add(execution);
+            if (!async) {
+                endStep(batchChain, start, status, comment);
+            }
         }
+    }
+
+    protected String getErrorMessage(final String comment, final Throwable err) {
+        return (comment != null ? comment + '\n' : "") + err.getMessage();
+    }
+
+    protected void endStep(final BatchChain<?, ?, ?> batchChain,
+                           final Instant start, final Status status,
+                           final String comment) {
+        final var end = clock.instant();
+        final var execution = new StepExecution(
+                UUID.randomUUID().toString(), batchChain.name(), status, comment,
+                LocalDateTime.ofInstant(start, clock.getZone()), LocalDateTime.ofInstant(end, clock.getZone()),
+                steps.isEmpty() ? null : steps.get(steps.size() - 1).id());
+        steps.add(execution);
     }
 
     public Runnable traceExecution(final Runnable runnable) {

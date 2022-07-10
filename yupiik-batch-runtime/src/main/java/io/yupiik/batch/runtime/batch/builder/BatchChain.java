@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - Yupiik SAS - https://www.yupiik.com
+ * Copyright (c) 2021-2022 - Yupiik SAS - https://www.yupiik.com
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -15,14 +15,26 @@
  */
 package io.yupiik.batch.runtime.batch.builder;
 
+import io.yupiik.batch.runtime.batch.BatchPromise;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 
 import static java.util.Collections.reverse;
 import static java.util.Optional.ofNullable;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.logging.Level.SEVERE;
 
 /**
  * Very trivial way to define common operations simply.
@@ -86,8 +98,18 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
                 e -> configuration.elementExecutionWrapper.apply(e) : e -> e;
         final Runnable execution = () -> {
             Result<?> result = null; // starting node generates a result without a previous one normally
-            for (final var it : chain) {
-                result = wrapper.apply(BatchChain.class.cast(it)).execute(configuration, Result.class.cast(result));
+            final var promises = new CopyOnWriteArrayList<CompletableFuture<?>>();
+            try {
+                for (final var it : chain) {
+                    result = wrapper.apply(BatchChain.class.cast(it)).execute(configuration, Result.class.cast(result));
+                    if (result.value() instanceof BatchPromise<?> promise) {
+                        final var end = promise.end().toCompletableFuture();
+                        promises.add(end);
+                        end.whenComplete((ok, ko) -> promises.remove(end));
+                    }
+                }
+            } finally {
+                await(configuration, promises);
             }
         };
         if (configuration != null && configuration.executionWrapper != null) {
@@ -219,6 +241,30 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
         @Override
         public String toComment() {
             return commentifiable.toComment();
+        }
+    }
+
+    private void await(final RunConfiguration configuration, final List<CompletableFuture<?>> promises) {
+        if (configuration != null && configuration.maxBatchPromiseAwait == 0) {
+            return;
+        }
+        final var duration = configuration == null ? TimeUnit.MINUTES.toMillis(1) : configuration.maxBatchPromiseAwait;
+        for (final var stage : promises) {
+            if (stage.isDone() || stage.isCompletedExceptionally()) {
+                continue;
+            }
+            try {
+                if (duration < 0) {
+                    stage.get();
+                } else {
+                    stage.get(duration, MILLISECONDS);
+                }
+            } catch (final InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            } catch (final ExecutionException |
+                           TimeoutException e) { // we can't do much anymore there, should have awaited before
+                Logger.getLogger(getClass().getName()).log(SEVERE, e, e::getMessage);
+            }
         }
     }
 }

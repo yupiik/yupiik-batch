@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - Yupiik SAS - https://www.yupiik.com
+ * Copyright (c) 2021-2022 - Yupiik SAS - https://www.yupiik.com
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -15,24 +15,65 @@
  */
 package io.yupiik.batch.runtime.tracing;
 
+import io.yupiik.batch.runtime.batch.Batch;
+import io.yupiik.batch.runtime.batch.BatchMeta;
+import io.yupiik.batch.runtime.batch.BatchPromise;
 import io.yupiik.batch.runtime.batch.builder.BatchChain;
+import io.yupiik.batch.runtime.batch.builder.Executable;
 import io.yupiik.batch.runtime.batch.builder.RunConfiguration;
+import io.yupiik.batch.runtime.fn.CommentifiableConsumer;
+import io.yupiik.batch.runtime.fn.CommentifiableFunction;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.Test;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Clock;
+import java.time.Duration;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static java.time.Clock.systemUTC;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class ExecutionTracerTest {
+    @Test
+    void asyncSteps() {
+        final var exec = new AtomicReference<BaseExecutionTracer.JobExecution>();
+        final var allSteps = new AtomicReference<List<BaseExecutionTracer.StepExecution>>();
+        final var tracer = new BaseExecutionTracer("test", Clock.systemUTC()) {
+
+            @Override
+            protected void save(final JobExecution execution, final List<StepExecution> steps) {
+                assertTrue(exec.compareAndSet(null, execution));
+                assertTrue(allSteps.compareAndSet(null, steps));
+            }
+        };
+
+        final var conf = new RunConfiguration();
+        conf.setExecutionWrapper(tracer::traceExecution);
+        conf.setElementExecutionWrapper(e -> (c, r) -> Executable.Result.class.cast(tracer.traceStep(c, e, r)));
+
+        new AsyncStepsBatch().accept(conf);
+
+        assertNotNull(exec.get());
+        final var steps = allSteps.get();
+        assertEquals(List.of("step1", "step2"), steps.stream().map(BaseExecutionTracer.StepExecution::name).collect(toList()));
+        final var d1 = Duration.between(steps.get(1).started(), steps.get(0).finished()).toMillis();
+        assertTrue(d1 >= 10, () -> steps + ": " + d1);
+        final var d2 = Duration.between(steps.get(0).finished(), steps.get(1).finished()).toMillis();
+        assertTrue(d2 >= 10, () -> steps + ": " + d2);
+    }
+
     @Test
     void trace() throws SQLException {
         final var dataSource = new JdbcDataSource();
@@ -140,7 +181,7 @@ class ExecutionTracerTest {
                     assertEquals("error for test", resultSet.getString("comment"));
                     assertEquals("FAILURE", resultSet.getString("status"));
                     assertEquals(id, resultSet.getString("previous_id"));
-                    id = resultSet.getString("id");
+                    resultSet.getString("id");
 
                     assertFalse(resultSet.next(), () -> {
                         try {
@@ -165,6 +206,50 @@ class ExecutionTracerTest {
                     });
                 }
             }
+        }
+    }
+
+    @BatchMeta(description = "")
+    public static class AsyncStepsBatch implements Batch<RunConfiguration /* for test, not a great real case */> {
+        @Override
+        public void accept(final RunConfiguration conf) {
+            from()
+                    .map("step1", new CommentifiableFunction<Void, BatchPromise<String>>() {
+                        @Override
+                        public BatchPromise<String> apply(final Void o) {
+                            return BatchPromise.of("from-step-1", new CompletableFuture<>());
+                        }
+
+                        @Override
+                        public String toComment() {
+                            return "step #1";
+                        }
+                    })
+                    .then("step2", new CommentifiableConsumer<>() {
+                        @Override
+                        public void accept(final BatchPromise<String> in) {
+                            assertEquals("from-step-1", in.value());
+                            try {
+                                Thread.sleep(10); // just to have an instant which moved
+                            } catch (final InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                            if (in.end() instanceof CompletableFuture<Void> p) { // complete in step 2 to show it is handled (after step 2 start)
+                                p.complete(null);
+                            }
+                            try {
+                                Thread.sleep(10); // just to have an instant which moved
+                            } catch (final InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                            }
+                        }
+
+                        @Override
+                        public String toComment() {
+                            return "step #2";
+                        }
+                    })
+                    .run(conf);
         }
     }
 }

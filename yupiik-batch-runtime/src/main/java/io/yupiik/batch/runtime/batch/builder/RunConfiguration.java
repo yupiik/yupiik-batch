@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 - Yupiik SAS - https://www.yupiik.com
+ * Copyright (c) 2021-2022 - Yupiik SAS - https://www.yupiik.com
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
@@ -20,6 +20,18 @@ import java.util.function.Function;
 public class RunConfiguration { // don't use a record, we don't want to break batches cause we added a toggle/config
     Function<Runnable, Runnable> executionWrapper;
     Function<BatchChain<?, ?, ?>, Executable<?, ?>> elementExecutionWrapper;
+    long maxBatchPromiseAwait = -1;
+
+    /**
+     * How long batch promises can be awaited at shutdown if not already done.
+     *
+     * @param maxBatchPromiseAwait await duration in ms. A negative value means infinite.
+     * @return the run configuration (this).
+     */
+    public RunConfiguration setMaxBatchPromiseAwait(final long maxBatchPromiseAwait) {
+        this.maxBatchPromiseAwait = maxBatchPromiseAwait;
+        return this;
+    }
 
     public RunConfiguration setExecutionWrapper(final Function<Runnable, Runnable> executionWrapper) {
         this.executionWrapper = executionWrapper;

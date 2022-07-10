@@ -132,6 +132,49 @@ TIP: some components have a static factory to make it more expressive, don't hes
 Finally, the `RunConfiguration` enables to intercept any step of the `BatchChain` defined by the previous DSL.
 Combined with `ExecutionTracer`, it will let you store any execution and its steps in a database for audit or monitoring/administration purposes.
 
+=== Async result
+
+It can be neat to pass a step and its result to next step without it being finished.
+
+It is often the case for reactive bacthes (one "thread" starts to poll data, next step processes it etc.. but you want to keep the polling and processing split in terms of "step" and tracing).
+
+To do that, you can return a `BatchPromise` which is just a holder of a value (reactive in our example) and a `CompletionStage` which notifies the batch runtime and tracer when the step is done:
+
+[source,java]
+----
+from()
+  .map("step1", new CommentifiableFunction<Void, BatchPromise<String>>() {
+    @Override
+    public BatchPromise<String> apply(final Void o) {
+        final var reactiveComponent = runStep1(); // an Observable with RxJava for example
+        return BatchPromise.of(reactiveComponent::onItem, reactiveComponent.toCompletionStage());
+    }
+  })
+  .map("step2", new CommentifiableConsumer<BatchPromise<Void>>() {
+    @Override
+    public BatchPromise<Void> apply(final BatchPromise<Observable> in) {
+        final var promise = new CompletableFuture<Void>();
+        in.subscribe(
+                this::doStep2ItemProcessing,
+                error -> {
+                    // log etc...
+                    promise.completeExceptionally(error);
+                },
+                () -> promise.complete(null));
+        return BatchPromise.of(null, promise);
+    }
+  })
+  .run(tracingConfig);
+----
+
+So overall the step1 starts to read some data and emiiting it when step2 starts and subscribes to it.
+
+When step1 is done it notifies the batch runtime it is ok and the tracer (or runtime) will stop the thread 1 monitoring.
+
+Step2 being asynchronous too (due to its reactive nature, it also emits a `BatchPromise` leading to the same kind of behavior).
+
+TIP: thanks to this trick, you can run a concurrent job with a flat chain since you can pass in the `BatchRuntime` a complex value which would represent each branch of your concurrent batch.
+
 == Reusable Iterators
 
 Reusable iterators are either provided through `FluentIterator` or extensions (in this case you must add a dependency to get it).
