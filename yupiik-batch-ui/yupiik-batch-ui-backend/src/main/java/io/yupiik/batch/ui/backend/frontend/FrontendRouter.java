@@ -61,12 +61,12 @@ public class FrontendRouter extends HttpServlet {
     private byte[] rewrite(final String indexHtml) {
         final var js = configuration.getFrontendExtensionsJs();
         if (js != null && !js.isBlank()) {
-            final int start = indexHtml.indexOf("<script src=\"/static/js/main.");
+            final int start = indexHtml.indexOf("<script defer=\"defer\" src=\"/static/js/main.");
             if (start < 0) {
                 throw new IllegalArgumentException("Unexpected html");
             }
             return (indexHtml.substring(0, start) +
-                    "<script src=\"" + js + "\"></script>" +
+                    "<script defer=\"defer\" src=\"" + js + "\"></script>" +
                     indexHtml.substring(start)).getBytes(StandardCharsets.UTF_8);
         }
         return indexHtml.getBytes(StandardCharsets.UTF_8);
