@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -249,7 +248,7 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
             return;
         }
         final var duration = configuration == null ? TimeUnit.MINUTES.toMillis(1) : configuration.maxBatchPromiseAwait;
-        for (final var stage : promises) {
+        for (final var stage : new ArrayList<>(promises)) {
             if (stage.isDone() || stage.isCompletedExceptionally()) {
                 continue;
             }
@@ -261,9 +260,18 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
                 }
             } catch (final InterruptedException ie) {
                 Thread.currentThread().interrupt();
-            } catch (final ExecutionException |
-                           TimeoutException e) { // we can't do much anymore there, should have awaited before
+            } catch (final ExecutionException | TimeoutException e) {
                 Logger.getLogger(getClass().getName()).log(SEVERE, e, e::getMessage);
+                if (configuration != null && configuration.failOnTimeout) {
+                    promises.forEach(it -> {
+                        try {
+                            it.cancel(true);
+                        } catch (final RuntimeException | Error ex) {
+                            // no-op
+                        }
+                    });
+                    throw new IllegalStateException(e);
+                }
             }
         }
     }

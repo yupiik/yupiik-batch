@@ -21,6 +21,18 @@ public class RunConfiguration { // don't use a record, we don't want to break ba
     Function<Runnable, Runnable> executionWrapper;
     Function<BatchChain<?, ?, ?>, Executable<?, ?>> elementExecutionWrapper;
     long maxBatchPromiseAwait = -1;
+    boolean failOnTimeout = true;
+
+    /**
+     * IMPORTANT: if maxBatchPromiseAwait is not >0 this is ignored.
+     *
+     * @param failOnTimeout should the batch fail if batch promise awaiting timeouts (default true).
+     * @return this.
+     */
+    public RunConfiguration setFailOnTimeout(final boolean failOnTimeout) {
+        this.failOnTimeout = failOnTimeout;
+        return this;
+    }
 
     /**
      * How long batch promises can be awaited at shutdown if not already done.
