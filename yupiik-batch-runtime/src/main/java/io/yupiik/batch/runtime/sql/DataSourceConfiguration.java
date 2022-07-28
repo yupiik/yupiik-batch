@@ -35,6 +35,22 @@ public class DataSourceConfiguration {
     @Param(description = "Database password.")
     private String password;
 
+    public String getDriver() {
+        return driver;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     // no need of pool for the batches normally
     public ReusedSQLSupplierDataSource toDataSource() {
         return new ReusedSQLSupplierDataSource(toConnectionProvider());

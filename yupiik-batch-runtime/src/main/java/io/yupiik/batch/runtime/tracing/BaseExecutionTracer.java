@@ -26,6 +26,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.logging.Logger;
+
+import static java.util.logging.Level.SEVERE;
 
 public abstract class BaseExecutionTracer {
     private final Clock clock;
@@ -132,6 +135,19 @@ public abstract class BaseExecutionTracer {
                 save(execution, steps);
             }
         };
+    }
+
+    public static RunConfiguration trace(final RunConfiguration configuration, final BaseExecutionTracer tracer) {
+        configuration.setExecutionWrapper(tracer::traceExecution);
+        configuration.setElementExecutionWrapper(e -> (c, r) -> {
+            try {
+                return Executable.Result.class.cast(tracer.traceStep(c, e, r));
+            } catch (final RuntimeException re) {
+                Logger.getLogger(ExecutionTracer.class.getName()).log(SEVERE, re, re::getMessage);
+                throw re;
+            }
+        });
+        return configuration;
     }
 
     public enum Status {

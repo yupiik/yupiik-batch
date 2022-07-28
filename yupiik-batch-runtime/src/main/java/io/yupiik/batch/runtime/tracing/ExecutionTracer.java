@@ -29,10 +29,17 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static java.util.logging.Level.SEVERE;
-
 public class ExecutionTracer extends BaseExecutionTracer {
     private final SQLSupplier<Connection> dataSource;
+    private String insertJobStatement = "" +
+            "INSERT INTO BATCH_JOB_EXECUTION_TRACE" +
+            " (id, name, status, comment, started, finished) VALUES " +
+            " (?, ?, ?, ?, ?, ?)";
+    private String insertStepStatement = "" +
+            "INSERT INTO BATCH_STEP_EXECUTION_TRACE" +
+            " (id, job_id, name, status, comment, started, finished, previous_id) VALUES" +
+            " (?, ?, ?, ?, ?, ?, ?, ?)";
+
     private volatile boolean alreadySaved; // when using a shutdown hook to all it there can be some concurrency
 
     public ExecutionTracer(final SQLSupplier<Connection> dataSource,
@@ -45,6 +52,30 @@ public class ExecutionTracer extends BaseExecutionTracer {
                            final boolean forceSkip) {
         super(batchName, clock, forceSkip);
         this.dataSource = dataSource;
+    }
+
+    /**
+     * Enables to override default statement if some columns were renamed.
+     * IMPORTANT: parameter order must stay the same.
+     *
+     * @param insertJobStatement the insert job statement to use.
+     * @return this.
+     */
+    public ExecutionTracer setInsertJobStatement(final String insertJobStatement) {
+        this.insertJobStatement = insertJobStatement;
+        return this;
+    }
+
+    /**
+     * Enables to override default statement if some columns were renamed.
+     * IMPORTANT: parameter order must stay the same.
+     *
+     * @param insertStepStatement the insert step statement to use.
+     * @return this.
+     */
+    public ExecutionTracer setInsertStepStatement(final String insertStepStatement) {
+        this.insertStepStatement = insertStepStatement;
+        return this;
     }
 
     public boolean isAlreadySaved() {
@@ -63,16 +94,8 @@ public class ExecutionTracer extends BaseExecutionTracer {
 
     private void doSave(final JobExecution job, final List<StepExecution> steps) {
         try (final var connection = dataSource.get();
-             final var statement = connection.prepareStatement("" +
-                     "INSERT INTO BATCH_JOB_EXECUTION_TRACE" +
-                     " (id, name, status, comment, started, finished) VALUES " +
-                     " (?, ?, ?, ?, ?, ?)")) {
-            statement.setString(1, job.id());
-            statement.setString(2, job.name());
-            statement.setString(3, job.status() == null ? "-" : job.status().name());
-            statement.setString(4, job.comment());
-            statement.setObject(5, job.started());
-            statement.setObject(6, job.finished());
+             final var statement = connection.prepareStatement(insertJobStatement)) {
+            bindInsertJob(job, statement);
             statement.executeUpdate();
             if (!connection.getAutoCommit()) {
                 connection.commit();
@@ -88,30 +111,12 @@ public class ExecutionTracer extends BaseExecutionTracer {
         final var insert = new SQLBiConsumer.Batched<StepExecution>() {
             @Override
             protected PreparedStatement createStatement(final Connection connection) throws SQLException {
-                return connection.prepareStatement("" +
-                        "INSERT INTO BATCH_STEP_EXECUTION_TRACE" +
-                        " (id, job_id, name, status, comment, started, finished, previous_id) VALUES" +
-                        " (?, ?, ?, ?, ?, ?, ?, ?)");
+                return connection.prepareStatement(insertStepStatement);
             }
 
             @Override
             protected void doAccept(final StepExecution row) throws SQLException {
-                statement.setString(1, row.id());
-                statement.setString(2, job.id());
-                statement.setString(3, row.name());
-                if (row.status() == null) {
-                    statement.setNull(4, Types.VARCHAR);
-                } else {
-                    statement.setString(4, row.status().name());
-                }
-                statement.setString(5, row.comment());
-                statement.setObject(6, row.started());
-                statement.setObject(7, row.finished());
-                if (row.previous() == null) {
-                    statement.setNull(8, Types.VARCHAR);
-                } else {
-                    statement.setString(8, row.previous());
-                }
+                bindInsertStep(job, row, statement);
             }
         };
         final int commitInterval = 10; // likely sufficient in one iteration since #steps < 10 in general
@@ -143,6 +148,34 @@ public class ExecutionTracer extends BaseExecutionTracer {
         }
     }
 
+    protected void bindInsertStep(final JobExecution job, final StepExecution row, final PreparedStatement statement) throws SQLException {
+        statement.setString(1, row.id());
+        statement.setString(2, job.id());
+        statement.setString(3, row.name());
+        if (row.status() == null) {
+            statement.setNull(4, Types.VARCHAR);
+        } else {
+            statement.setString(4, row.status().name());
+        }
+        statement.setString(5, row.comment());
+        statement.setObject(6, row.started());
+        statement.setObject(7, row.finished());
+        if (row.previous() == null) {
+            statement.setNull(8, Types.VARCHAR);
+        } else {
+            statement.setString(8, row.previous());
+        }
+    }
+
+    protected void bindInsertJob(final JobExecution job, final PreparedStatement statement) throws SQLException {
+        statement.setString(1, job.id());
+        statement.setString(2, job.name());
+        statement.setString(3, job.status() == null ? "-" : job.status().name());
+        statement.setString(4, job.comment());
+        statement.setObject(5, job.started());
+        statement.setObject(6, job.finished());
+    }
+
     private void onException(final Connection connection, final Exception ex) throws SQLException {
         connection.rollback();
         Logger.getLogger(getClass().getName()).log(Level.SEVERE, ex.getMessage(), ex);
@@ -161,16 +194,6 @@ public class ExecutionTracer extends BaseExecutionTracer {
 
     public static RunConfiguration trace(final RunConfiguration configuration,
                                          final SQLSupplier<Connection> dataSource, final String batch, final Clock clock) {
-        final var tracer = new ExecutionTracer(dataSource, batch, clock);
-        configuration.setExecutionWrapper(tracer::traceExecution);
-        configuration.setElementExecutionWrapper(e -> (c, r) -> {
-            try {
-                return Executable.Result.class.cast(tracer.traceStep(c, e, r));
-            } catch (final RuntimeException re) {
-                Logger.getLogger(ExecutionTracer.class.getName()).log(SEVERE, re, re::getMessage);
-                throw re;
-            }
-        });
-        return configuration;
+        return trace(configuration, new ExecutionTracer(dataSource, batch, clock));
     }
 }
