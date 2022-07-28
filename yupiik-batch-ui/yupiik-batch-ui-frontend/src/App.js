@@ -66,7 +66,7 @@ export default function App() {
         <SideMenu />
         <Layout className="site-layout">
           <Content />
-          <Layout.Footer>Yupiik ©2021</Layout.Footer>
+          <Layout.Footer>Yupiik ©2022</Layout.Footer>
         </Layout>
       </Router>
     </Layout>
