@@ -46,7 +46,7 @@
     <dependency>
       <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-finder-shaded</artifactId>
-      <version>4.20</version>
+      <version>4.21</version>
     </dependency>
   </dependencies>
 
@@ -55,7 +55,7 @@
       <plugin> <!-- mvn [compile] yupiik-tools:serve-minisite -e -->
         <groupId>io.yupiik.maven</groupId>
         <artifactId>yupiik-tools-maven-plugin</artifactId>
-        <version>1.0.20</version>
+        <version>1.0.26</version>
         <configuration>
           <siteBase>//www.yupiik.io/yupiik-batch</siteBase>
           <logoText>Yupiik Batch</logoText>
