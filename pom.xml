@@ -31,6 +31,7 @@
     <junit5.version>5.9.0</junit5.version>
     <owb.version>2.0.27</owb.version>
     <uship.version>1.0.8</uship.version>
+    <yupiik-logging.version>1.0.5</yupiik-logging.version>
   </properties>
 
   <modules>
@@ -57,7 +58,7 @@
     <dependency>
       <groupId>io.yupiik.logging</groupId>
       <artifactId>yupiik-logging-jul</artifactId>
-      <version>1.0.4</version>
+      <version>${yupiik-logging.version}</version>
       <classifier>jakarta</classifier>
       <scope>runtime</scope>
     </dependency>
