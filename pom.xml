@@ -84,7 +84,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.10.1</version>
         <configuration>
           <source>17</source>
           <target>17</target>
@@ -98,12 +98,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.2.2</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>3.0.0-M6</version>
         <configuration>
           <trimStackTrace>false</trimStackTrace>
           <systemPropertyVariables>
@@ -114,7 +114,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>3.0.0-M1</version>
+        <version>3.0.0-M5</version>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <releaseProfiles>release</releaseProfiles>
@@ -153,7 +153,7 @@
       <plugin>
         <groupId>com.mycila</groupId>
         <artifactId>license-maven-plugin</artifactId>
-        <version>4.0.rc2</version>
+        <version>4.2.rc2</version>
         <executions>
           <execution>
             <id>check-license</id>
@@ -216,7 +216,7 @@ under the License.
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
+            <version>3.0.1</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -243,7 +243,7 @@ under the License.
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
-            <version>3.2.0</version>
+            <version>3.2.2</version>
             <configuration>
               <skipIfEmpty>false</skipIfEmpty>
               <excludes>
@@ -254,7 +254,7 @@ under the License.
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>3.3.0</version>
+            <version>3.3.2</version>
             <executions>
               <execution>
                 <id>attach-javadocs</id>

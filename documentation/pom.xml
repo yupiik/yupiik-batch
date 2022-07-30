@@ -55,7 +55,7 @@
       <plugin> <!-- mvn [compile] yupiik-tools:serve-minisite -e -->
         <groupId>io.yupiik.maven</groupId>
         <artifactId>yupiik-tools-maven-plugin</artifactId>
-        <version>1.0.20</version>
+        <version>1.0.26</version>
         <configuration>
           <siteBase>//www.yupiik.io/yupiik-batch</siteBase>
           <logoText>Yupiik Batch</logoText>
