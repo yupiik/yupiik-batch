@@ -21,3 +21,26 @@ image::https://github.com/yupiik/yupiik-batch/actions/workflows/maven.yml/badge.
 
 Yupiik Batch intends to simplify Java batch writing for model mapping and "diff" cases.
 It provides a fluent API which is auditable.
+
+== Release
+
+Build and publish to central:
+
+[source, bash]
+----
+mvn release:prepare release:perform -Pnative -Prelease -Dusername=$GIT_HUB_ACCOUNT -Dpassword=$GIT_HUB_TOKEN
+----
+
+Publish documentation on github page:
+
+[source, bash]
+----
+git checkout -b <release-tag> <release-tag> && mvn clean package -Pgh-pages
+----
+
+Pubish release on Github by running in https://github.com/yupiik/yupiik.github.io project:
+
+[source, bash]
+----
+mvn yupiik-tools:synchronize-github-releases@batch -Psynchronize-github-releases
+----
