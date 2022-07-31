@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<body>
 
 <head>
     <title>Write your first batch</title>
@@ -18,7 +17,7 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/asciidoctor.js/1.5.5-5/css/asciidoctor.min.css" integrity="sha512-kI7tn5cuEg16kMeXnYmg8rEJPxbxzEM7Gsr191iQdLDevFBLXPCSU9aZWSVuP61tMZWU3nBAR1cJ7SmXnOGLZw==" crossorigin="anonymous" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" integrity="sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/vs2015.min.css" integrity="sha512-w8aclkBlN3Ha08SMwFKXFJqhSUx2qlvTBFLLelF8sm4xQnlg64qmGB/A6pBIKy0W8Bo51yDMDtQiPLNRq1WMcQ==" crossorigin="anonymous" />
-    <link id="theme-style" rel="stylesheet" href="//www.yupiik.io/yupiik-batch/css/theme.css?v=0.0.27-SNAPSHOT">
+    <link id="theme-style" rel="stylesheet" href="//www.yupiik.io/yupiik-batch/css/theme.css?v=1.0.0">
     <style>
             table {
               table-layout: fixed;
@@ -29,6 +28,7 @@
             }
             </style>
 </head>
+<body>
     <header class="header fixed-top">
         <div class="branding docs-branding">
             <div class="container-fluid position-relative py-2">
@@ -87,7 +87,7 @@ Writing a batch is mainly about writing a <code>main(String&#8230;&#8203;)</code
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class MyBatch implements Batch&lt;MyConf&gt; {
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class MyBatch implements Batch&lt;MyConf&gt; {
     @Override
     public void accept(final MyConf configuration) {
         // ...
@@ -104,7 +104,7 @@ This enables the framework to map the main arguments to the configuration in an 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public static void main(final String... args) {
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public static void main(final String... args) {
     Batch.run(MyBatch.class, args);
 }</code></pre>
 </div>
@@ -119,7 +119,7 @@ This enables the framework to map the main arguments to the configuration in an 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">public class DataSourceConfiguration {
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class DataSourceConfiguration {
     @Param(description = "Driver to use", required = true)
     private String driver;
 
@@ -237,7 +237,7 @@ The statements are creating using the related factories - <code>insertFactory</c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Mapping(
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Mapping(
         from = IncomingModel.class,
         to = OutputModel.class,
         documentation = "Converts an input to an output.",
@@ -300,7 +300,7 @@ public class MyMapperSpec {
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">final var referenceData = new ReferenceDataSQLQuery(databaseConnection);
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">final var referenceData = new ReferenceDataSQLQuery(databaseConnection);
 final var newInputs = new MyNewInputs();
 final var comparingProcessor = new ReferencialRowDatasetDiffComputer();
 final var diff = comparingProcessor.apply(referenceData, newInputs);
@@ -315,7 +315,7 @@ Indeed you can use the <code>Stream</code> or <code>Optional</code> API:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">// init
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// init
 final var diff = new ReferencialRowDatasetDiffComputer()
         .apply(new ReferenceDataSQLQuery(databaseConnection), new MyNewInputs());
 
@@ -342,7 +342,7 @@ For example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Override
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
 public void accept(final MyConfiguration configuration) {
     final var connectionProvider = configuration.datasource.toConnectionProvider();
     referencialRowDatasetDiff()
@@ -400,7 +400,7 @@ Combined with <code>ExecutionTracer</code>, it will let you store any execution 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">from()
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">from()
   .map("step1", new CommentifiableFunction&lt;Void, BatchPromise&lt;String&gt;&gt;() {
     @Override
     public BatchPromise&lt;String&gt; apply(final Void o) {
@@ -482,7 +482,7 @@ thanks to this trick, you can run a concurrent job with a flat chain since you c
 <h3 id="_dependency">Dependency</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;io.yupiik.batch&lt;/groupId&gt;
   &lt;artifactId&gt;excel-iterator&lt;/artifactId&gt;
   &lt;version&gt;${yupiik-batch.version}&lt;/version&gt;
@@ -507,7 +507,7 @@ thanks to this trick, you can run a concurrent job with a flat chain since you c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">final var iterator = FluentIterator.of(myIterator()) <b class="conum">(1)</b>
+<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">final var iterator = FluentIterator.of(myIterator()) <b class="conum">(1)</b>
         .filter(new MyBusinessFilter()) <b class="conum">(2)</b>
         .map(new MyBusinessMapper()) <b class="conum">(3)</b>
         .unwrap(); <b class="conum">(4)</b></code></pre>
@@ -583,7 +583,7 @@ thanks to this trick, you can run a concurrent job with a flat chain since you c
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/json.min.js" integrity="sha512-37sW1XqaJmseHAGNg4N4Y01u6g2do6LZL8tsziiL5CMXGy04Th65OXROw2jeDeXLo5+4Fsx7pmhEJJw77htBFg==" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/languages/dockerfile.min.js" integrity="sha512-eRNl3ty7GOJPBN53nxLgtSSj2rkYj5/W0Vg0MFQBw8xAoILeT6byOogENHHCRRvHil4pKQ/HbgeJ5DOwQK3SJA==" crossorigin="anonymous"></script>
     <script>if (!(window.minisite || {}).skipHighlightJs) { hljs.highlightAll(); }</script>
-    <script src="//www.yupiik.io/yupiik-batch/js/minisite.js?v=0.0.27-SNAPSHOT"></script>
+    <script src="//www.yupiik.io/yupiik-batch/js/minisite.js?v=1.0.0"></script>
     <script>$('.page-content-body').generatedNavMenu();</script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.3/fuse.min.js" integrity="sha512-neoBxVNv0UMXjoilAYGxfWrSsW6iAVclx7vQKdPJ9Peet1bM5YQjU0aIB8LtH8iNPa+pAyMZprBBw2ZQ/Q1LjQ==" crossorigin="anonymous"></script>
