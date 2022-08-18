@@ -4,6 +4,7 @@
   "description": "Batch runtime framework.",
   "website": "https://www.yupiik.io/yupiik-batch",
   "logo": "https://www.yupiik.com/img/logo.png",
+  "group": "Yupiik Stack",
   "categories": [
     "java",
     "batch"
