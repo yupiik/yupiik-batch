@@ -6,22 +6,8 @@ import { Link } from 'react-router-dom';
 import extensions from '../../extensions/extensions';
 import { fetchJsonRpc } from '../../service/fetchJsonRpc';
 import './Execution.css';
-import { ReportTable } from './ReportTable';
+import {duration, ReportTable} from './ReportTable';
 import { getStatusColor } from './status';
-
-
-function toDuration(job) {
-    try {
-        const ms = new Date(Date.parse(job.finished) - Date.parse(job.started));
-        return [
-            `0${ms.getHours() - 1}`.slice(-2),
-            `0${ms.getMinutes()}`.slice(-2),
-            `0${ms.getSeconds()}`.slice(-2),
-        ].join(':');
-    } catch (e) {
-        return "?";
-    }
-}
 
 function ExecutionBreadcrumb() {
     const { id } = useParams();
@@ -70,7 +56,7 @@ function Execution(props) {
                 </Descriptions.Item>
                 <Descriptions.Item label="Started">{data.started}</Descriptions.Item>
                 <Descriptions.Item label="Finished">{data.finished}</Descriptions.Item>
-                <Descriptions.Item label="Duration">{toDuration(data)}</Descriptions.Item>
+                <Descriptions.Item label="Duration">{duration(data)}</Descriptions.Item>
                 <Descriptions.Item label="Comment">{extensions.commentWrapper(data.comment)}</Descriptions.Item>
             </Descriptions>
             <div>
