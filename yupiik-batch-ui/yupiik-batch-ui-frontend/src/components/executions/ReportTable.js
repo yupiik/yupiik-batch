@@ -50,7 +50,7 @@ function reportColumns(idRenderer, previousId, showDuration) {
     ];
 }
 
-function duration({ started, finished }) {
+export function duration({ started, finished }) {
     if (!finished || !started) {
         return '?';
     }
