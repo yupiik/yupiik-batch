@@ -20,7 +20,7 @@
   <parent>
     <artifactId>dependencies</artifactId>
     <groupId>io.yupiik.batch</groupId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -82,8 +82,4 @@
       </exclusions>
     </dependency>
   </dependencies>
-
-  <scm>
-    <tag>yupiik-batch-1.0.1</tag>
-  </scm>
 </project>
