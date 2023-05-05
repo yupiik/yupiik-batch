@@ -22,6 +22,7 @@ public class RunConfiguration { // don't use a record, we don't want to break ba
     Function<BatchChain<?, ?, ?>, Executable<?, ?>> elementExecutionWrapper;
     long maxBatchPromiseAwait = -1;
     boolean failOnTimeout = true;
+    boolean forceAwaitOnPromiseError = true;
 
     /**
      * IMPORTANT: if maxBatchPromiseAwait is not >0 this is ignored.
@@ -52,6 +53,11 @@ public class RunConfiguration { // don't use a record, we don't want to break ba
 
     public RunConfiguration setElementExecutionWrapper(final Function<BatchChain<?, ?, ?>, Executable<?, ?>> elementExecutionWrapper) {
         this.elementExecutionWrapper = elementExecutionWrapper;
+        return this;
+    }
+
+    public RunConfiguration setForceAwaitOnPromiseError(final boolean forceAwaitOnPromiseError) {
+        this.forceAwaitOnPromiseError = forceAwaitOnPromiseError;
         return this;
     }
 }

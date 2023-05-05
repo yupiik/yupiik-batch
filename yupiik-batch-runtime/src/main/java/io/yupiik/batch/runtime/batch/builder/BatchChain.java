@@ -104,7 +104,11 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
                     if (result.value() instanceof BatchPromise<?> promise) {
                         final var end = promise.end().toCompletableFuture();
                         promises.add(end);
-                        end.whenComplete((ok, ko) -> promises.remove(end));
+                        end.whenComplete((ok, ko) -> {
+                            if (!end.isCompletedExceptionally() || configuration == null || !configuration.forceAwaitOnPromiseError) {
+                                promises.remove(end);
+                            }
+                        });
                     }
                 }
             } finally {
@@ -249,7 +253,8 @@ public interface BatchChain<PP, P, R> extends Executable<P, R> {
         }
         final var duration = configuration == null ? TimeUnit.MINUTES.toMillis(1) : configuration.maxBatchPromiseAwait;
         for (final var stage : new ArrayList<>(promises)) {
-            if (stage.isDone() || stage.isCompletedExceptionally()) {
+            final var forceAwaitOnPromiseError = configuration == null ? true : configuration.forceAwaitOnPromiseError;
+            if (stage.isDone() && (!forceAwaitOnPromiseError || !stage.isCompletedExceptionally() )) {
                 continue;
             }
             try {
