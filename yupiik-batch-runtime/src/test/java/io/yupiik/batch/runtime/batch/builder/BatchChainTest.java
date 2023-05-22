@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -43,5 +44,42 @@ class BatchChainTest {
             }
         };
         assertInstanceOf(TimeoutException.class, assertThrows(IllegalStateException.class, () -> infiniteStep.run(configuration)).getCause());
+    }
+
+    @Test
+    void forceAwaitOnPromiseError() {
+        final var failingStep = new BatchChain.BatchRoot<>() {
+            @Override
+            public String name() {
+                return "test";
+            }
+
+            @Override
+            public Result<Object> execute() {
+                return new Result<>(BatchPromise.of(null, CompletableFuture.failedFuture(new IllegalStateException("Failing step"))), Result.Type.CONTINUE);
+            }
+        };
+
+        final var config = new RunConfiguration(); // forceAwaitOnPromiseError default is true
+        assertThrows(IllegalStateException.class, () -> failingStep.run(config));
+
+        config.setForceAwaitOnPromiseError(false);
+        assertDoesNotThrow(()-> failingStep.run(config));
+
+        final var successStep = new BatchChain.BatchRoot<>() {
+            @Override
+            public String name() {
+                return "test";
+            }
+
+            @Override
+            public Result<Object> execute() {
+                return new Result<>(BatchPromise.of(null, CompletableFuture.completedFuture(null)), Result.Type.CONTINUE);
+            }
+        };
+
+        assertDoesNotThrow(() -> successStep.run(config));
+        config.setForceAwaitOnPromiseError(true);
+        assertDoesNotThrow(() -> successStep.run(config));
     }
 }
