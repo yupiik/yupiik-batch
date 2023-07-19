@@ -38,11 +38,18 @@ public class SQLQuery<T> implements Iterator<T>, AutoCloseable {
     private Connection connection;
     private Statement statement;
     private ResultSet resultSet;
+    private final int fetchSize;
 
     public SQLQuery(final SQLSupplier<Connection> connectionSupplier, final String query,
                     final SQLFunction<ResultSet, T> mapper) {
+        this(connectionSupplier, query, mapper, 0);
+    }
+
+    public SQLQuery(final SQLSupplier<Connection> connectionSupplier, final String query,
+                    final SQLFunction<ResultSet, T> mapper, final int fetchSize) {
         this.query = query;
         this.mapper = mapper;
+        this.fetchSize = fetchSize;
         try {
             this.connection = connectionSupplier.get();
         } catch (final SQLException throwables) {
@@ -55,6 +62,9 @@ public class SQLQuery<T> implements Iterator<T>, AutoCloseable {
         if (statement == null) {
             try {
                 this.statement = connection.createStatement();
+                if (fetchSize > 0) {
+                    this.statement.setFetchSize(fetchSize);
+                }
                 this.resultSet = statement.executeQuery(query);
             } catch (final SQLException throwables) {
                 throw new IllegalStateException(throwables);
