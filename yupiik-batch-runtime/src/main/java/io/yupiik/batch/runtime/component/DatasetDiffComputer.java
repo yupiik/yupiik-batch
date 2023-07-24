@@ -18,6 +18,7 @@ package io.yupiik.batch.runtime.component;
 import io.yupiik.batch.runtime.component.diff.Diff;
 import io.yupiik.batch.runtime.documentation.Component;
 import io.yupiik.batch.runtime.iterator.CountingIterator;
+import io.yupiik.batch.runtime.iterator.RespectingContractIterator;
 
 import java.util.Comparator;
 import java.util.Iterator;
@@ -46,59 +47,66 @@ public class DatasetDiffComputer<T> implements BiFunction<Iterator<T>, Iterator<
 
     @Override
     public Diff<T> apply(final Iterator<T> rawIncoming, final Iterator<T> rawReference) {
-        final var reference = new CountingIterator<>(rawReference);
-        final var incoming = new CountingIterator<>(rawIncoming);
+        try (final var reference = new CountingIterator<>(
+                rawReference instanceof RespectingContractIterator ? rawReference : new RespectingContractIterator<>(rawReference));
+             final var incoming = new CountingIterator<>(
+                     rawIncoming instanceof RespectingContractIterator ? rawIncoming : new RespectingContractIterator<>(rawIncoming))) {
 
-        final var missing = new LinkedList<T>();
-        final var added = new LinkedList<T>();
-        final var updated = new LinkedList<T>();
+            final var missing = new LinkedList<T>();
+            final var added = new LinkedList<T>();
+            final var updated = new LinkedList<T>();
 
-        T existingData = null;
-        T newData = null;
-        boolean oneMoreIteration = reference.hasNext() && incoming.hasNext();
+            T existingData = null;
+            T newData = null;
+            boolean oneMoreIteration = reference.hasNext() && incoming.hasNext();
 
-        if (oneMoreIteration) {
-            existingData = reference.next();
-            newData = incoming.next();
-        }
+            if (oneMoreIteration) {
+                existingData = reference.next();
+                newData = incoming.next();
+            }
 
-        while (oneMoreIteration) {
-            final int diff = keyComparator.compare(existingData, newData);
-            if (diff > 0) {
-                added.add(mapAdd(newData));
-                oneMoreIteration = incoming.hasNext();
-                if (oneMoreIteration) {
-                    newData = incoming.next();
-                } else {
-                    missing.add(mapMiss(existingData));
-                }
-            } else if (diff < 0) {
-                missing.add(mapMiss(existingData));
-                oneMoreIteration = reference.hasNext();
-                if (oneMoreIteration) {
-                    existingData = reference.next();
-                } else {
+            while (oneMoreIteration) {
+                final int diff = keyComparator.compare(existingData, newData);
+                if (diff > 0) {
                     added.add(mapAdd(newData));
-                }
-            } else {
-                if (!equalTester.test(existingData, newData)) {
-                    updated.add(mapUpdate(existingData, newData));
-                } // else no diff
-                oneMoreIteration = reference.hasNext() && incoming.hasNext();
-                if (oneMoreIteration) {
-                    existingData = reference.next();
-                    newData = incoming.next();
+                    oneMoreIteration = incoming.hasNext();
+                    if (oneMoreIteration) {
+                        newData = incoming.next();
+                    } else {
+                        missing.add(mapMiss(existingData));
+                    }
+                } else if (diff < 0) {
+                    missing.add(mapMiss(existingData));
+                    oneMoreIteration = reference.hasNext();
+                    if (oneMoreIteration) {
+                        existingData = reference.next();
+                    } else {
+                        added.add(mapAdd(newData));
+                    }
+                } else {
+                    if (!equalTester.test(existingData, newData)) {
+                        updated.add(mapUpdate(existingData, newData));
+                    } // else no diff
+                    oneMoreIteration = reference.hasNext() && incoming.hasNext();
+                    if (oneMoreIteration) {
+                        existingData = reference.next();
+                        newData = incoming.next();
+                    }
                 }
             }
-        }
-        while (incoming.hasNext()) {
-            added.add(mapAdd(incoming.next()));
-        }
-        while (reference.hasNext()) {
-            missing.add(mapMiss(reference.next()));
-        }
+            while (incoming.hasNext()) {
+                added.add(mapAdd(incoming.next()));
+            }
+            while (reference.hasNext()) {
+                missing.add(mapMiss(reference.next()));
+            }
 
-        return new Diff<>(missing, added, updated, reference.getTotal(), incoming.getTotal());
+            return new Diff<>(missing, added, updated, reference.getTotal(), incoming.getTotal());
+        } catch (final RuntimeException | Error e) {
+            throw e;
+        } catch (final Exception e) {
+            throw new IllegalStateException(e);
+        }
     }
 
     protected T mapMiss(final T data) {
