@@ -43,6 +43,17 @@ public class SQLQuery<T> extends RespectingContractIterator<T> implements Iterat
         super(new Impl<>(connectionSupplier, query, mapper, fetchSize));
     }
 
+    @Override
+    public void close() {
+        try {
+            super.close();
+        } catch (final RuntimeException | Error e) {
+            throw e;
+        } catch (final Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
     private static class Impl<T> implements Iterator<T>, AutoCloseable {
         private final String query;
         private final SQLFunction<ResultSet, T> mapper;
