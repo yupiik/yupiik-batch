@@ -32,12 +32,15 @@
     <owb.version>2.0.27</owb.version>
     <uship.version>1.0.17</uship.version>
     <yupiik-logging.version>1.0.7</yupiik-logging.version>
+    <fusion.version>1.0.9</fusion.version>
+    <tomcat.version>10.1.15</tomcat.version>
   </properties>
 
   <modules>
     <module>dependencies</module>
     <module>yupiik-batch-runtime</module>
     <module>yupiik-batch-ui</module>
+    <module>yupiik-batch-metrics-scraper</module>
     <module>documentation</module>
     <module>iterators</module>
     <module>simple-configuration</module>
@@ -123,7 +126,7 @@
       <plugin><!--  mvn ossindex:audit -->
         <groupId>org.sonatype.ossindex.maven</groupId>
         <artifactId>ossindex-maven-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <id>audit-dependencies</id>
@@ -135,6 +138,8 @@
         </executions>
         <configuration>
           <scope>compile,runtime</scope>
+          <!-- // exclude false positive for Tomcat 10.1.x as it's raised because of Tomcat 9.x -->
+          <excludeVulnerabilityIds>CVE-2023-42794</excludeVulnerabilityIds>
         </configuration>
       </plugin>
       <!--
