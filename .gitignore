@@ -3,6 +3,7 @@
 *.ipr
 *.iws
 .idea
+!.idea/icon.svg
 
 # vscode
 .vscode
