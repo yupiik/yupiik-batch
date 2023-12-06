@@ -1,0 +1,61 @@
+= Getting Started
+:minisite-index: 300
+:minisite-index-title: Metrics Relay
+:minisite-index-description: Collect batch execution metrics for observability polling.
+:minisite-index-icon: heartbeat
+
+[abstract]
+Yupiik Batch provides metrics relay to help components like batch or script to store metrics that will be polled periodically
+like Prometheus.
+For now the metrics are stored in memory, so it's better to use the dropOnPull to true to avoid too much
+memory usage.
+
+== Stack
+
+The metrics relay is based on link:https://www.yupiik.io/fusion[Yupiik Fusion].
+
+== Usage
+
+The metrics relay provide an endpoint with 2 methods:
+
+* POST: `/relay?id=test` to store metrics in OpenMetric format.
+
+[source,bash]
+----
+curl -X POST http://localhost:8080/relay?id=test -H 'Content-Type: text/plain' -d '
+# TYPE foo1 gauge
+# HELP foo1 doc
+foo1 1234
+# TYPE foo2 gauge
+# HELP foo2 doc
+foo2 1235'
+----
+
+The response is a http code 201 with body `OK`.
+
+You can set the query param `dropOnPull` to `true` (default is `false`) to remove the metric after a polling (GET):
+
+[source,bash]
+----
+curl -X POST http://localhost:8080/relay?id=test&dropOnPull=true -H 'Content-Type: text/plain' -d '
+# TYPE foo1 gauge
+# HELP foo1 doc
+foo1 1234
+# TYPE foo2 gauge
+# HELP foo2 doc
+foo2 1235'
+----
+
+* GET: `/relay?id=test` to fetch the latest metrics.
+
+[source,bash]
+----
+curl http://localhost:8080/relay?id=test
+----
+
+You can set the query param `ignoreDrop` to `true` (default is `false`) to disable the drop policy define on the entry:
+
+[source,bash]
+----
+curl http://localhost:8080/relay?id=test&ignoreDrop=true
+----

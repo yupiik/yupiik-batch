@@ -13,8 +13,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.yupiik.batch.metricscraper;
+package io.yupiik.batch.metricsrelay;
 
+import io.yupiik.fusion.framework.api.scope.ApplicationScoped;
 import io.yupiik.fusion.framework.build.api.http.HttpMatcher;
 import io.yupiik.fusion.http.server.api.Request;
 import io.yupiik.fusion.http.server.api.Response;
@@ -25,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 
@@ -34,13 +34,14 @@ import static java.util.Optional.ofNullable;
 import static java.util.logging.Level.SEVERE;
 import static java.util.stream.Collectors.joining;
 
-public class MetricScraperEndpoint {
+@ApplicationScoped
+public class MetricsRelayEndpoint {
 
-    private final static Logger logger = Logger.getLogger(MetricScraperEndpoint.class.getName());
+    private final Logger logger = Logger.getLogger(MetricsRelayEndpoint.class.getName());
 
     private final MetricsRelayStorage storage;
 
-    public MetricScraperEndpoint(MetricsRelayStorage storage) {
+    public MetricsRelayEndpoint(MetricsRelayStorage storage) {
         this.storage = storage;
     }
 
@@ -51,9 +52,9 @@ public class MetricScraperEndpoint {
         final String id = ofNullable(request.parameter("id")).orElse("");
 
         try (final var in = read(request)) {
-            storage.store(id, in.lines().collect(joining("\n")).strip(), dropOnPull);
+            this.storage.store(id, in.lines().collect(joining("\n")).strip(), dropOnPull);
         } catch (final IOException | ExecutionException | InterruptedException exception) {
-            Logger.getLogger(getClass().getName()).log(SEVERE, exception, exception::getMessage);
+            logger.log(SEVERE, exception, exception::getMessage);
             return Response.of().body("KO").header("Content-Type", responseContentType).build();
         }
         return Response.of().body("OK").status(201).header("Content-Type", responseContentType).build();
@@ -62,7 +63,7 @@ public class MetricScraperEndpoint {
     @HttpMatcher(path = "/relay", methods = "GET", pathMatching = STARTS_WITH)
     public Response fetchMetrics(final Request request) {
         final String responseContentType = "application/openmetrics-text; version=1.0.0; charset=utf-8";
-        if (storage.getMetrics().isEmpty()) {
+        if (this.storage.getMetrics().isEmpty()) {
             return Response.of().header("Content-Type", responseContentType).build();
         }
 
@@ -70,7 +71,7 @@ public class MetricScraperEndpoint {
         final String payload = Stream.of(storage.getMetrics().toArray(new MetricsRelayStorage.Entry[0]))
                 .peek(entry -> {
                     if (!ignoreDrop && entry.dropOnPull()) {
-                        storage.remove(entry); // it is a CopyOnWriteArrayList so it.remove() does not work
+                        this.storage.remove(entry); // it is a CopyOnWriteArrayList so it.remove() does not work
                     }
                 })
                 .map(MetricsRelayStorage.Entry::content).sorted().collect(joining("\n", "", "\n# EOF\n"));

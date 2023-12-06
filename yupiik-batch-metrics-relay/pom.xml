@@ -24,12 +24,14 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>yupiik-batch-metrics-scraper</artifactId>
+  <artifactId>yupiik-batch-metrics-relay</artifactId>
   <name>Yupiik Batch :: Metrics Scraper</name>
 
   <properties>
-    <image.java.base>ossyupiik/java:17.0.8@sha256:e99a1d0064afd42d0c4d8e2b5a20f10e081c9bb0470485648b01550163a509cc</image.java.base>
+    <image.java.base>ossyupiik/java:17.0.9@sha256:88d42b5b803e74fe2149efb942c70d4eb6ecdadb8902c87ac030a01419b2268e</image.java.base>
+    <image.java.workdir>/opt/yupiik</image.java.workdir>
     <image.native.base>scratch</image.native.base>
+    <image.registry>yupiik</image.registry>
     <main.class>io.yupiik.fusion.framework.api.main.Launcher</main.class>
   </properties>
 
@@ -66,7 +68,6 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
-      <version>${tomcat.version}</version>
     </dependency>
     <dependency>
       <groupId>io.yupiik.fusion</groupId>
@@ -135,7 +136,7 @@
             <configuration>
               <graalVersion>17.0.8-graalce</graalVersion>
               <main>${main.class}</main>
-              <to>yupiik/yupiik-batch/metrics-scraper:${project.version}</to>
+              <to>${image.registry}/yupiik-batch/metrics-scraper:${project.version}</to>
               <creationTimestamp>-1</creationTimestamp>
               <labels>
                 <org.opencontainers.image.created>${maven.build.timestamp}</org.opencontainers.image.created>
@@ -144,8 +145,63 @@
                 <org.opencontainers.image.title>${project.artifactId}</org.opencontainers.image.title>
                 <org.opencontainers.image.description>${project.description}</org.opencontainers.image.description>
                 <org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
-                <io.yupiik.cmd>docker run ${image.name} &lt;args&gt;</io.yupiik.cmd>
               </labels>
+              <customOptions>
+                <customOption>-Djava.util.logging.manager=io.yupiik.logging.jul.YupiikLogManager</customOption>
+                <customOption>-Djava.net.preferIPv4Stack=true</customOption>
+                <customOption>-Duser.language=en</customOption>
+                <customOption>-Duser.country=US</customOption>
+                <customOption>-Dfile.encoding=UTF-8</customOption>
+                <customOption>-H:+UnlockExperimentalVMOptions</customOption>
+                <customOption>--static</customOption>
+              </customOptions>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>docker-jvm</id>
+      <build>
+        <plugins>
+          <!-- mvn jib:docker -Pdocker-jvm -->
+          <plugin>
+            <groupId>com.google.cloud.tools</groupId>
+            <artifactId>jib-maven-plugin</artifactId>
+            <configuration>
+              <containerizingMode>packaged</containerizingMode>
+              <from>
+                <image>${image.java.base}</image>
+              </from>
+              <to>
+                <image>${image.registry}/yupiik-batch/metrics-scraper:${project.version}</image>
+              </to>
+              <container>
+                <appRoot>${image.java.workdir}</appRoot>
+                <workingDirectory>${image.java.workdir}</workingDirectory>
+                <extraClasspath>${image.java.workdir}/yupiik-batch-metrics-relay-${project.version}/lib/*</extraClasspath>
+                <creationTime>${maven.build.timestamp}</creationTime>
+                <filesModificationTime>${maven.build.timestamp}</filesModificationTime>
+                <mainClass>${main.class}</mainClass>
+                <jvmFlags>
+                  <jvmFlag>-Djava.util.logging.manager=io.yupiik.logging.jul.YupiikLogManager</jvmFlag>
+                  <jvmFlag>-Dio.yupiik.logging.jul.handler.StandardHandler.formatter=json</jvmFlag>
+                  <jvmFlag>-Djava.security.egd=file:/dev/./urandom</jvmFlag>
+                  <jvmFlag>-Djdk.serialFilter=!*</jvmFlag>
+                  <jvmFlag>-Dyupiik.build.timestamp=${maven.build.timestamp}</jvmFlag>
+                </jvmFlags>
+                <labels>
+                  <org.opencontainers.image.created>${maven.build.timestamp}</org.opencontainers.image.created>
+                  <org.opencontainers.image.authors>Yupiik</org.opencontainers.image.authors>
+                  <org.opencontainers.image.vendor>Yupiik</org.opencontainers.image.vendor>
+                  <org.opencontainers.image.title>${project.artifactId}</org.opencontainers.image.title>
+                  <org.opencontainers.image.description>${project.description}</org.opencontainers.image.description>
+                  <org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
+                </labels>
+              </container>
+              <outputPaths>
+                <imageJson>${project.build.directory}/jib-image.json</imageJson>
+              </outputPaths>
             </configuration>
           </plugin>
         </plugins>

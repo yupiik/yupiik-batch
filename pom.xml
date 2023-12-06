@@ -33,14 +33,14 @@
     <uship.version>1.0.17</uship.version>
     <yupiik-logging.version>1.0.7</yupiik-logging.version>
     <fusion.version>1.0.9</fusion.version>
-    <tomcat.version>10.1.15</tomcat.version>
+    <tomcat.version>10.1.16</tomcat.version>
   </properties>
 
   <modules>
     <module>dependencies</module>
     <module>yupiik-batch-runtime</module>
     <module>yupiik-batch-ui</module>
-    <module>yupiik-batch-metrics-scraper</module>
+    <module>yupiik-batch-metrics-relay</module>
     <module>documentation</module>
     <module>iterators</module>
     <module>simple-configuration</module>
@@ -53,6 +53,11 @@
         <artifactId>h2</artifactId>
         <version>2.2.220</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>tomcat-catalina</artifactId>
+        <version>${tomcat.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

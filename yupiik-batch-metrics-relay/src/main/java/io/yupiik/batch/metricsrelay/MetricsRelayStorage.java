@@ -13,7 +13,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.yupiik.batch.metricscraper;
+package io.yupiik.batch.metricsrelay;
 
 import io.yupiik.fusion.framework.api.scope.ApplicationScoped;
 

@@ -13,7 +13,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package io.yupiik.batch.metricscraper;
+package io.yupiik.batch.metricsrelay;
 
 import io.yupiik.fusion.http.server.api.WebServer;
 import io.yupiik.fusion.testing.Fusion;
@@ -22,13 +22,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.logging.Logger;
 
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
@@ -62,7 +59,7 @@ public class EndpointTest {
     void checkMetrics(@Fusion final WebServer.Configuration configuration) throws IOException, InterruptedException {
         final var storeMetricResponse = sendPostRequest(
                 configuration,
-                "/relay?id=test&dropFull=true",
+                "/relay?id=test&dropOnPull=true",
                 """
                 # TYPE foo1 gauge
                 # HELP foo1 doc
