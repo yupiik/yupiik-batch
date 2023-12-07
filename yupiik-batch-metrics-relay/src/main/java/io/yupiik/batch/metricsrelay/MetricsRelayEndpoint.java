@@ -25,7 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
@@ -54,21 +53,18 @@ public class MetricsRelayEndpoint {
 
         return read(request)
                 .thenApply(bufferedReader -> {
-                            this.storage.store(id, bufferedReader.lines().collect(joining("\n")).strip(), dropOnPull);
-                            return Response.of().body("OK").status(201).header("Content-Type", responseContentType).build();
-                        })
+                    try (bufferedReader) {
+                        this.storage.store(id, bufferedReader.lines().collect(joining("\n")).strip(), dropOnPull);
+                        return Response.of().body("OK").status(201).header("Content-Type", responseContentType).build();
+                    } catch (IOException exception) {
+                        logger.log(SEVERE, exception, exception::getMessage);
+                        return Response.of().body("KO").header("Content-Type", responseContentType).build();
+                    }
+                })
                 .exceptionally(throwable -> {
                     logger.log(SEVERE, throwable, throwable::getMessage);
                     return Response.of().body("KO").header("Content-Type", responseContentType).build();
                 });
-
-//        try (final var in = read(request)) {
-//            this.storage.store(id, in.lines().collect(joining("\n")).strip(), dropOnPull);
-//        } catch (final IOException | ExecutionException | InterruptedException exception) {
-//            logger.log(SEVERE, exception, exception::getMessage);
-//            return Response.of().body("KO").header("Content-Type", responseContentType).build();
-//        }
-//        return Response.of().body("OK").status(201).header("Content-Type", responseContentType).build();
     }
 
     @HttpMatcher(path = "/relay", methods = "GET", pathMatching = STARTS_WITH)
