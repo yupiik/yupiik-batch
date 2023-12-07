@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
@@ -46,18 +47,28 @@ public class MetricsRelayEndpoint {
     }
 
     @HttpMatcher(path = "/relay", methods = "POST", pathMatching = STARTS_WITH)
-    public Response storeMetrics(final Request request) {
+    public CompletionStage<Response> storeMetrics(final Request request) {
         final String responseContentType = "text/plain";
         final boolean dropOnPull = Boolean.parseBoolean(ofNullable(request.parameter("dropOnPull")).orElse("false"));
         final String id = ofNullable(request.parameter("id")).orElse("");
 
-        try (final var in = read(request)) {
-            this.storage.store(id, in.lines().collect(joining("\n")).strip(), dropOnPull);
-        } catch (final IOException | ExecutionException | InterruptedException exception) {
-            logger.log(SEVERE, exception, exception::getMessage);
-            return Response.of().body("KO").header("Content-Type", responseContentType).build();
-        }
-        return Response.of().body("OK").status(201).header("Content-Type", responseContentType).build();
+        return read(request)
+                .thenApply(bufferedReader -> {
+                            this.storage.store(id, bufferedReader.lines().collect(joining("\n")).strip(), dropOnPull);
+                            return Response.of().body("OK").status(201).header("Content-Type", responseContentType).build();
+                        })
+                .exceptionally(throwable -> {
+                    logger.log(SEVERE, throwable, throwable::getMessage);
+                    return Response.of().body("KO").header("Content-Type", responseContentType).build();
+                });
+
+//        try (final var in = read(request)) {
+//            this.storage.store(id, in.lines().collect(joining("\n")).strip(), dropOnPull);
+//        } catch (final IOException | ExecutionException | InterruptedException exception) {
+//            logger.log(SEVERE, exception, exception::getMessage);
+//            return Response.of().body("KO").header("Content-Type", responseContentType).build();
+//        }
+//        return Response.of().body("OK").status(201).header("Content-Type", responseContentType).build();
     }
 
     @HttpMatcher(path = "/relay", methods = "GET", pathMatching = STARTS_WITH)
@@ -79,12 +90,22 @@ public class MetricsRelayEndpoint {
         return Response.of().body(payload).status(200).header("Content-Type", responseContentType).build();
     }
 
-    private BufferedReader read(final Request request) throws IOException, ExecutionException, InterruptedException {
+    private CompletionStage<BufferedReader> read(final Request request) {
         final var encoding = request.header("content-encoding");
-        final var byteArrayIs = new ByteArrayInputStream(request.fullBody().bytes().toCompletableFuture().get());
-        if (encoding != null && encoding.contains("gzip")) { // our client sends in gzip depending a limit
-            return new BufferedReader(new InputStreamReader(new GZIPInputStream(byteArrayIs)));
-        }
-        return new BufferedReader(new InputStreamReader(byteArrayIs));
+        return request.fullBody().bytes()
+                .thenApply(
+                    ByteArrayInputStream::new
+                ).thenApply(byteArrayIs -> {
+                        if (encoding != null && encoding.contains("gzip")) { // our client sends in gzip depending a limit
+                            try {
+                                return new BufferedReader(new InputStreamReader(new GZIPInputStream(byteArrayIs)));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        } else {
+                            return new BufferedReader(new InputStreamReader(byteArrayIs));
+                        }
+                    }
+                );
     }
 }
