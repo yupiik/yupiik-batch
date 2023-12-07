@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Getting Started</title>
+    <title>Metrics Relay</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,7 +69,7 @@
             </ul>
         </div>
 
-        <div id="getting-started-html-container" class="container page-content getting-started-html">
+        <div id="metrics-relay-html-container" class="container page-content metrics-relay-html">
                         <div class="page-header">
                 <h1>Getting Started</h1>
             </div>
@@ -78,44 +78,82 @@
 <div class="sectionbody">
 <div class="quoteblock abstract">
 <blockquote>
-Yupiik Batch intends to simplify Java batch writing for model mapping and "diff" cases.
-It provides a fluent API which is auditable.
+Yupiik Batch provides metrics relay to help components like batch or script to store metrics that will be polled periodically
+like Prometheus.
+For now the metrics are stored in memory, so it&#8217;s better to use the dropOnPull to true to avoid too much
+memory usage.
 </blockquote>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_installation">Installation</h2>
+<h2 id="_stack">Stack</h2>
 <div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Ensure to use java &gt;= 17.</p>
-</li>
-<li>
-<p>If you want to compile the project you need Git and Apache Maven.</p>
-</li>
-</ol>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-you can use SDKMan to install Java and Maven.
-</td>
-</tr>
-</table>
+<div class="paragraph">
+<p>The metrics relay is based on <a href="https://www.yupiik.io/fusion">Yupiik Fusion</a>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_learning_about_chain_and_component_api">Learning about chain and component API</h2>
+<h2 id="_usage">Usage</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>To learn more about what the project provides, you can read <a href="write-your-first-batch.html">Write your first batch</a> guide.</p>
+<p>The metrics relay provide an endpoint with 2 methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>POST: <code>/relay?id=test</code> to store metrics in OpenMetric format.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -X POST http://localhost:8080/relay?id=test -H 'Content-Type: text/plain' -d '
+# TYPE foo1 gauge
+# HELP foo1 doc
+foo1 1234
+# TYPE foo2 gauge
+# HELP foo2 doc
+foo2 1235'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The response is a http code 201 with body <code>OK</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can set the query param <code>dropOnPull</code> to <code>true</code> (default is <code>false</code>) to remove the metric after a polling (GET):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -X POST http://localhost:8080/relay?id=test&amp;dropOnPull=true -H 'Content-Type: text/plain' -d '
+# TYPE foo1 gauge
+# HELP foo1 doc
+foo1 1234
+# TYPE foo2 gauge
+# HELP foo2 doc
+foo2 1235'</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>GET: <code>/relay?id=test</code> to fetch the latest metrics.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://localhost:8080/relay?id=test</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can set the query param <code>ignoreDrop</code> to <code>true</code> (default is <code>false</code>) to disable the drop policy define on the entry:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://localhost:8080/relay?id=test&amp;ignoreDrop=true</code></pre>
+</div>
 </div>
 </div>
 </div>
