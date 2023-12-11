@@ -136,7 +136,7 @@
             <configuration>
               <graalVersion>17.0.8-graalce</graalVersion>
               <main>${main.class}</main>
-              <to>${image.registry}/yupiik-batch/metrics-relay:${project.version}</to>
+              <to>${image.registry}/yupiik-batch-metric-relay:${project.version}</to>
               <creationTimestamp>-1</creationTimestamp>
               <labels>
                 <org.opencontainers.image.created>${maven.build.timestamp}</org.opencontainers.image.created>
@@ -174,7 +174,7 @@
                 <image>${image.java.base}</image>
               </from>
               <to>
-                <image>${image.registry}/yupiik-batch/metrics-relay:${project.version}</image>
+                <image>${image.registry}/yupiik-batch-metric-relay:${project.version}</image>
               </to>
               <container>
                 <appRoot>${image.java.workdir}</appRoot>
