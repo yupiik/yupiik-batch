@@ -164,7 +164,8 @@
       <id>docker-jvm</id>
       <build>
         <plugins>
-          <!-- mvn jib:docker -Pdocker-jvm -->
+          <!-- mvn jib:dockerBuild -Pdocker-jvm to build in local docker registry -->
+          <!-- mvn jib:build -Pdocker-jvm -pl yupiik-batch-metrics-relay -Dimage.registry=docker.io/ossyupiik to publish to docker hub -->
           <plugin>
             <groupId>com.google.cloud.tools</groupId>
             <artifactId>jib-maven-plugin</artifactId>
