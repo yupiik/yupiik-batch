@@ -25,7 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>yupiik-batch-metrics-relay</artifactId>
-  <name>Yupiik Batch :: Metrics Scraper</name>
+  <name>Yupiik Batch :: Metrics Relay</name>
 
   <properties>
     <image.java.base>ossyupiik/java:17.0.9@sha256:88d42b5b803e74fe2149efb942c70d4eb6ecdadb8902c87ac030a01419b2268e</image.java.base>
