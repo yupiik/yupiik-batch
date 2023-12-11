@@ -50,12 +50,12 @@ foo2 1235'
 
 [source,bash]
 ----
-curl http://localhost:8080/relay?id=test
+curl http://localhost:8080/relay
 ----
 
 You can set the query param `ignoreDrop` to `true` (default is `false`) to disable the drop policy define on the entry:
 
 [source,bash]
 ----
-curl http://localhost:8080/relay?id=test&ignoreDrop=true
+curl http://localhost:8080/relay?ignoreDrop=true
 ----
