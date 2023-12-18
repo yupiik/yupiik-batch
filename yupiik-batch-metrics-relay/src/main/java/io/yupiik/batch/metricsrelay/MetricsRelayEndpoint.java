@@ -71,7 +71,7 @@ public class MetricsRelayEndpoint {
     public Response fetchMetrics(final Request request) {
         final String responseContentType = "application/openmetrics-text; version=1.0.0; charset=utf-8";
         if (this.storage.getMetrics().isEmpty()) {
-            return Response.of().header("Content-Type", responseContentType).build();
+            return Response.of().body("# EOF\n").status(200).header("Content-Type", responseContentType).build();
         }
 
         final boolean ignoreDrop = Boolean.parseBoolean(ofNullable(request.parameter("ignoreDrop")).orElse("false"));

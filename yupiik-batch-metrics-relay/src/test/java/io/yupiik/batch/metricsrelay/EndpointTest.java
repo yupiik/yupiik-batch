@@ -84,5 +84,27 @@ public class EndpointTest {
                 foo2 1235
                 # EOF
                 """, fetchMetricResponse.body());
+
+        final var fetchMetricResponse2 = sendGetRequest(
+                configuration,
+                "/relay?id=test");
+        assertEquals(200, fetchMetricResponse2.statusCode());
+        assertEquals("""
+                # TYPE foo1 gauge
+                # HELP foo1 doc
+                foo1 1234
+                # TYPE foo2 gauge
+                # HELP foo2 doc
+                foo2 1235
+                # EOF
+                """, fetchMetricResponse2.body());
+
+        final var fetchMetricResponseEmpty = sendGetRequest(
+                configuration,
+                "/relay?id=test");
+        assertEquals(200, fetchMetricResponseEmpty.statusCode());
+        assertEquals("""
+                # EOF
+                """, fetchMetricResponseEmpty.body());
     }
 }

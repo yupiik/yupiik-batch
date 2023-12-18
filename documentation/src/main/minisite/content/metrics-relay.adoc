@@ -22,7 +22,7 @@ The metrics relay provide an endpoint with 2 methods:
 
 [source,bash]
 ----
-curl -X POST http://localhost:8080/relay?id=test -H 'Content-Type: text/plain' -d '
+curl -X POST http://localhost:8080/relay?dropOnPull=true -H 'Content-Type: text/plain' -d '
 # TYPE foo1 gauge
 # HELP foo1 doc
 foo1 1234
@@ -46,12 +46,16 @@ foo1 1234
 foo2 1235'
 ----
 
-* GET: `/relay?id=test` to fetch the latest metrics.
+* GET: `/relay?id=test` to fetch the latest metrics of the matching id `test`:
 
 [source,bash]
 ----
-curl http://localhost:8080/relay
+curl http://localhost:8080/relay?id=test
 ----
+
+[TIP]
+
+If you want to collect all the ids, you can remove the `id` query parameter.
 
 You can set the query param `ignoreDrop` to `true` (default is `false`) to disable the drop policy define on the entry:
 
