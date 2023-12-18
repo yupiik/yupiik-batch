@@ -109,7 +109,7 @@ memory usage.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -X POST http://localhost:8080/relay?id=test -H 'Content-Type: text/plain' -d '
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl -X POST http://localhost:8080/relay?dropOnPull=true -H 'Content-Type: text/plain' -d '
 # TYPE foo1 gauge
 # HELP foo1 doc
 foo1 1234
@@ -138,14 +138,26 @@ foo2 1235'</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>GET: <code>/relay?id=test</code> to fetch the latest metrics.</p>
+<p>GET: <code>/relay?id=test</code> to fetch the latest metrics of the matching id <code>test</code>:</p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://localhost:8080/relay</code></pre>
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">curl http://localhost:8080/relay?id=test</code></pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+If you want to collect all the ids, you can remove the <code>id</code> query parameter.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>You can set the query param <code>ignoreDrop</code> to <code>true</code> (default is <code>false</code>) to disable the drop policy define on the entry:</p>
