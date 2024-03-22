@@ -33,7 +33,7 @@
     <uship.version>1.0.17</uship.version>
     <yupiik-logging.version>1.0.7</yupiik-logging.version>
     <fusion.version>1.0.12</fusion.version>
-    <tomcat.version>10.1.16</tomcat.version>
+    <tomcat.version>10.1.19</tomcat.version>
   </properties>
 
   <modules>
@@ -58,6 +58,11 @@
         <groupId>org.apache.tomcat</groupId>
         <artifactId>tomcat-catalina</artifactId>
         <version>${tomcat.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-compress</artifactId>
+        <version>1.26.1</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
