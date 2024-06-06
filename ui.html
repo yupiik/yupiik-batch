@@ -10,13 +10,93 @@
     <meta name="author" content="Yupiik Minisite Generator">
     <meta name="generator" content="Yupiik Minisite Generator">
     
-    <link rel="shortcut icon" href="//www.yupiik.io/yupiik-batch/images/logo.svg">
+    <link rel="shortcut icon" href="//www.yupiik.io/yupiik-batch/images/favicon.png">
 
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/asciidoctor.js/1.5.5-5/css/asciidoctor.min.css" integrity="sha512-kI7tn5cuEg16kMeXnYmg8rEJPxbxzEM7Gsr191iQdLDevFBLXPCSU9aZWSVuP61tMZWU3nBAR1cJ7SmXnOGLZw==" crossorigin="anonymous" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" integrity="sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/vs2015.min.css" integrity="sha512-w8aclkBlN3Ha08SMwFKXFJqhSUx2qlvTBFLLelF8sm4xQnlg64qmGB/A6pBIKy0W8Bo51yDMDtQiPLNRq1WMcQ==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/atom-one-dark.min.css" integrity="sha512-Fcqyubi5qOvl+yCwSJ+r7lli+CO1eHXMaugsZrnxuU4DVpLYWXTVoHy55+mCb4VZpMgy7PBhV7IiymC0yu9tkQ==" crossorigin="anonymous" />
+    <style>
+        :root {
+            /* YUPIIK colors (from dark to light) */
+            --yupiik-site-green: #46F72F;
+            --yupiik-site-purple: #D858FF;
+            --yupiik-site-blue-light: #02ABEA;
+            --yupiik-site-blue-dark: #056EBB;
+            --yupiik-site-grey-light: #F4F4F4;
+            --yupiik-site-grey-dark: #212121;
+
+            --yupiik-blue1: var(--yupiik-site-blue-dark);
+            --yupiik-blue2: var(--yupiik-site-blue-dark);
+            --yupiik-blue3: var(--yupiik-site-blue-dark);
+
+            --yupiik-color-white: #fff;
+            --yupiik-color-black: #000;
+
+            --yupiik-color-gray-0: var(--yupiik-color-white);
+            --yupiik-color-gray-100: #f5f6f7;
+            --yupiik-color-gray-200: #ebedf0;
+            --yupiik-color-gray-300: #dadde1;
+            --yupiik-color-gray-400: #ccd0d5;
+            --yupiik-color-gray-500: #bec3c9;
+            --yupiik-color-gray-600: #8d949e;
+            --yupiik-color-gray-700: #606770;
+            --yupiik-color-gray-800: #444950;
+            --yupiik-color-gray-900: #1c1e21;
+            --yupiik-color-gray-1000: var(--yupiik-color-black);
+
+            --yupiik-color-emphasis-0: var(--yupiik-color-gray-0);
+            --yupiik-color-emphasis-100: var(--yupiik-color-gray-100);
+            --yupiik-color-emphasis-200: var(--yupiik-color-gray-200);
+            --yupiik-color-emphasis-300: var(--yupiik-color-gray-300);
+            --yupiik-color-emphasis-400: var(--yupiik-color-gray-400);
+            --yupiik-color-emphasis-500: var(--yupiik-color-gray-500);
+            --yupiik-color-emphasis-600: var(--yupiik-color-gray-600);
+            --yupiik-color-emphasis-700: var(--yupiik-color-gray-700);
+            --yupiik-color-emphasis-800: var(--yupiik-color-gray-800);
+            --yupiik-color-emphasis-900: var(--yupiik-color-gray-900);
+            --yupiik-color-emphasis-1000: var(--yupiik-color-gray-1000);
+            --yupiik-color-content: var(--yupiik-color-emphasis-900);
+
+            --yupiik-font-family-base: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            --yupiik-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+            --yupiik-font-size-base: 100%;
+
+            --yupiik-font-weight-light: 300;
+            --yupiik-font-weight-normal: 400;
+            --yupiik-font-weight-semibold: 500;
+            --yupiik-font-weight-bold: 700;
+
+            --yupiik-font-weight-base: var(--yupiik-font-weight-normal);
+            --yupiik-line-height-base: 1.65;
+            --yupiik-font-weight-light: 300;
+            --yupiik-font-weight-normal: 400;
+            --yupiik-font-weight-semibold: 500;
+            --yupiik-font-weight-bold: 700;
+
+            --yupiik-font-weight-base: var(--yupiik-font-weight-normal);
+            --yupiik-line-height-base: 1.65;
+
+            --yupiik-global-spacing: 1rem;
+            --yupiik-spacing-vertical: var(--yupiik-global-spacing);
+            --yupiik-spacing-horizontal: var(--yupiik-global-spacing);
+
+            --yupiik-h1-font-size: 2rem;
+            --yupiik-h2-font-size: 1.5rem;
+            --yupiik-h3-font-size: 1.25rem;
+            --yupiik-h4-font-size: 1rem;
+            --yupiik-h5-font-size: 0.875rem;
+            --yupiik-h6-font-size: 0.85rem;
+
+            --yupiik-heading-color: var(--yupiik-blue1);
+            --yupiik-heading-margin-top: 0;
+            --yupiik-heading-margin-bottom: var(--yupiik-spacing-vertical);
+            --yupiik-heading-font-family: var(--yupiik-font-family-base);
+            --yupiik-heading-font-weight: var(--yupiik-font-weight-bold);
+            --yupiik-heading-line-height: 1.25;
+        }
+    </style>
     <style>
             table {
               table-layout: fixed;
@@ -26,7 +106,7 @@
               overflow-x: auto;
             }
             </style>
-    <link id="theme-style" rel="stylesheet" href="//www.yupiik.io/yupiik-batch/css/theme.css?v=1.0.5-SNAPSHOT">
+    <link id="theme-style" rel="stylesheet" href="//www.yupiik.io/yupiik-batch/css/theme.css?v=1.0.6-SNAPSHOT">
 </head>
 <body>
     <header class="header fixed-top">
@@ -35,7 +115,7 @@
                 <div class="docs-logo-wrapper">
 	                <div class="site-logo"><a title="Home" class="navbar-brand" href="//www.yupiik.io/yupiik-batch/index.html">
 	                <img class="logo-icon mr-2" src="//www.yupiik.io/yupiik-batch/images/logo.svg" alt="logo">
-	                <span class="logo-text">Yupiik Batch <span class="text-alt">Docs</span></span></a></div>
+	                <span class="logo-text">Batch <span class="text-alt">Documentation</span></span></a></div>
                 </div>
 	            <div class="docs-top-utilities d-flex justify-content-end align-items-center">
 					
@@ -43,7 +123,9 @@
 
 					<ul class="social-list list-inline mx-md-3 mx-lg-5 mb-0 d-none d-lg-flex">
 						
-						<li class="list-inline-item"><a title="Github" href="https://www.github.com/yupiik/"><i class="fab fa-github fa-fw"></i></a></li><li class="list-inline-item"><a title="LinkedIn" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+						<li class="list-inline-item"><a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Twitter" target="_blank" href="https://twitter.com/Yupiik/"><i class="fab fa-twitter fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Github" target="_blank" href="https://www.github.com/yupiik/yupiik-batch"><i class="fab fa-github fa-fw"></i></a></li>
 		            </ul>
 	            </div>
             </div>
@@ -69,323 +151,465 @@
             </ul>
         </div>
 
-        <div id="ui-html-container" class="container page-content ui-html">
+        <div id="ui-html-container" class="container page-content ui-html ">
                         <div class="page-header">
                 <h1>Getting Started</h1>
             </div>
             <div class="page-content-body">
                 <div id="preamble">
-<div class="sectionbody">
-<div class="quoteblock abstract">
-<blockquote>
-Yupiik Batch provides an UI which can be used to visualize a database populated using <code>ExecutionTracer</code>.
-</blockquote>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_dependency">Dependency</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The dependency to use is:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+ <div class="sectionbody">
+ <div class="paragraph abstract">
+ <p>Yupiik Batch provides an UI which can be used to visualize a database populated using <code>ExecutionTracer</code>.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_dependency">
+  <h2>Dependency</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+The dependency to use is:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;io.yupiik.batch&lt;/groupId&gt;
   &lt;artifactId&gt;yupiik-batch-ui-backend&lt;/artifactId&gt;
   &lt;version&gt;${yupiik-batch.version}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>You can add any JDBC driver you want too.
-Once you have it, you can create a Docker image using the main <code>org.apache.openwebbeans.se.CDILauncher</code> - just use the previous classpath.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-using <code>jib</code> the docker image creation is very smooth.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_configuration">Configuration</h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Name</th>
-<th class="tableblock halign-left valign-top">Env Variable</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.database.jobTable</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATABASE_JOBTABLE</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Job table to query.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.database.stepTable</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATABASE_STEPTABLE</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Step table to query.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.driver</code> *</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_DRIVER</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Datasource driver.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.maxConnections</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_MAXCONNECTIONS</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Max connections in the pool.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.minEvictableIdleTime</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_MINEVICTABLEIDLETIME</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">How long to await before a connection is considered idled and evictable.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.minIdle</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_MINIDLE</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Min connections in the pool.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.password</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_PASSWORD</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Datasource password.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.removeAbandoned</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_REMOVEABANDONED</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Should connections be removed when abandoned (see related timeout).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.removeAbandonedTimeout</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_REMOVEABANDONEDTIMEOUT</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The time in seconds before a connection can be considered abandoned.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.testOnBorrow</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_TESTONBORROW</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Should connections be tested on borrow time.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.testOnReturn</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_TESTONRETURN</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Should connections be tested on return to the pool time.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.testWhileIdle</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_TESTWHILEIDLE</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Should connections be tested in background.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.timeBetweenEvictionRuns</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_TIMEBETWEENEVICTIONRUNS</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Time between background evictions in ms.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.url</code> *</p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_URL</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Datasource URL.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.username</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_USERNAME</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Datasource username.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.validationQuery</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_VALIDATIONQUERY</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Validation query to validate the connection when enabled.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.datasource.validationQueryTimeout</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_DATASOURCE_VALIDATIONQUERYTIMEOUT</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">How long to await for the validation query.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.queries.countAllJobs</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_QUERIES_COUNTALLJOBS</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Count all jobs SQL query (for portability), <code>${table}</code> is replaced by the table name.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.queries.findAllJobs</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_QUERIES_FINDALLJOBS</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Find all jobs with pagination SQL query (for portability), <code>${table}</code> is replaced by the table name. Parameters can be <code>${pageSize}</code>, <code>${firstIndex}</code> - inclusive, <code>${lastIndex}</code> - exclusive, or <code>${where}</code> which would be replaced by a name where clause (`WHERE name = ? `).</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.queries.findJobById</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_QUERIES_FINDJOBBYID</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Find a job by id SQL query (for portability), <code>${table}</code> is replaced by the table name.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.queries.findLastExecutions</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_QUERIES_FINDLASTEXECUTIONS</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">SQL query (for portability) to find last execution of each batch, <code>${table}</code> is replaced by the table name.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.queries.findStepsByJobId</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_QUERIES_FINDSTEPSBYJOBID</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Find aall steps related to a job id SQL query (for portability), <code>${table}</code> is replaced by the step table name.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.tomcat.accessLogPattern</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_TOMCAT_ACCESSLOGPATTERN</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tomcat access log pattern.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.tomcat.port</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_TOMCAT_PORT</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Tomcat port.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.backend.tomcat.webUsers</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_BACKEND_TOMCAT_WEBUSERS</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">List of allowed users - by default all are. It uses a properties syntax: <code>user=password</code>. Security uses a web BASIC mecanism.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>yupiik.batch.frontend.extensionsJs</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><code>YUPIIK_BATCH_FRONTEND_EXTENSIONSJS</code></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Javascript path to a Yupiik Batch frontend extension. Script is injected just before yupiik-batch main one, i.e. after libraries ones but note they are minified wih webpack.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_extend_the_ui">Extend the UI</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The UI provides a few extension points to let you enrich it with other utilities.</p>
-</div>
-<div class="paragraph">
-<p>First step is to create a javascript file which will register the extension then use the related configuration to let the server inject it into the <code>index.html</code>.</p>
-</div>
-<div class="paragraph">
-<p>An extension often looks like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">window.yupiikBatchExtensions = (function () {
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>You can add any JDBC driver you want too. Once you have it, you can create a Docker image using the main <code>org.apache.openwebbeans.se.CDILauncher</code> - just use the previous classpath.</p>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p>using <code>jib</code> the docker image creation is very smooth.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_configuration">
+  <h2>Configuration</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+   <col width="25%">
+   <col width="25%">
+   <col width="50%">
+  </colgroup>
+  <thead>
+   <tr>
+    <th>
+Name    </th>
+    <th>
+Env Variable    </th>
+    <th>
+Description    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.database.jobTable</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATABASE_JOBTABLE</code> </p>
+ </div>
+    </td>
+    <td>
+ Job table to query.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.database.stepTable</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATABASE_STEPTABLE</code> </p>
+ </div>
+    </td>
+    <td>
+ Step table to query.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.driver</code> *</p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_DRIVER</code> </p>
+ </div>
+    </td>
+    <td>
+ Datasource driver.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.maxConnections</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_MAXCONNECTIONS</code> </p>
+ </div>
+    </td>
+    <td>
+ Max connections in the pool.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.minEvictableIdleTime</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_MINEVICTABLEIDLETIME</code> </p>
+ </div>
+    </td>
+    <td>
+ How long to await before a connection is considered idled and evictable.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.minIdle</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_MINIDLE</code> </p>
+ </div>
+    </td>
+    <td>
+ Min connections in the pool.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.password</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_PASSWORD</code> </p>
+ </div>
+    </td>
+    <td>
+ Datasource password.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.removeAbandoned</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_REMOVEABANDONED</code> </p>
+ </div>
+    </td>
+    <td>
+ Should connections be removed when abandoned (see related timeout).    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.removeAbandonedTimeout</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_REMOVEABANDONEDTIMEOUT</code> </p>
+ </div>
+    </td>
+    <td>
+ The time in seconds before a connection can be considered abandoned.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.testOnBorrow</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_TESTONBORROW</code> </p>
+ </div>
+    </td>
+    <td>
+ Should connections be tested on borrow time.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.testOnReturn</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_TESTONRETURN</code> </p>
+ </div>
+    </td>
+    <td>
+ Should connections be tested on return to the pool time.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.testWhileIdle</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_TESTWHILEIDLE</code> </p>
+ </div>
+    </td>
+    <td>
+ Should connections be tested in background.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.timeBetweenEvictionRuns</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_TIMEBETWEENEVICTIONRUNS</code> </p>
+ </div>
+    </td>
+    <td>
+ Time between background evictions in ms.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.url</code> *</p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_URL</code> </p>
+ </div>
+    </td>
+    <td>
+ Datasource URL.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.username</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_USERNAME</code> </p>
+ </div>
+    </td>
+    <td>
+ Datasource username.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.validationQuery</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_VALIDATIONQUERY</code> </p>
+ </div>
+    </td>
+    <td>
+ Validation query to validate the connection when enabled.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.datasource.validationQueryTimeout</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_DATASOURCE_VALIDATIONQUERYTIMEOUT</code> </p>
+ </div>
+    </td>
+    <td>
+ How long to await for the validation query.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.queries.countAllJobs</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_QUERIES_COUNTALLJOBS</code> </p>
+ </div>
+    </td>
+    <td>
+ Count all jobs SQL query (for portability), `${table}` is replaced by the table name.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.queries.findAllJobs</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_QUERIES_FINDALLJOBS</code> </p>
+ </div>
+    </td>
+    <td>
+ Find all jobs with pagination SQL query (for portability), `${table}` is replaced by the table name. Parameters can be `${pageSize}`, `${firstIndex}` - inclusive, `${lastIndex}` - exclusive, or `${where}` which would be replaced by a name where clause (`WHERE name = ? `).    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.queries.findJobById</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_QUERIES_FINDJOBBYID</code> </p>
+ </div>
+    </td>
+    <td>
+ Find a job by id SQL query (for portability), `${table}` is replaced by the table name.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.queries.findLastExecutions</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_QUERIES_FINDLASTEXECUTIONS</code> </p>
+ </div>
+    </td>
+    <td>
+ SQL query (for portability) to find last execution of each batch, `${table}` is replaced by the table name.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.queries.findStepsByJobId</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_QUERIES_FINDSTEPSBYJOBID</code> </p>
+ </div>
+    </td>
+    <td>
+ Find aall steps related to a job id SQL query (for portability), `${table}` is replaced by the step table name.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.tomcat.accessLogPattern</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_TOMCAT_ACCESSLOGPATTERN</code> </p>
+ </div>
+    </td>
+    <td>
+ Tomcat access log pattern.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.tomcat.port</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_TOMCAT_PORT</code> </p>
+ </div>
+    </td>
+    <td>
+ Tomcat port.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.backend.tomcat.webUsers</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_BACKEND_TOMCAT_WEBUSERS</code> </p>
+ </div>
+    </td>
+    <td>
+ List of allowed users - by default all are. It uses a properties syntax: `user=password`. Security uses a web BASIC mecanism.    </td>
+   </tr>
+   <tr>
+    <td>
+ <div class="paragraph">
+ <p> <code>yupiik.batch.frontend.extensionsJs</code> </p>
+ </div>
+    </td>
+    <td>
+ <div class="paragraph">
+ <p> <code>YUPIIK_BATCH_FRONTEND_EXTENSIONSJS</code> </p>
+ </div>
+    </td>
+    <td>
+ Javascript path to a Yupiik Batch frontend extension. Script is injected just before yupiik-batch main one, i.e. after libraries ones but note they are minified wih webpack.    </td>
+   </tr>
+  </tbody>
+ </table>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_extend_the_ui">
+  <h2>Extend the UI</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+The UI provides a few extension points to let you enrich it with other utilities.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>First step is to create a javascript file which will register the extension then use the related configuration to let the server inject it into the <code>index.html</code>.</p>
+ </div>
+ <div class="paragraph">
+ <p>
+An extension often looks like:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-javascript hljs" data-lang="javascript">window.yupiikBatchExtensions = (function () {
     return {
         routes: function (React, router, antd, antdIcons) { // custom additional routes
             var e = React.createElement;
@@ -458,22 +682,26 @@ using <code>jib</code> the docker image creation is very smooth.
 
     };
 })();</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-<code>React</code>, <code>react-router</code>, <code>useJsonRpc</code> - a hook to call JSON-RPC server, <code>andt</code> - components, and <code>antdIcons</code> are injected in extension points to let you integrate with the application UI.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
+ </div>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p><code>React</code>, <code>react-router</code>, <code>useJsonRpc</code> - a hook to call JSON-RPC server, <code>andt</code> - components, and <code>antdIcons</code> are injected in extension points to let you integrate with the application UI.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ </div>
+ </div>
                 
                 
             </div>
@@ -486,9 +714,11 @@ using <code>jib</code> the docker image creation is very smooth.
     <footer class="footer pb-5">
 	    <div class="text-center">
 		    <ul class="social-list list-unstyled">
-                <li class="list-inline-item"><a title="Github" href="https://www.github.com/yupiik/"><i class="fab fa-github fa-fw"></i></a></li><li class="list-inline-item"><a title="LinkedIn" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+                <li class="list-inline-item"><a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Twitter" target="_blank" href="https://twitter.com/Yupiik/"><i class="fab fa-twitter fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Github" target="_blank" href="https://www.github.com/yupiik/yupiik-batch"><i class="fab fa-github fa-fw"></i></a></li>
 	        </ul>
-            <small class="copyright">Yupiik &copy;</small> | <a href="https://www.yupiik.com/terms-of-use/">Terms of use</a> | <a href="https://www.yupiik.com/privacy-policy/">Privacy policy</a>
+            <small class="copyright">© 2024 <strong><a href="https://www.yupiik.com">Yupiik</a></strong>. All Rights Reserved</small> | <a href="https://www.yupiik.com/terms-of-use/">Terms of use</a> | <a href="https://www.yupiik.com/privacy-policy/">Privacy policy</a>
 	    </div>
     </footer>
 
@@ -530,7 +760,7 @@ function addCopyButtons(clipboard) {
   document.querySelectorAll('pre > code').forEach(function (codeBlock) {
   var button = document.createElement('button');  button.className = 'copy-code-button';  button.type = 'button';  button.innerText = 'Copy';  button.addEventListener('click', function () {   clipboard.writeText(codeBlock.innerText).then(function () {   button.blur();   button.innerText = 'Copied!';   setTimeout(function () { button.innerText = 'Copy'; }, 2000); }, function (error) { button.innerText = 'Error'; });  });  var pre = codeBlock.parentNode;  if (pre.parentNode.classList.contains('highlight')) {   var highlight = pre.parentNode; highlight.parentNode.insertBefore(button, highlight);  } else { pre.parentNode.insertBefore(button, pre); } });}
 if (navigator && navigator.clipboard) { addCopyButtons(navigator.clipboard);} else { var script = document.createElement('script'); script.src = '//cdnjs.cloudflare.com/ajax/libs/clipboard-polyfill/2.7.0/clipboard-polyfill.promise.js'; script.integrity = 'sha256-waClS2re9NUbXRsryKoof+F9qc1gjjIhc2eT7ZbIv94='; script.crossOrigin = 'anonymous'; script.onload = function() {addCopyButtons(clipboard);}; document.body.appendChild(script);} }</script>
-    <script src="//www.yupiik.io/yupiik-batch/js/minisite.js?v=1.0.5-SNAPSHOT"></script>
+    <script src="//www.yupiik.io/yupiik-batch/js/minisite.js?v=1.0.6-SNAPSHOT"></script>
     <script>$('.page-content-body').generatedNavMenu();</script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.3/fuse.min.js" integrity="sha512-neoBxVNv0UMXjoilAYGxfWrSsW6iAVclx7vQKdPJ9Peet1bM5YQjU0aIB8LtH8iNPa+pAyMZprBBw2ZQ/Q1LjQ==" crossorigin="anonymous"></script>

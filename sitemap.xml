@@ -2,30 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
     <url>
         <loc>//www.yupiik.io/yupiik-batch/generated/ui.configuration.html</loc>
-        <lastmod>2024-03-22</lastmod>
-    </url>
-    <url>
-        <loc>//www.yupiik.io/yupiik-batch/metrics-relay.html</loc>
-        <lastmod>2024-03-22</lastmod>
-    </url>
-    <url>
-        <loc>//www.yupiik.io/yupiik-batch/getting-started.html</loc>
-        <lastmod>2024-03-22</lastmod>
-    </url>
-    <url>
-        <loc>//www.yupiik.io/yupiik-batch/ui.html</loc>
-        <lastmod>2024-03-22</lastmod>
-    </url>
-    <url>
-        <loc>//www.yupiik.io/yupiik-batch/write-your-first-batch.html</loc>
-        <lastmod>2024-03-22</lastmod>
-    </url>
-    <url>
-        <loc>//www.yupiik.io/yupiik-batch/generated/iterators.html</loc>
-        <lastmod>2024-03-22</lastmod>
+        <lastmod>2024-06-06</lastmod>
     </url>
     <url>
         <loc>//www.yupiik.io/yupiik-batch/generated/components.html</loc>
-        <lastmod>2024-03-22</lastmod>
+        <lastmod>2024-06-06</lastmod>
+    </url>
+    <url>
+        <loc>//www.yupiik.io/yupiik-batch/generated/iterators.html</loc>
+        <lastmod>2024-06-06</lastmod>
+    </url>
+    <url>
+        <loc>//www.yupiik.io/yupiik-batch/ui.html</loc>
+        <lastmod>2024-06-06</lastmod>
+    </url>
+    <url>
+        <loc>//www.yupiik.io/yupiik-batch/metrics-relay.html</loc>
+        <lastmod>2024-06-06</lastmod>
+    </url>
+    <url>
+        <loc>//www.yupiik.io/yupiik-batch/getting-started.html</loc>
+        <lastmod>2024-06-06</lastmod>
+    </url>
+    <url>
+        <loc>//www.yupiik.io/yupiik-batch/write-your-first-batch.html</loc>
+        <lastmod>2024-06-06</lastmod>
     </url>
 </urlset>

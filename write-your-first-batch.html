@@ -10,13 +10,93 @@
     <meta name="author" content="Yupiik Minisite Generator">
     <meta name="generator" content="Yupiik Minisite Generator">
     
-    <link rel="shortcut icon" href="//www.yupiik.io/yupiik-batch/images/logo.svg">
+    <link rel="shortcut icon" href="//www.yupiik.io/yupiik-batch/images/favicon.png">
 
     <link href="//fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,700,700i|Montserrat:300,400,500,700" rel="stylesheet">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/asciidoctor.js/1.5.5-5/css/asciidoctor.min.css" integrity="sha512-kI7tn5cuEg16kMeXnYmg8rEJPxbxzEM7Gsr191iQdLDevFBLXPCSU9aZWSVuP61tMZWU3nBAR1cJ7SmXnOGLZw==" crossorigin="anonymous" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" integrity="sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==" crossorigin="anonymous" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/vs2015.min.css" integrity="sha512-w8aclkBlN3Ha08SMwFKXFJqhSUx2qlvTBFLLelF8sm4xQnlg64qmGB/A6pBIKy0W8Bo51yDMDtQiPLNRq1WMcQ==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.7.1/styles/atom-one-dark.min.css" integrity="sha512-Fcqyubi5qOvl+yCwSJ+r7lli+CO1eHXMaugsZrnxuU4DVpLYWXTVoHy55+mCb4VZpMgy7PBhV7IiymC0yu9tkQ==" crossorigin="anonymous" />
+    <style>
+        :root {
+            /* YUPIIK colors (from dark to light) */
+            --yupiik-site-green: #46F72F;
+            --yupiik-site-purple: #D858FF;
+            --yupiik-site-blue-light: #02ABEA;
+            --yupiik-site-blue-dark: #056EBB;
+            --yupiik-site-grey-light: #F4F4F4;
+            --yupiik-site-grey-dark: #212121;
+
+            --yupiik-blue1: var(--yupiik-site-blue-dark);
+            --yupiik-blue2: var(--yupiik-site-blue-dark);
+            --yupiik-blue3: var(--yupiik-site-blue-dark);
+
+            --yupiik-color-white: #fff;
+            --yupiik-color-black: #000;
+
+            --yupiik-color-gray-0: var(--yupiik-color-white);
+            --yupiik-color-gray-100: #f5f6f7;
+            --yupiik-color-gray-200: #ebedf0;
+            --yupiik-color-gray-300: #dadde1;
+            --yupiik-color-gray-400: #ccd0d5;
+            --yupiik-color-gray-500: #bec3c9;
+            --yupiik-color-gray-600: #8d949e;
+            --yupiik-color-gray-700: #606770;
+            --yupiik-color-gray-800: #444950;
+            --yupiik-color-gray-900: #1c1e21;
+            --yupiik-color-gray-1000: var(--yupiik-color-black);
+
+            --yupiik-color-emphasis-0: var(--yupiik-color-gray-0);
+            --yupiik-color-emphasis-100: var(--yupiik-color-gray-100);
+            --yupiik-color-emphasis-200: var(--yupiik-color-gray-200);
+            --yupiik-color-emphasis-300: var(--yupiik-color-gray-300);
+            --yupiik-color-emphasis-400: var(--yupiik-color-gray-400);
+            --yupiik-color-emphasis-500: var(--yupiik-color-gray-500);
+            --yupiik-color-emphasis-600: var(--yupiik-color-gray-600);
+            --yupiik-color-emphasis-700: var(--yupiik-color-gray-700);
+            --yupiik-color-emphasis-800: var(--yupiik-color-gray-800);
+            --yupiik-color-emphasis-900: var(--yupiik-color-gray-900);
+            --yupiik-color-emphasis-1000: var(--yupiik-color-gray-1000);
+            --yupiik-color-content: var(--yupiik-color-emphasis-900);
+
+            --yupiik-font-family-base: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+            --yupiik-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+            --yupiik-font-size-base: 100%;
+
+            --yupiik-font-weight-light: 300;
+            --yupiik-font-weight-normal: 400;
+            --yupiik-font-weight-semibold: 500;
+            --yupiik-font-weight-bold: 700;
+
+            --yupiik-font-weight-base: var(--yupiik-font-weight-normal);
+            --yupiik-line-height-base: 1.65;
+            --yupiik-font-weight-light: 300;
+            --yupiik-font-weight-normal: 400;
+            --yupiik-font-weight-semibold: 500;
+            --yupiik-font-weight-bold: 700;
+
+            --yupiik-font-weight-base: var(--yupiik-font-weight-normal);
+            --yupiik-line-height-base: 1.65;
+
+            --yupiik-global-spacing: 1rem;
+            --yupiik-spacing-vertical: var(--yupiik-global-spacing);
+            --yupiik-spacing-horizontal: var(--yupiik-global-spacing);
+
+            --yupiik-h1-font-size: 2rem;
+            --yupiik-h2-font-size: 1.5rem;
+            --yupiik-h3-font-size: 1.25rem;
+            --yupiik-h4-font-size: 1rem;
+            --yupiik-h5-font-size: 0.875rem;
+            --yupiik-h6-font-size: 0.85rem;
+
+            --yupiik-heading-color: var(--yupiik-blue1);
+            --yupiik-heading-margin-top: 0;
+            --yupiik-heading-margin-bottom: var(--yupiik-spacing-vertical);
+            --yupiik-heading-font-family: var(--yupiik-font-family-base);
+            --yupiik-heading-font-weight: var(--yupiik-font-weight-bold);
+            --yupiik-heading-line-height: 1.25;
+        }
+    </style>
     <style>
             table {
               table-layout: fixed;
@@ -26,7 +106,7 @@
               overflow-x: auto;
             }
             </style>
-    <link id="theme-style" rel="stylesheet" href="//www.yupiik.io/yupiik-batch/css/theme.css?v=1.0.5-SNAPSHOT">
+    <link id="theme-style" rel="stylesheet" href="//www.yupiik.io/yupiik-batch/css/theme.css?v=1.0.6-SNAPSHOT">
 </head>
 <body>
     <header class="header fixed-top">
@@ -35,7 +115,7 @@
                 <div class="docs-logo-wrapper">
 	                <div class="site-logo"><a title="Home" class="navbar-brand" href="//www.yupiik.io/yupiik-batch/index.html">
 	                <img class="logo-icon mr-2" src="//www.yupiik.io/yupiik-batch/images/logo.svg" alt="logo">
-	                <span class="logo-text">Yupiik Batch <span class="text-alt">Docs</span></span></a></div>
+	                <span class="logo-text">Batch <span class="text-alt">Documentation</span></span></a></div>
                 </div>
 	            <div class="docs-top-utilities d-flex justify-content-end align-items-center">
 					
@@ -43,7 +123,9 @@
 
 					<ul class="social-list list-inline mx-md-3 mx-lg-5 mb-0 d-none d-lg-flex">
 						
-						<li class="list-inline-item"><a title="Github" href="https://www.github.com/yupiik/"><i class="fab fa-github fa-fw"></i></a></li><li class="list-inline-item"><a title="LinkedIn" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+						<li class="list-inline-item"><a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Twitter" target="_blank" href="https://twitter.com/Yupiik/"><i class="fab fa-twitter fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Github" target="_blank" href="https://www.github.com/yupiik/yupiik-batch"><i class="fab fa-github fa-fw"></i></a></li>
 		            </ul>
 	            </div>
             </div>
@@ -69,257 +151,290 @@
             </ul>
         </div>
 
-        <div id="write-your-first-batch-html-container" class="container page-content write-your-first-batch-html">
+        <div id="write-your-first-batch-html-container" class="container page-content write-your-first-batch-html ">
                         <div class="page-header">
                 <h1>Write your first batch</h1>
             </div>
             <div class="page-content-body">
                 <div id="preamble">
-<div class="sectionbody">
-<div class="quoteblock abstract">
-<blockquote>
-Writing a batch is mainly about writing a <code>main(String&#8230;&#8203;)</code> method which uses Yupiik Batch compoennts.
-</blockquote>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_create_a_batch">Create a batch</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Implementing a batch is about extending <code>Batch</code> interface:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class MyBatch implements Batch&lt;MyConf&gt; {
+ <div class="sectionbody">
+ <div class="paragraph abstract">
+ <p>Writing a batch is mainly about writing a <code>main(String...)</code> method which uses Yupiik Batch compoennts.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_create_a_batch">
+  <h2>Create a batch</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Implementing a batch is about extending <code>Batch</code> interface:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class MyBatch implements Batch&lt;MyConf&gt; {
     @Override
     public void accept(final MyConf configuration) {
         // ...
     }
 }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>What is important to note is that a batch has a configuration and the configuration is "injected" in <code>accept</code> method.
-This enables the framework to map the main arguments to the configuration in an unified fashion.</p>
-</div>
-<div class="paragraph">
-<p>Once you have a batch implementation, you can run it using <code>Batch</code> launcher method:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public static void main(final String... args) {
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>What is important to note is that a batch has a configuration and the configuration is &quot;injected&quot; in <code>accept</code> method. This enables the framework to map the main arguments to the configuration in an unified fashion.</p>
+ </div>
+ <div class="paragraph">
+ <p>Once you have a batch implementation, you can run it using <code>Batch</code> launcher method:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public static void main(final String... args) {
     Batch.run(MyBatch.class, args);
 }</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_define_your_batch_configuration">Define your batch configuration</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>A batch configuration is a class with field(s) decorated with <code>@Param</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class DataSourceConfiguration {
-    @Param(description = "Driver to use", required = true)
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_define_your_batch_configuration">
+  <h2>Define your batch configuration</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>A batch configuration is a class with field(s) decorated with <code>@Param</code>:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">public class DataSourceConfiguration {
+    @Param(description = &quot;Driver to use&quot;, required = true)
     private String driver;
 
-    @Param(description = "JDBC URL to use", required = true)
+    @Param(description = &quot;JDBC URL to use&quot;, required = true)
     private String url;
 
-    @Param(description = "Database username.")
+    @Param(description = &quot;Database username.&quot;)
     private String username;
 
-    @Param(description = "Database password.")
+    @Param(description = &quot;Database password.&quot;)
     private String password;
 }</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Note</div>
-</td>
-<td class="content">
-fields are injected so they shouldn&#8217;t be <code>final</code> but there is no constraint on having getters/setters.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-<code>io.yupiik.batch.runtime.documentation.ConfigurationParameterCollector</code> class enables to extract all parameters for a batch and then map this extraction to a documentation if needed.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-<code>simple-configuration</code> package enables to use this configuration without all the batch stack.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-passing <code>yupiik.binder.unset</code> enables to make the configuration library to behave as if no configuration was passed to the value.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_reusable_batch_components">Reusable batch components</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Reusable components are in <code>io.yupiik.batch.runtime.component</code> package.
-This section highlights a few of them.</p>
-</div>
-<div class="sect2">
-<h3 id="_io_yupiik_batch_runtime_component_acceptedlossdifffilter">io.yupiik.batch.runtime.component.AcceptedLossDiffFilter</h3>
-<div class="paragraph">
-<p>Enables to filter a <code>Diff</code>. If the <code>acceptedLoss</code> is not reached, i.e. more row would be deleted than this percentage, the chain will end there.</p>
-</div>
-<div class="paragraph">
-<p>Goal is to not delete a database if incoming data are corrupted or not properly up to date.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_io_yupiik_batch_runtime_component_datasetdiffcomputer">io.yupiik.batch.runtime.component.DatasetDiffComputer</h3>
-<div class="paragraph">
-<p>Component which takes as input two iterators representing sorted datasets.</p>
-</div>
-<div class="paragraph">
-<p>Both dataset will be compared - in streaming mode - using the <code>Comparator</code> passed in the constructor/factory method.
-It enables to detect deletions and additions and it will be reflected in the resulting <code>Diff</code> instance.</p>
-</div>
-<div class="paragraph">
-<p>If equals, the <code>BiPredicate</code> will be used to check it is actually equal or not.
-If not the data will be considered updated, otherwise not changed and ignored from the diff.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_io_yupiik_batch_runtime_component_diffexecutor">io.yupiik.batch.runtime.component.DiffExecutor</h3>
-<div class="paragraph">
-<p>Enables to apply a <code>Diff</code> - from a <code>DatasetDiffComputer</code>.</p>
-</div>
-<div class="paragraph">
-<p>It will apply it in a database represented by the <code>connectionSupplier</code> with the provided <code>commitInterval</code>.
-The statements are creating using the related factories - <code>insertFactory</code>, <code>updateFactory</code>, <code>deleteFactory</code>.</p>
-</div>
-<div class="paragraph">
-<p>Finally, <code>dryRun</code> toggle enables to simulate the processing without issuing any modification in the database.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_io_yupiik_batch_runtime_component_mapper">io.yupiik.batch.runtime.component.Mapper</h3>
-<div class="paragraph">
-<p>This mapping component enables to convert an input to an output instance by providing an specification instance.</p>
-</div>
-<div class="paragraph">
-<p>It is a class decorated with <code>@Mapping</code>:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Mapping(
+ </div>
+ </div>
+ <div class="admonitionblock note">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">NOTE</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p>fields are injected so they shouldn't be <code>final</code> but there is no constraint on having getters/setters.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p><code>io.yupiik.batch.runtime.documentation.ConfigurationParameterCollector</code> class enables to extract all parameters for a batch and then map this extraction to a documentation if needed.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p><code>simple-configuration</code> package enables to use this configuration without all the batch stack.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p>passing <code>yupiik.binder.unset</code> enables to make the configuration library to behave as if no configuration was passed to the value.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_reusable_batch_components">
+  <h2>Reusable batch components</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Reusable components are in <code>io.yupiik.batch.runtime.component</code> package. This section highlights a few of them.</p>
+ </div>
+ <div class="paragraph">
+ <div class="sect2" id="_ioyupiikbatchruntimecomponentacceptedlossdifffilter">
+  <h3>io.yupiik.batch.runtime.component.AcceptedLossDiffFilter</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Enables to filter a <code>Diff</code>. If the <code>acceptedLoss</code> is not reached, i.e. more row would be deleted than this percentage, the chain will end there.</p>
+ </div>
+ <div class="paragraph">
+ <p>
+Goal is to not delete a database if incoming data are corrupted or not properly up to date.
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_ioyupiikbatchruntimecomponentdatasetdiffcomputer">
+  <h3>io.yupiik.batch.runtime.component.DatasetDiffComputer</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Component which takes as input two iterators representing sorted datasets.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>Both dataset will be compared - in streaming mode - using the <code>Comparator</code> passed in the constructor/factory method. It enables to detect deletions and additions and it will be reflected in the resulting <code>Diff</code> instance.</p>
+ </div>
+ <div class="paragraph">
+ <p>If equals, the <code>BiPredicate</code> will be used to check it is actually equal or not. If not the data will be considered updated, otherwise not changed and ignored from the diff.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_ioyupiikbatchruntimecomponentdiffexecutor">
+  <h3>io.yupiik.batch.runtime.component.DiffExecutor</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Enables to apply a <code>Diff</code> - from a <code>DatasetDiffComputer</code>.</p>
+ </div>
+ <div class="paragraph">
+ <p>It will apply it in a database represented by the <code>connectionSupplier</code> with the provided <code>commitInterval</code>. The statements are creating using the related factories - <code>insertFactory</code>, <code>updateFactory</code>, <code>deleteFactory</code>.</p>
+ </div>
+ <div class="paragraph">
+ <p>Finally, <code>dryRun</code> toggle enables to simulate the processing without issuing any modification in the database.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_ioyupiikbatchruntimecomponentmapper">
+  <h3>io.yupiik.batch.runtime.component.Mapper</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+This mapping component enables to convert an input to an output instance by providing an specification instance.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>It is a class decorated with <code>@Mapping</code>:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Mapping(
         from = IncomingModel.class,
         to = OutputModel.class,
-        documentation = "Converts an input to an output.",
+        documentation = &quot;Converts an input to an output.&quot;,
         properties = {
-                @Property(type = CONSTANT, to = "outputFieldUrl", value = "https://foo.bar/"),
-                @Property(type = TABLE_MAPPING, from = "inputKeyField", to = "mappedOutput", value = "myLookupTable", onMissedTableLookup = FORWARD)
+                @Property(type = CONSTANT, to = &quot;outputFieldUrl&quot;, value = &quot;https://foo.bar/&quot;),
+                @Property(type = TABLE_MAPPING, from = &quot;inputKeyField&quot;, to = &quot;mappedOutput&quot;, value = &quot;myLookupTable&quot;, onMissedTableLookup = FORWARD)
         },
         tables = {
                 @Mapping.MappingTable(
-                        name = "myLookupTable",
+                        name = &quot;myLookupTable&quot;,
                         entries = {
-                                @Entry(input = "A", output = "1"),
-                                @Entry(input = "C", output = "3")
+                                @Entry(input = &quot;A&quot;, output = &quot;1&quot;),
+                                @Entry(input = &quot;C&quot;, output = &quot;3&quot;)
                         }
                 )
         })
 public class MyMapperSpec {
-    @Mapping.Custom(description = "This will map X to Y.")
-    String outputField(final IncomingModel in[, @Table("myLookupTable") final Map&lt;String, String&gt; myLookupTable) {
+    @Mapping.Custom(description = &quot;This will map X to Y.&quot;)
+    String outputField(final IncomingModel in[, @Table(&quot;myLookupTable&quot;) final Map&lt;String, String&gt; myLookupTable) {
         return ...;
     }
 }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>To get a mapper, you simply call <code>Mapper.mapper(MyMapperSpec.class)</code> and then can insert this mapper in any <code>BatchChain</code>.</p>
-</div>
-<div class="paragraph">
-<p>The specification API enables static mapping (<code>properties</code>) or custom mapping - <code>@Mapping.Custom</code> - for more advanced logic.</p>
-</div>
-<div class="paragraph">
-<p>The companion class <code>io.yupiik.batch.runtime.documentation.MapperDocGenerator</code> enables to generate an asciidoctor documentation for a mapper class.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_io_yupiik_batch_runtime_component_sqlquery">io.yupiik.batch.runtime.component.SQLQuery</h3>
-<div class="paragraph">
-<p>Enables to extract data from a SQL query.</p>
-</div>
-<div class="paragraph">
-<p>A custom mapper will be called for each <code>ResultSet</code> line to convert current row in an object passed to the rest of the <code>BatchChain</code>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_io_yupiik_batch_runtime_component_uship_databasediffexecutor">io.yupiik.batch.runtime.component.uship.DatabaseDiffExecutor</h3>
-<div class="paragraph">
-<p>Enables to apply a <code>Diff</code> - from a <code>DatasetDiffComputer</code> when the entities (diff model) are Yupiik UShip Persistence models.</p>
-</div>
-<div class="paragraph">
-<p>It will apply it in a database with the provided <code>commitInterval</code>.</p>
-</div>
-<div class="paragraph">
-<p><code>dryRun</code> toggle enables to simulate the processing without issuing any modification in the database.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_combine_components">Combine components</h3>
-<div class="paragraph">
-<p>Combining components can be done in a plain main:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">final var referenceData = new ReferenceDataSQLQuery(databaseConnection);
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>To get a mapper, you simply call <code>Mapper.mapper(MyMapperSpec.class)</code> and then can insert this mapper in any <code>BatchChain</code>.</p>
+ </div>
+ <div class="paragraph">
+ <p>The specification API enables static mapping (<code>properties</code>) or custom mapping - <code>@Mapping.Custom</code> - for more advanced logic.</p>
+ </div>
+ <div class="paragraph">
+ <p>The companion class <code>io.yupiik.batch.runtime.documentation.MapperDocGenerator</code> enables to generate an asciidoctor documentation for a mapper class.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_ioyupiikbatchruntimecomponentsqlquery">
+  <h3>io.yupiik.batch.runtime.component.SQLQuery</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Enables to extract data from a SQL query.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>A custom mapper will be called for each <code>ResultSet</code> line to convert current row in an object passed to the rest of the <code>BatchChain</code>.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_ioyupiikbatchruntimecomponentushipdatabasediffexecutor">
+  <h3>io.yupiik.batch.runtime.component.uship.DatabaseDiffExecutor</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Enables to apply a <code>Diff</code> - from a <code>DatasetDiffComputer</code> when the entities (diff model) are Yupiik UShip Persistence models.</p>
+ </div>
+ <div class="paragraph">
+ <p>It will apply it in a database with the provided <code>commitInterval</code>.</p>
+ </div>
+ <div class="paragraph">
+ <p><code>dryRun</code> toggle enables to simulate the processing without issuing any modification in the database.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_combine_components">
+  <h3>Combine components</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Combining components can be done in a plain main:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">final var referenceData = new ReferenceDataSQLQuery(databaseConnection);
 final var newInputs = new MyNewInputs();
 final var comparingProcessor = new ReferencialRowDatasetDiffComputer();
 final var diff = comparingProcessor.apply(referenceData, newInputs);
 if (new AcceptedLossDiffFilter(0.10).test(diff)) {
     new ReferenceDataDiffExecutor(databaseConnection, 25).accept(diff);
 }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>However, for too noisy cases, it can be neat to use a fluent API on the diff to make it more readable and composable.
-Indeed you can use the <code>Stream</code> or <code>Optional</code> API:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// init
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>However, for too noisy cases, it can be neat to use a fluent API on the diff to make it more readable and composable. Indeed you can use the <code>Stream</code> or <code>Optional</code> API:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">// init
 final var diff = new ReferencialRowDatasetDiffComputer()
         .apply(new ReferenceDataSQLQuery(databaseConnection), new MyNewInputs());
 
@@ -332,21 +447,17 @@ Stream.of(diff)
 Optional.of(diff)
     .filter(new AcceptedLossDiffFilter(0.10))
     .ifPresent(new ReferenceDataDiffExecutor(databaseConnection, 25));</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This enables to read more explicitly the flow of processing thanks <code>Stream</code> or <code>Optional</code> fluent API.
-It is also now easier to insert an element or decorate components explicitly.</p>
-</div>
-<div class="paragraph">
-<p>However, these two API are not designed for that and will quickly hit some limitation.
-To make it more batch oriented, parent <code>Batch</code> class enables to define a stream like flow but more batch oriented.
-You have to start your flow by <code>from()</code> or use a specific source such as <code>DatasetDiffComputer</code>.
-For example:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>This enables to read more explicitly the flow of processing thanks <code>Stream</code> or <code>Optional</code> fluent API. It is also now easier to insert an element or decorate components explicitly.</p>
+ </div>
+ <div class="paragraph">
+ <p>However, these two API are not designed for that and will quickly hit some limitation. To make it more batch oriented, parent <code>Batch</code> class enables to define a stream like flow but more batch oriented. You have to start your flow by <code>from()</code> or use a specific source such as <code>DatasetDiffComputer</code>. For example:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">@Override
 public void accept(final MyConfiguration configuration) {
     final var connectionProvider = configuration.datasource.toConnectionProvider();
     referencialRowDatasetDiff()
@@ -357,62 +468,74 @@ public void accept(final MyConfiguration configuration) {
         .then(applyDiff(connectionProvider, configuration.commitInterval, configuration.dryRun, configuration.table))
         .run(runConfiguration(datasource, getClass().getSimpleName(), systemUTC()));
 }</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This DSL is more friendly to the batches we write (integrating with default components).</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Important</div>
-</td>
-<td class="content">
-until you hit <code>run()</code> nothing is done.
-</td>
-</tr>
-</table>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-some components have a static factory to make it more expressive, don&#8217;t hesitate to use it.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Finally, the <code>RunConfiguration</code> enables to intercept any step of the <code>BatchChain</code> defined by the previous DSL.
-Combined with <code>ExecutionTracer</code>, it will let you store any execution and its steps in a database for audit or monitoring/administration purposes.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_async_result">Async result</h3>
-<div class="paragraph">
-<p>It can be neat to pass a step and its result to next step without it being finished.</p>
-</div>
-<div class="paragraph">
-<p>It is often the case for reactive bacthes (one "thread" starts to poll data, next step processes it etc.. but you want to keep the polling and processing split in terms of "step" and tracing).</p>
-</div>
-<div class="paragraph">
-<p>To do that, you can return a <code>BatchPromise</code> which is just a holder of a value (reactive in our example) and a <code>CompletionStage</code> which notifies the batch runtime and tracer when the step is done:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">from()
-  .map("step1", new CommentifiableFunction&lt;Void, BatchPromise&lt;String&gt;&gt;() {
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+This DSL is more friendly to the batches we write (integrating with default components).
+ </p>
+ </div>
+ <div class="admonitionblock important">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">IMPORTANT</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p>until you hit <code>run()</code> nothing is done.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+some components have a static factory to make it more expressive, don't hesitate to use it.    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ <div class="paragraph">
+ <p>Finally, the <code>RunConfiguration</code> enables to intercept any step of the <code>BatchChain</code> defined by the previous DSL. Combined with <code>ExecutionTracer</code>, it will let you store any execution and its steps in a database for audit or monitoring/administration purposes.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_async_result">
+  <h3>Async result</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+It can be neat to pass a step and its result to next step without it being finished.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+It is often the case for reactive bacthes (one &quot;thread&quot; starts to poll data, next step processes it etc.. but you want to keep the polling and processing split in terms of &quot;step&quot; and tracing).
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>To do that, you can return a <code>BatchPromise</code> which is just a holder of a value (reactive in our example) and a <code>CompletionStage</code> which notifies the batch runtime and tracer when the step is done:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">from()
+  .map(&quot;step1&quot;, new CommentifiableFunction&lt;Void, BatchPromise&lt;String&gt;&gt;() {
     @Override
     public BatchPromise&lt;String&gt; apply(final Void o) {
         final var reactiveComponent = runStep1(); // an Observable with RxJava for example
         return BatchPromise.of(reactiveComponent::onItem, reactiveComponent.toCompletionStage());
     }
   })
-  .map("step2", new CommentifiableConsumer&lt;BatchPromise&lt;Void&gt;&gt;() {
+  .map(&quot;step2&quot;, new CommentifiableConsumer&lt;BatchPromise&lt;Void&gt;&gt;() {
     @Override
     public BatchPromise&lt;Void&gt; apply(final BatchPromise&lt;Observable&gt; in) {
         final var promise = new CompletableFuture&lt;Void&gt;();
@@ -427,114 +550,155 @@ Combined with <code>ExecutionTracer</code>, it will let you store any execution 
     }
   })
   .run(tracingConfig);</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>So overall the step1 starts to read some data and emiiting it when step2 starts and subscribes to it.</p>
-</div>
-<div class="paragraph">
-<p>When step1 is done it notifies the batch runtime it is ok and the tracer (or runtime) will stop the thread 1 monitoring.</p>
-</div>
-<div class="paragraph">
-<p>Step2 being asynchronous too (due to its reactive nature, it also emits a <code>BatchPromise</code> leading to the same kind of behavior).</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-thanks to this trick, you can run a concurrent job with a flat chain since you can pass in the <code>BatchRuntime</code> a complex value which would represent each branch of your concurrent batch.
-</td>
-</tr>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_reusable_iterators">Reusable Iterators</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Reusable iterators are either provided through <code>FluentIterator</code> or extensions (in this case you must add a dependency to get it).</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_io_yupiik_batch_iterator_excel_component_exceliterator">io.yupiik.batch.iterator.excel.component.ExcelIterator</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Reads an excel file sheet row by row.</p>
-</div>
-<div class="sect2">
-<h3 id="_factories">Factories</h3>
-<div class="sect3">
-<h4 id="_a_exceliteratora_exceliterator_ofpathintrowmappera">&lt;A&gt; ExcelIterator&lt;A&gt; ExcelIterator.of(Path,int,RowMapper&lt;A&gt;)</h4>
-<div class="paragraph">
-<p>Creates a new <code>ExcelIterator</code> with a custom row mapper.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_exceliteratorliststring_exceliterator_oflinespathint">ExcelIterator&lt;List&lt;String&gt;&gt; ExcelIterator.ofLines(Path,int)</h4>
-<div class="paragraph">
-<p>Creates a new <code>ExcelIterator</code> with a default row mapper mapping lines as <code>List&lt;String&gt;</code>.</p>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_dependency">Dependency</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+So overall the step1 starts to read some data and emiiting it when step2 starts and subscribes to it.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>
+When step1 is done it notifies the batch runtime it is ok and the tracer (or runtime) will stop the thread 1 monitoring.
+ </p>
+ </div>
+ <div class="paragraph">
+ <p>Step2 being asynchronous too (due to its reactive nature, it also emits a <code>BatchPromise</code> leading to the same kind of behavior).</p>
+ </div>
+ <div class="admonitionblock tip">
+  <table>
+    <tbody>
+     <tr>
+      <td class="icon">
+     <div class="title">TIP</div>
+       </td>
+      <td class="content">
+ <div class="paragraph">
+ <p>thanks to this trick, you can run a concurrent job with a flat chain since you can pass in the <code>BatchRuntime</code> a complex value which would represent each branch of your concurrent batch.</p>
+ </div>
+    </td>
+   </tr>
+      </tbody>
+  </table>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_reusable_iterators">
+  <h2>Reusable Iterators</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Reusable iterators are either provided through <code>FluentIterator</code> or extensions (in this case you must add a dependency to get it).</p>
+ </div>
+ <div class="sect1" id="_ioyupiikbatchiteratorexcelcomponentexceliterator">
+  <h2>io.yupiik.batch.iterator.excel.component.ExcelIterator</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Reads an excel file sheet row by row.
+ </p>
+ </div>
+ <div class="sect2" id="_factories">
+  <h3>Factories</h3>
+ <div class="sectionbody">
+ <div class="sect3" id="_ltagt_exceliteratorltagt_exceliteratorofpathintrowmapperltagt">
+  <h4>&lt;A&gt; ExcelIterator&lt;A&gt; ExcelIterator.of(Path,int,RowMapper&lt;A&gt;)</h4>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Creates a new <code>ExcelIterator</code> with a custom row mapper.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect3" id="_exceliteratorltlistltstringgtgt_exceliteratoroflinespathint">
+  <h4>ExcelIterator&lt;List&lt;String&gt;&gt; ExcelIterator.ofLines(Path,int)</h4>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Creates a new <code>ExcelIterator</code> with a default row mapper mapping lines as <code>List&lt;String&gt;</code>.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect2" id="_dependency">
+  <h3>Dependency</h3>
+ <div class="sectionbody">
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
   &lt;groupId&gt;io.yupiik.batch&lt;/groupId&gt;
   &lt;artifactId&gt;excel-iterator&lt;/artifactId&gt;
   &lt;version&gt;${yupiik-batch.version}&lt;/version&gt;
 &lt;/dependency&gt;</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_tip">TIP</h2>
-<div class="sectionbody">
-<div class="ulist">
-<ul>
-<li>
-<p>Use <code>FluentIterator</code> to <code>filter</code> and <code>map</code> your input <code>Iterator</code>, it makes the code more readable and adds some features <code>Stream</code> does not have like a more advanced <code>distinct</code> implementation.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Here is a sample input iterator written using <code>FluentIterator</code> and filtering its data with some business rule on the raw input and post processing the mapped data with <code>PspRolePasswordInjector</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">final var iterator = FluentIterator.of(myIterator()) <b class="conum">(1)</b>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect1" id="_tip">
+  <h2>TIP</h2>
+ <div class="sectionbody">
+ <div class="ulist">
+ <ul>
+  <li>
+ <div class="paragraph">
+ <p>Use <code>FluentIterator</code> to <code>filter</code> and <code>map</code> your input <code>Iterator</code>, it makes the code more readable and adds some features <code>Stream</code> does not have like a more advanced <code>distinct</code> implementation.</p>
+ </div>
+  </li>
+ </ul>
+ </div>
+ <div class="paragraph">
+ <p>Here is a sample input iterator written using <code>FluentIterator</code> and filtering its data with some business rule on the raw input and post processing the mapped data with <code>PspRolePasswordInjector</code>.</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-java hljs" data-lang="java">final var iterator = FluentIterator.of(myIterator()) <b class="conum">(1)</b>
         .filter(new MyBusinessFilter()) <b class="conum">(2)</b>
         .map(new MyBusinessMapper()) <b class="conum">(3)</b>
         .unwrap(); <b class="conum">(4)</b></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>Create a <code>FluentIterator</code> from <code>myIterator()</code> result,</p>
-</li>
-<li>
-<p>Filter the iterator with a <code>Predicate</code>,</p>
-</li>
-<li>
-<p>Map the iterator data to another model with a `Mapper&gt;,</p>
-</li>
-<li>
-<p>Remove the enclosing <code>FluentIterator</code> wrapper which is not needed once the full iterator chain is defined (optional).</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
+ </div>
+ </div>
+ <div class="colist arabic">
+  <ol>
+   <li>
+ <span>
+Create a 
+ </span>
+<code>FluentIterator</code> <span>
+ from 
+ </span>
+<code>myIterator()</code> <span>
+ result,
+ </span>
+   </li>
+   <li>
+ <span>
+Filter the iterator with a 
+ </span>
+<code>Predicate</code> <span>
+,
+ </span>
+   </li>
+   <li>
+ <span>
+Map the iterator data to another model with a `Mapper&gt;,
+ </span>
+   </li>
+   <li>
+ <span>
+Remove the enclosing 
+ </span>
+<code>FluentIterator</code> <span>
+ wrapper which is not needed once the full iterator chain is defined (optional).
+ </span>
+   </li>
+  </ol>
+ </div>
+ </div>
+ </div>
                 
                 
             </div>
@@ -547,9 +711,11 @@ thanks to this trick, you can run a concurrent job with a flat chain since you c
     <footer class="footer pb-5">
 	    <div class="text-center">
 		    <ul class="social-list list-unstyled">
-                <li class="list-inline-item"><a title="Github" href="https://www.github.com/yupiik/"><i class="fab fa-github fa-fw"></i></a></li><li class="list-inline-item"><a title="LinkedIn" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+                <li class="list-inline-item"><a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Twitter" target="_blank" href="https://twitter.com/Yupiik/"><i class="fab fa-twitter fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Github" target="_blank" href="https://www.github.com/yupiik/yupiik-batch"><i class="fab fa-github fa-fw"></i></a></li>
 	        </ul>
-            <small class="copyright">Yupiik &copy;</small> | <a href="https://www.yupiik.com/terms-of-use/">Terms of use</a> | <a href="https://www.yupiik.com/privacy-policy/">Privacy policy</a>
+            <small class="copyright">© 2024 <strong><a href="https://www.yupiik.com">Yupiik</a></strong>. All Rights Reserved</small> | <a href="https://www.yupiik.com/terms-of-use/">Terms of use</a> | <a href="https://www.yupiik.com/privacy-policy/">Privacy policy</a>
 	    </div>
     </footer>
 
@@ -591,7 +757,7 @@ function addCopyButtons(clipboard) {
   document.querySelectorAll('pre > code').forEach(function (codeBlock) {
   var button = document.createElement('button');  button.className = 'copy-code-button';  button.type = 'button';  button.innerText = 'Copy';  button.addEventListener('click', function () {   clipboard.writeText(codeBlock.innerText).then(function () {   button.blur();   button.innerText = 'Copied!';   setTimeout(function () { button.innerText = 'Copy'; }, 2000); }, function (error) { button.innerText = 'Error'; });  });  var pre = codeBlock.parentNode;  if (pre.parentNode.classList.contains('highlight')) {   var highlight = pre.parentNode; highlight.parentNode.insertBefore(button, highlight);  } else { pre.parentNode.insertBefore(button, pre); } });}
 if (navigator && navigator.clipboard) { addCopyButtons(navigator.clipboard);} else { var script = document.createElement('script'); script.src = '//cdnjs.cloudflare.com/ajax/libs/clipboard-polyfill/2.7.0/clipboard-polyfill.promise.js'; script.integrity = 'sha256-waClS2re9NUbXRsryKoof+F9qc1gjjIhc2eT7ZbIv94='; script.crossOrigin = 'anonymous'; script.onload = function() {addCopyButtons(clipboard);}; document.body.appendChild(script);} }</script>
-    <script src="//www.yupiik.io/yupiik-batch/js/minisite.js?v=1.0.5-SNAPSHOT"></script>
+    <script src="//www.yupiik.io/yupiik-batch/js/minisite.js?v=1.0.6-SNAPSHOT"></script>
     <script>$('.page-content-body').generatedNavMenu();</script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.3/fuse.min.js" integrity="sha512-neoBxVNv0UMXjoilAYGxfWrSsW6iAVclx7vQKdPJ9Peet1bM5YQjU0aIB8LtH8iNPa+pAyMZprBBw2ZQ/Q1LjQ==" crossorigin="anonymous"></script>
