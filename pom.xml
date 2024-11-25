@@ -35,6 +35,9 @@
     <fusion.version>1.0.21</fusion.version>
     <tomcat.version>10.1.33</tomcat.version>
     <xbean.version>4.24</xbean.version>
+    <commons-compress.version>1.26.2</commons-compress.version>
+    <commons-io.version>2.18.0</commons-io.version>
+    <h2.version>2.2.224</h2.version>
   </properties>
 
   <modules>
@@ -52,7 +55,7 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>2.2.224</version>
+        <version>${h2.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -63,7 +66,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.26.2</version>
+        <version>${commons-compress.version}</version>
         <!-- [CVE-2024-47554] in commons-io:commons-io:jar:2.11.0 -->
         <exclusions>
           <exclusion>
@@ -75,7 +78,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.18.0</version>
+        <version>${commons-io.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
