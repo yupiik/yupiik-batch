@@ -30,10 +30,10 @@
   <properties>
     <junit5.version>5.10.2</junit5.version>
     <owb.version>2.0.27</owb.version>
-    <uship.version>1.0.17</uship.version>
+    <uship.version>1.0.19</uship.version>
     <yupiik-logging.version>1.0.8</yupiik-logging.version>
-    <fusion.version>1.0.18</fusion.version>
-    <tomcat.version>10.1.24</tomcat.version>
+    <fusion.version>1.0.21</fusion.version>
+    <tomcat.version>10.1.33</tomcat.version>
     <xbean.version>4.24</xbean.version>
   </properties>
 
@@ -63,7 +63,19 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-compress</artifactId>
-        <version>1.26.1</version>
+        <version>1.26.2</version>
+        <!-- [CVE-2024-47554] in commons-io:commons-io:jar:2.11.0 -->
+        <exclusions>
+          <exclusion>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.18.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
