@@ -41,7 +41,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jdbc</artifactId>
-      <version>10.0.27</version>
+      <version>${tomcat.version}</version>
     </dependency>
 
     <!-- we will bundle the front in the server to simplify the deployment -->
@@ -55,6 +55,17 @@
       <groupId>org.apache.openwebbeans</groupId>
       <artifactId>openwebbeans-junit5</artifactId>
       <version>${owb.version}</version>
+      <!-- conflict with jsonrpc-core dependencies -->
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.xbean</groupId>
+          <artifactId>xbean-asm9-shaded</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.xbean</groupId>
+          <artifactId>xbean-finder-shaded</artifactId>
+        </exclusion>
+      </exclusions>
       <classifier>jakarta</classifier>
       <scope>test</scope>
     </dependency>
