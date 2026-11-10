@@ -24,38 +24,40 @@ env:
 jobs:
   build:
     name: Main Build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Clone
-        uses: actions/checkout@v1
+        uses: actions/checkout@v7
       - name: Cache Maven Repository
-        uses: actions/cache@v1
+        uses: actions/cache@v6
         with:
           path: /home/runner/work/yupiik-batch/yupiik-batch/.m2
           key: m2_repository
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v6
         with:
-          java-version: '17.0.3'
+          distribution: temurin
+          java-version: '17'
       - name: Build
         run: mvn install -Dm2.location=/home/runner/work/yupiik-batch/yupiik-batch/.m2
       - name: Remove Snapshots Before Caching
         run: find /home/runner/work/yupiik-batch/yupiik-batch/.m2 -name '*SNAPSHOT' | xargs rm -Rf
   security_audit:
     name: Security Audit
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Clone
-        uses: actions/checkout@v1
+        uses: actions/checkout@v7
       - name: Cache Maven Repository
-        uses: actions/cache@v1
+        uses: actions/cache@v6
         with:
           path: /home/runner/work/yupiik-batch/yupiik-batch/.m2
           key: m2_repository
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v6
         with:
-          java-version: '17.0.3'
+          distribution: temurin
+          java-version: '17'
       - name: Build
         run: mvn install -DskipTests ossindex:audit
       - name: Remove Snapshots Before Caching
