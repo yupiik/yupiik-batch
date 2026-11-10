@@ -63,3 +63,21 @@ You can set the query param `ignoreDrop` to `true` (default is `false`) to disab
 ----
 curl http://localhost:8080/relay?ignoreDrop=true
 ----
+
+== Monitoring
+
+The metrics relay starts a dedicated monitoring server (by default on port `8181`) exposing:
+
+* `/health`: HTTP 200 when the relay is healthy (`/health?type=live` to only run liveness checks),
+* `/metrics`: the relay own metrics in OpenMetrics format.
+
+It relies on the monitoring server of the Fusion HTTP server and can be configured with system properties or environment variables:
+
+[options="header",cols="a,a,1a"]
+|===
+| System property | Environment variable | Default
+| `fusion.http-server.monitoring.enabled` | `FUSION_HTTP_SERVER_MONITORING_ENABLED` | `true`
+| `fusion.http-server.monitoring.port` | `FUSION_HTTP_SERVER_MONITORING_PORT` | `8181`
+|===
+
+NOTE: the former `fusion.observability.server.port` key (Fusion < 1.1) is still supported when `fusion.http-server.monitoring.port` is not set.
