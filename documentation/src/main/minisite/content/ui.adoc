@@ -5,11 +5,9 @@
 :minisite-index-icon: mouse
 
 [abstract]
-Yupiik Batch provides an UI which can be used to visualize a database populated using `ExecutionTracer`.
+Yupiik Batch provides a UI to visualize a database populated using `ExecutionTracer`.
 
 == Dependency
-
-The dependency to use is:
 
 [source,xml]
 ----
@@ -20,98 +18,111 @@ The dependency to use is:
 </dependency>
 ----
 
-You can add any JDBC driver you want too.
-Once you have it, you can create a Docker image using the main `org.apache.openwebbeans.se.CDILauncher` - just use the previous classpath.
+Add the JDBC driver for your database.
+You can create a Docker image using the main `org.apache.openwebbeans.se.CDILauncher` and this classpath.
 
-TIP: using `jib` the docker image creation is very smooth.
+TIP: Using `jib` makes Docker image creation straightforward.
 
 == Configuration
 
 include::content/generated/ui.configuration.adoc[]
 
+== Develop the frontend
+
+The frontend uses Rsbuild, React 19, React Router 7 in declarative mode, and Ant Design 6.
+Maven installs Node 24.22.3 and npm 12.2.2, uses `npm ci --include=dev --include=optional`, runs lint and focused tests, and builds the resources packaged by the Java backend.
+Run these commands in `yupiik-batch-ui/yupiik-batch-ui-frontend` with the same Node/npm versions:
+
+[source,sh]
+----
+npm ci --include=dev --include=optional
+npm run check
+npm start
+----
+
+The development server binds to localhost on port 3000 and uses the checked-in JSON-RPC fixtures by default.
+To use a running local Java backend instead, start it with `BATCH_BACKEND=http://localhost:8080 npm start`.
+Only `/jsonrpc` is proxied, to an HTTP localhost origin; this is not a production proxy.
+The development middleware rejects foreign Host/Origin values and bounds request bodies and mock batch sizes.
+Do not expose the development server publicly.
+
+`npm run build` writes to `target/classes/META-INF/resources`, with generated assets below `/static/` and a CRA-shaped `asset-manifest.json` containing `files` and ordered `entrypoints`.
+Production browser targets retain the existing Browserslist policy; this does not promise support for browser versions no longer supported by React or Ant Design.
+The Java server serves SPA deep links separately from static resources, so missing assets return 404 rather than the application shell.
+
+Run `npm run audit:dependencies` for the full dependency audit, including build tools.
+A successful build is not a clean security audit.
+
 == Extend the UI
 
-The UI provides a few extension points to let you enrich it with other utilities.
+Configure the server's frontend extension JavaScript URL to load a classic script registering `window.yupiikBatchExtensions`.
+The script is deferred and precedes every initial application bundle.
+Registration must be synchronous; promises and dynamic imports in that script are not awaited.
+The HTML template contains a unique `<!--yupiik-batch-extensions-->` marker, which must remain before all initial deferred scripts.
+Do not remove it when customizing the template.
 
-First step is to create a javascript file which will register the extension then use the related configuration to let the server inject it into the `index.html`.
+WARNING: This upgrade changes the injected libraries to React 19, Router 7, and Ant Design 6.
+Extensions using `ReactDOM.render`, `withRouter`, `Switch`, `Redirect`, `PageHeader`, or removed Ant Design child-component APIs must migrate.
+There is no emulation of the old APIs.
 
-An extension often looks like:
+Hooks receive the shared library registry as an object, not separate positional library arguments:
 
 [source,javascript]
 ----
-window.yupiikBatchExtensions = (function () {
-    return {
-        routes: function (React, router, antd, antdIcons) { // custom additional routes
-            var e = React.createElement;
-
-            // foo extension (content + breadcrumb)
-            function Foo() {
-                return e(router.Link, { to: '/extensions/foo' }, ['Foo link']);
-            }
-            function FooBreadcrumb() {
-                return e(antd.Breadcrumb, null, [
-                    e(antd.Breadcrumb.Item, null, [
-                        e(router.Link, { to: '/' }, [
-                            e(antdIcons.HomeOutlined, null, null),
-                        ]),
-                    ]),
-                    e(antd.Breadcrumb.Item, null, [
-                        e('span', null, ['Files']),
-                    ]),
-                ]);
-            }
-            Foo.Breadcrumb = vBreadcrumb;
-
-            // register extension routes
-            return [
-                {
-                    path: '/extensions/foo',
-                    component: Foo,
-                    sider: {
-                        selectedKey: 'foo',
-                        menu: {
-                            attributes: {
-                                icon: e(antdIcons.FileOutlined, null, null),
-                            },
-                            content: e(router.Link, { to: '/extensions/foo' }, 'Foo'),
-                        },
-                    },
+window.yupiikBatchExtensions = {
+    routes: function ({ React, router, antd, antdIcons }) {
+        const e = React.createElement;
+        function Foo() {
+            return e(router.Link, { to: '/' }, 'Back home');
+        }
+        Foo.Breadcrumb = function () {
+            return e(antd.Breadcrumb, { items: [
+                { title: e(router.Link, { to: '/' }, e(antdIcons.HomeOutlined)) },
+                { title: 'Foo' },
+            ] });
+        };
+        return [{
+            path: '/extensions/foo',
+            component: Foo,
+            sider: {
+                selectedKey: 'foo',
+                menu: {
+                    attributes: { icon: e(antdIcons.FileOutlined) },
+                    content: e(router.Link, { to: '/extensions/foo' }, 'Foo'),
                 },
-            ];
-        },
-
-        // wrap comments - if you want to match a pattern to add links or components
-        commentWrapper: function (comment, React, router, antd, antdIcons) {
-            return `THIS IS A COMMENT: ${comment}`;
-        },
-
-        // enables to overwrite parts of the routes
-        routeDecorator: function (route) { return route; },
-
-        // enables to change the columns of the tables, method is the JSON-RPC methods called for the table
-        tableColumnsWrapper: function ({ columns, method }) {
-            return columns;
-        },
-        // enables to add headers into your fetchJsonRPC calls
-        fetchJsonRpcHeaders: function() {
-          return {
-            'header1':'value',
-            'header2':'value',
-          }
-        },
-        // Enables to wrap the Yupiik Batch App in high order component, for logging or else
-        // React and antd must be passed to the components  (library import will not work)
-        bootstrap: function ({ ReactDOM, React , App, antd }) {
-            ReactDOM.render(
-                <React.StrictMode>
-                    <ExampleWrapper app={App}  />
-                </React.StrictMode>,
-                document.getElementById('root')
-            );
-        },
-
-    };
-})();
+            },
+        }];
+    },
+    commentWrapper: function (comment, { React }) {
+        return React.createElement('span', null, comment);
+    },
+    routeDecorator: function (route, registry) {
+        return route;
+    },
+    tableColumnsWrapper: function ({ columns, method }, registry) {
+        return columns;
+    },
+    fetchJsonRpcHeaders: function () {
+        return { 'X-Example': 'value' };
+    },
+};
 ----
 
-TIP: `React`, `react-router`, `useJsonRpc` - a hook to call JSON-RPC server, `andt` - components, and `antdIcons` are injected in extension points to let you integrate with the application UI.
+Use explicit `/*` route suffixes for descendant matching; the old `exact` flag has no effect.
+Router 7 ranks specific routes ahead of wildcard routes, rather than using Router 5's first prefix match.
+Avoid duplicate paths and keep custom routes under `/extensions/` so Java deep-link routing can serve them.
+The registry contains `React`, `ReactDOMClient`, `router`, `fetchJsonRpc`, `antd`, and `antdIcons`.
+`fetchJsonRpc(method, params, dispatch)` returns a cleanup function that aborts the request; return it from an effect to cancel stale requests.
+
+An optional bootstrap override receives `{ ReactDOMClient, React, App, antd }` and takes full ownership of creating and rendering the root:
+
+[source,javascript]
+----
+window.yupiikBatchExtensions.bootstrap = function ({ ReactDOMClient, React, App }) {
+    const root = ReactDOMClient.createRoot(document.getElementById('root'));
+    root.render(React.createElement(React.StrictMode, null, React.createElement(App)));
+};
+----
+
+Do not create another root on the same DOM node or invoke bootstrap twice.
+Plain extension scripts use `React.createElement`; JSX requires a separate build step.

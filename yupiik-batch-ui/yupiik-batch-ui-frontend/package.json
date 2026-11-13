@@ -3,46 +3,31 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "antd": "^4.22.2",
-    "react": "^18.0.2",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^5.3.0",
-    "react-scripts": "^5.0.1",
-    "web-vitals": "^2.1.4"
+    "@ant-design/icons": "6.3.4",
+    "antd": "6.7.0",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router-dom": "7.18.5",
+    "web-vitals": "6.2.3"
   },
   "devDependencies": {
-    "json-rpc-2.0": "0.2.18"
-  },
-  "overrides": {
-    "nth-check": "^2.1.1",
-    "ws@^7": "^7.5.13",
-    "resolve-url-loader": {
-      "postcss": "^8.5.32"
-    },
-    "serialize-javascript": "^7.1.4"
+    "@eslint/js": "10.0.1",
+    "@rsbuild/core": "2.3.2",
+    "@rsbuild/plugin-react": "2.1.1",
+    "eslint": "10.14.0",
+    "globals": "17.14.0",
+    "json-rpc-2.0": "1.8.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "BUILD_PATH=target/classes/META-INF/resources react-scripts build",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "start": "rsbuild dev",
+    "build": "rsbuild build",
+    "lint": "eslint src dev test rsbuild.config.mjs eslint.config.mjs",
+    "test": "node --test test/*.test.mjs src/service/*.test.mjs",
+    "check": "npm run lint && npm test",
+    "audit:dependencies": "npm audit --include=dev"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "proxy": "http://localhost:8080"
+    "production": [">0.2%", "not dead", "not op_mini all"],
+    "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
+  }
 }

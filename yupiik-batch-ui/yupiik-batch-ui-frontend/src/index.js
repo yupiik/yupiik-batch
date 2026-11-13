@@ -1,26 +1,18 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import * as ReactDOMClient from 'react-dom/client';
+import * as antd from 'antd';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-
-import 'antd/dist/antd.min.css'
-import * as antd from 'antd';
-
+import 'antd/dist/reset.css';
 import './index.css';
-import extensions from "./extensions/extensions";
+import extensions from './extensions/extensions';
 
-
-
-const bootstrap = (extensions.bootstrap || (function ({ ReactDOM, React , App, antd }) {
-  ReactDOM.render(
+const bootstrap = extensions.bootstrap || (({ ReactDOMClient, React, App }) => {
+  ReactDOMClient.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
       <App />
-    </React.StrictMode>,
-    document.getElementById('root')
+    </React.StrictMode>
   );
-  // If you want to start measuring performance in your app, pass a function
-  // to log results (for example: reportWebVitals(console.log))
-  // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
   reportWebVitals();
-}));
-bootstrap({ ReactDOM, React , App, antd });
+});
+bootstrap({ ReactDOMClient, React, App, antd });

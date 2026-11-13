@@ -3,9 +3,7 @@ import { Breadcrumb } from 'antd';
 
 function HomeBreadcrumb() {
     return (
-        <Breadcrumb>
-            <Breadcrumb.Item><HomeOutlined /></Breadcrumb.Item>
-        </Breadcrumb>
+        <Breadcrumb items={[{ title: <HomeOutlined /> }]} />
     );
 }
 

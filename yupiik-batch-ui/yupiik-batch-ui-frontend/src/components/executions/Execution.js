@@ -1,66 +1,54 @@
 import { HomeOutlined } from '@ant-design/icons';
-import { Alert, Breadcrumb, Descriptions, PageHeader, Skeleton, Tag } from 'antd';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
+import { Alert, Breadcrumb, Descriptions, Skeleton, Tag, Typography } from 'antd';
+import { useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import extensions from '../../extensions/extensions';
 import { fetchJsonRpc } from '../../service/fetchJsonRpc';
 import './Execution.css';
-import {duration, ReportTable} from './ReportTable';
+import { duration, ReportTable } from './ReportTable';
 import { getStatusColor } from './status';
 
 function ExecutionBreadcrumb() {
     const { id } = useParams();
-    return (
-        <Breadcrumb>
-            <Breadcrumb.Item><Link to="/"><HomeOutlined /></Link></Breadcrumb.Item>
-            <Breadcrumb.Item><Link to="/executions">Executions</Link></Breadcrumb.Item>
-            <Breadcrumb.Item>{id}</Breadcrumb.Item>
-        </Breadcrumb>
-    );
+    return <Breadcrumb items={[
+        { title: <Link to="/"><HomeOutlined /></Link> },
+        { title: <Link to="/executions">Executions</Link> },
+        { title: id },
+    ]} />;
 }
 
-function Execution(props) {
+function Execution({ state, dispatch }) {
     const { id } = useParams();
-    const [idValue] = useState({ id });
-    const {state, dispatch}= props;
-    useEffect(() => fetchJsonRpc('yupiik-batch-execution', idValue, dispatch), [idValue,dispatch]);
+    useEffect(() => fetchJsonRpc('yupiik-batch-execution', { id }, dispatch), [id, dispatch]);
 
     if (state['yupiik-batch-execution-loading-state']) {
-        return (<Skeleton active />);
+        return <Skeleton active />;
     }
-
     const error = state['yupiik-batch-execution-error'];
     if (error) {
-        return (
-            <div className="execution">
-                <Alert message="Error" description={error.message} type="error" showIcon />
-            </div>
-        );
+        return <Alert title="Error" description={error.message} type="error" showIcon />;
     }
-
     const data = state['yupiik-batch-execution-data'];
     if (!data) {
-        return (<Skeleton active />);
+        return <Skeleton active />;
     }
-
     return (
         <div className="execution">
-            <PageHeader title={`Job Execution #${id}`} />
-            <Descriptions layout="horizontal" bordered column={2}>
-                <Descriptions.Item label="Name">{data.name}</Descriptions.Item>
-                <Descriptions.Item label="Status">
+            <Typography.Title level={4}>Job Execution #{id}</Typography.Title>
+            <Descriptions layout="horizontal" bordered column={{ xs: 1, sm: 1, md: 2 }} items={[
+                { key: 'name', label: 'Name', children: data.name },
+                { key: 'status', label: 'Status', children: (
                     <Tag color={getStatusColor(data.status || '-')}>
                         {(data.status || '-').toUpperCase()}
                     </Tag>
-                </Descriptions.Item>
-                <Descriptions.Item label="Started">{data.started}</Descriptions.Item>
-                <Descriptions.Item label="Finished">{data.finished}</Descriptions.Item>
-                <Descriptions.Item label="Duration">{duration(data)}</Descriptions.Item>
-                <Descriptions.Item label="Comment">{extensions.commentWrapper(data.comment)}</Descriptions.Item>
-            </Descriptions>
+                ) },
+                { key: 'started', label: 'Started', children: data.started },
+                { key: 'finished', label: 'Finished', children: data.finished },
+                { key: 'duration', label: 'Duration', children: duration(data) },
+                { key: 'comment', label: 'Comment', children: extensions.commentWrapper(data.comment) },
+            ]} />
             <div>
-                <PageHeader title="Steps" />
+                <Typography.Title level={4}>Steps</Typography.Title>
                 <ReportTable
                     idRenderer={id => id}
                     data={data.steps}

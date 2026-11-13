@@ -31,6 +31,8 @@ import static java.util.Objects.requireNonNull;
 
 @Dependent
 public class FrontendRouter extends HttpServlet {
+    private static final String EXTENSIONS_MARKER = "<!--yupiik-batch-extensions-->";
+
     @Inject
     private Configuration configuration;
 
@@ -59,16 +61,21 @@ public class FrontendRouter extends HttpServlet {
     }
 
     private byte[] rewrite(final String indexHtml) {
-        final var js = configuration.getFrontendExtensionsJs();
-        if (js != null && !js.isBlank()) {
-            final int start = indexHtml.indexOf("<script defer=\"defer\" src=\"/static/js/main.");
-            if (start < 0) {
-                throw new IllegalArgumentException("Unexpected html");
-            }
-            return (indexHtml.substring(0, start) +
-                    "<script defer=\"defer\" src=\"" + js + "\"></script>" +
-                    indexHtml.substring(start)).getBytes(StandardCharsets.UTF_8);
+        final int marker = indexHtml.indexOf(EXTENSIONS_MARKER);
+        if (marker < 0) {
+            throw new IllegalArgumentException("Missing frontend extensions marker: " + EXTENSIONS_MARKER);
         }
-        return indexHtml.getBytes(StandardCharsets.UTF_8);
+        if (indexHtml.indexOf(EXTENSIONS_MARKER, marker + EXTENSIONS_MARKER.length()) >= 0) {
+            throw new IllegalArgumentException("Duplicate frontend extensions marker: " + EXTENSIONS_MARKER);
+        }
+        final var js = configuration.getFrontendExtensionsJs();
+        final var extension = js == null || js.isBlank() ? "" :
+                "<script defer=\"defer\" src=\"" + js.replace("&", "&amp;")
+                        .replace("\"", "&quot;")
+                        .replace("'", "&#39;")
+                        .replace("<", "&lt;")
+                        .replace(">", "&gt;") + "\"></script>";
+        return (indexHtml.substring(0, marker) + extension +
+                indexHtml.substring(marker + EXTENSIONS_MARKER.length())).getBytes(StandardCharsets.UTF_8);
     }
 }

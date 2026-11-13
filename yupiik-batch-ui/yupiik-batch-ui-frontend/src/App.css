@@ -23,6 +23,7 @@
 }
 .site-layout {
     padding: 0 50px !important;
+    min-width: 0;
 }
 .ant-layout-sider-children > svg {
     margin: auto;
@@ -36,4 +37,16 @@
 }
 .ant-layout-footer {
     text-align: center !important;
+}
+pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+@media (max-width: 767px) {
+    .site-layout {
+        padding: 0 12px !important;
+    }
+    .site-layout-background {
+        padding: 12px !important;
+    }
 }

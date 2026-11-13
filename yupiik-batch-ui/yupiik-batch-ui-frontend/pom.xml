@@ -45,18 +45,28 @@
               <goal>install-node-and-npm</goal>
             </goals>
             <configuration>
-              <nodeVersion>v22.23.4</nodeVersion>
-              <npmVersion>10.9.9</npmVersion>
+              <nodeVersion>v24.22.3</nodeVersion>
+              <npmVersion>12.2.2</npmVersion>
             </configuration>
           </execution>
           <execution>
-            <id>npm-install</id>
+            <id>npm-ci</id>
             <phase>compile</phase>
             <goals>
               <goal>npm</goal>
             </goals>
             <configuration>
-              <arguments>install</arguments>
+              <arguments>ci --include=dev --include=optional</arguments>
+            </configuration>
+          </execution>
+          <execution>
+            <id>npm-check</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <configuration>
+              <arguments>run check</arguments>
             </configuration>
           </execution>
           <execution>
