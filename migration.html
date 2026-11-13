@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Migration</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A light Java batch API.">
+    <meta name="author" content="Yupiik Minisite Generator">
+    <meta name="generator" content="Yupiik Minisite Generator">
+    
+    <link rel="shortcut icon" href="//www.yupiik.io/yupiik-batch/images/favicon.png">
+    <meta name="theme-color" content="#191b20" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#191b20" media="(prefers-color-scheme: light)">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="//www.yupiik.io/yupiik-batch/css/syntax-highlighting.css?v=1.0.8-SNAPSHOT">
+    <link id="theme-style" rel="stylesheet" href="//www.yupiik.io/yupiik-batch/css/theme.css?v=1.0.8-SNAPSHOT">
+    
+    <style>
+            table {
+              table-layout: fixed;
+              width: 100%;
+            }
+            tbody > td {
+              overflow-x: auto;
+            }
+            </style>
+<script>/* inline to avoid flicker */try{var t=localStorage.getItem('yupiik-theme');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}</script>
+</head>
+<body>
+<header class="site-header">
+        <div class="header-inner">
+            <div class="brand">
+                <a class="brand-link" title="Home" href="//www.yupiik.io/yupiik-batch/index.html">
+                    <img class="brand-logo" src="//www.yupiik.io/yupiik-batch/images/logo.svg" alt="logo">
+                    <span class="brand-text">Batch<span class="brand-side">Documentation</span></span>
+                </a>
+            </div>
+            <div class="header-actions">
+                
+                <button class="icon-btn" id="search-button" type="button" title="Search" aria-label="Search">
+        <i class="fas fa-search" aria-hidden="true"></i>
+    </button>
+                
+				<ul class="social-list">
+				<li class="list-inline-item"><a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Twitter" target="_blank" href="https://twitter.com/Yupiik/"><i class="fab fa-twitter fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Github" target="_blank" href="https://www.github.com/yupiik/yupiik-batch"><i class="fab fa-github fa-fw"></i></a></li>
+				</ul>
+				<button class="icon-btn" id="theme-toggle" type="button" title="Toggle theme" aria-label="Toggle theme">
+					<svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 17a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0-16a1 1 0 1 1 0 2 1 1 0 0 1 0-2zM6.34 4.93a1 1 0 1 1 1.41 1.41 1 1 0 0 1-1.41-1.41zm11.32 12.73a1 1 0 1 1 1.41 1.41 1 1 0 0 1-1.41-1.41zM4 11a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm16 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2zM4.93 17.66a1 1 0 1 1 1.41-1.41 1 1 0 0 1-1.41 1.41zm12.73-11.32a1 1 0 1 1 1.41-1.41 1 1 0 0 1-1.41 1.41z"/></svg>
+					<svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.39 5.39 0 0 1-4.4 2.26 5.4 5.4 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+				</button>
+            </div>
+        </div>
+    </header>
+	<div class="page">
+<div class="page-navigation-left">
+    <h3 class="menu-label">Menu</h3>
+    <ul>
+<li>
+    <a title="Getting Started" href="//www.yupiik.io/yupiik-batch/getting-started.html">
+        <i class="fas fa-play"></i>Getting Started
+    </a>
+</li><li>
+    <a title="Getting Started" href="//www.yupiik.io/yupiik-batch/ui.html">
+        <i class="fas fa-mouse"></i>UI
+    </a>
+</li><li>
+    <a title="Getting Started" href="//www.yupiik.io/yupiik-batch/metrics-relay.html">
+        <i class="fas fa-heartbeat"></i>Metrics Relay
+    </a>
+</li><li>
+    <a title="Migration" href="//www.yupiik.io/yupiik-batch/migration.html" aria-current="page">
+        <i class="fas fa-level-up-alt"></i>Migration
+    </a>
+</li>
+    </ul>
+</div>
+<div id="migration-html-container" class="container page-content migration-html ">
+            <div class="page-header">
+                <h1>Migration</h1>
+            </div>
+            <div class="page-content-body">
+                <div id="preamble">
+ <div class="sectionbody">
+ <p> <div class="quoteblock abstract">
+  <blockquote>
+This page lists what to check when upgrading Yupiik Batch.  </blockquote>
+ </div></p>
+ </div>
+ </div>
+ <div class="sect1">
+  <h2 id="_upgrade_to_1_0_7">Upgrade to 1.0.7</h2>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+This version upgrades the dependencies of Yupiik Batch to fix known vulnerabilities (CVE), in particular in Apache Tomcat. Yupiik Batch API does not change: your batches, configurations and mappers compile and run without any modification.
+ </p>
+ </div>
+ <div class="sect2">
+  <h3 id="_summary">Summary</h3>
+ <div class="sectionbody">
+ <table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+   <col style="width: 50%;">
+   <col style="width: 50%;">
+  </colgroup>
+  <thead>
+   <tr>
+    <th class="tableblock halign-left">
+You use...    </th>
+    <th class="tableblock halign-left">
+What to do    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+The runtime, components and iterators</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Upgrade the version, and align uship on 1.0.20 if you use it.</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+The UI (<code>yupiik-batch-ui-backend</code>)</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Upgrade the version, check your Tomcat customizations if any.</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+The metrics relay</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Nothing mandatory, moving to the new monitoring port property is recommended.</p>
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ </div>
+ </div>
+ <div class="sect2">
+  <h3 id="_project_dependencies">Project dependencies</h3>
+ <div class="sectionbody">
+ <div class="sect3">
+  <h4 id="_mandatory">Mandatory</h4>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Upgrade all <code>io.yupiik.batch</code> artifacts:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;io.yupiik.batch&lt;/groupId&gt;
+  &lt;artifactId&gt;yupiik-batch-runtime&lt;/artifactId&gt;
+  &lt;version&gt;1.0.7&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect3">
+  <h4 id="_recommended_align_uship">Recommended: align uship</h4>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>If you declare <code>io.yupiik.uship:persistence</code> (needed by <code>DatabaseDiffExecutor</code>, the runtime declares it as <code>provided</code>), upgrade it to <code>1.0.20</code> which is the version the runtime is built and tested with:</p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;io.yupiik.uship&lt;/groupId&gt;
+  &lt;artifactId&gt;persistence&lt;/artifactId&gt;
+  &lt;version&gt;1.0.20&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect3">
+  <h4 id="_only_if_your_project_already_does_it">Only if your project already does it</h4>
+ <div class="sectionbody">
+ <div class="ulist">
+ <ul>
+  <li>
+ <div class="paragraph">
+ <p><strong>Forced Tomcat version</strong> (property or <code>dependencyManagement</code> with a 10.1.x version): upgrade it to <code>11.0.27</code> or remove it. The libraries the UI and the metrics relay rely on are built for Tomcat 11.</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p><strong>Old versions pinned in your <code>dependencyManagement</code></strong> for <code>org.apache.logging.log4j:log4j-api</code>, <code>commons-io:commons-io</code>, <code>org.apache.commons:commons-compress</code> or <code>org.apache.poi:*</code>: remove them, they override the fixed versions brought by Yupiik Batch.</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+<strong>Direct usage of Yupiik Fusion</strong> (an application derived from the metrics relay for example): <div class="ulist">
+ <ul>
+  <li>
+ <div class="paragraph">
+ <p>upgrade fusion to <code>1.2.0</code>,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p>remove the <code>io.yupiik.fusion:fusion-observability</code> dependency which does not exist anymore, <code>/health</code> and <code>/metrics</code> are now provided by <code>fusion-http-server</code>,</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p>move your tests to JUnit 6 if you use <code>fusion-testing</code> which requires it in 1.2.0.</p>
+ </div>
+  </li>
+ </ul>
+ </div>
+ </div>
+  </li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ <div class="sect3">
+  <h4 id="_optional_log4j_message_with_the_excel_iterator">Optional: log4j message with the Excel iterator</h4>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>With <code>excel-iterator</code>, Apache POI 5.5.1 logs at startup:</p>
+ </div>
+ <div class="literalblock">
+ <div class="content">
+ <pre>ERROR Log4j API could not find a logging provider.
+</pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>
+This message is harmless. To get rid of it, add a bridge to your logging system, for example to JUL:
+ </p>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;dependency&gt;
+  &lt;groupId&gt;org.apache.logging.log4j&lt;/groupId&gt;
+  &lt;artifactId&gt;log4j-to-jul&lt;/artifactId&gt;
+  &lt;version&gt;2.26.1&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect2">
+  <h3 id="_configuration">Configuration</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>Batch parameters (<code>@Param</code>), UI ones (<code>yupiik.batch.backend.*</code>, <code>yupiik.batch.frontend.*</code>) and the metrics relay endpoint (<code>/relay</code>) do not change: same names, same defaults.</p>
+ </div>
+ <div class="sect3">
+  <h4 id="_metrics_relay_monitoring_server">Metrics relay monitoring server</h4>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>The monitoring server (<code>/health</code>, <code>/metrics</code>) uses new configuration keys:</p>
+ </div>
+ <table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+   <col style="width: 33%;">
+   <col style="width: 33%;">
+   <col style="width: 33%;">
+  </colgroup>
+  <thead>
+   <tr>
+    <th class="tableblock halign-left">
+    </th>
+    <th class="tableblock halign-left">
+Up to 1.0.6    </th>
+    <th class="tableblock halign-left">
+From 1.0.7    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Activation</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+always enabled</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+<code>fusion.http-server.monitoring.enabled</code> (default: <code>true</code>)</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Port</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+<code>fusion.observability.server.port</code> (default: <code>8181</code>)</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+<code>fusion.http-server.monitoring.port</code> (default: <code>8181</code>)</p>
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <div class="ulist">
+ <ul>
+  <li>
+ <div class="paragraph">
+ <p><strong>No action required</strong>: the server is still enabled by default on port <code>8181</code> and the former <code>fusion.observability.server.port</code> key is still honored when the new one is not set.</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p><strong>Recommended</strong>: use the new key, the former one is only kept for compatibility. As environment variable: <code>FUSION_HTTP_SERVER_MONITORING_PORT</code>.</p>
+ </div>
+  </li>
+  <li>
+ <div class="paragraph">
+ <p><strong>New</strong>: the monitoring server can be disabled with <code>fusion.http-server.monitoring.enabled=false</code> (<code>FUSION_HTTP_SERVER_MONITORING_ENABLED=false</code>).</p>
+ </div>
+  </li>
+ </ul>
+ </div>
+ <div class="listingblock">
+ <div class="content">
+ <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">java -Dfusion.http-server.monitoring.port=9090 ...
+# or
+FUSION_HTTP_SERVER_MONITORING_PORT=9090 java ...
+</code></pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>See  <a href="metrics-relay.html">Metrics Relay</a>
+ for more details.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect2">
+  <h3 id="_behavior_changes">Behavior changes</h3>
+ <div class="sectionbody">
+ <div class="sect3">
+  <h4 id="_ui_and_metrics_relay_run_on_tomcat_11">UI and metrics relay run on Tomcat 11</h4>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>The UI and the metrics relay now run on Apache Tomcat 11 (Servlet 6.1, Jakarta EE 11). If you use the UI as is, nothing changes. If you customize it (valves, <code>TomcatCustomizer</code>, additional servlets or filters), ensure this code is compatible with Tomcat 11.</p>
+ </div>
+ </div>
+ </div>
+ <div class="sect3">
+  <h4 id="_ui_basic_authentication_uses_utf_8">UI BASIC authentication uses UTF-8</h4>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>When <code>yupiik.batch.backend.tomcat.webUsers</code> is set, the response header is now:</p>
+ </div>
+ <div class="literalblock">
+ <div class="content">
+ <pre>WWW-Authenticate: Basic realm=&quot;Yupiik Batch UI&quot;, charset=UTF-8
+</pre>
+ </div>
+ </div>
+ <div class="paragraph">
+ <p>instead of <code>Basic realm=&quot;Yupiik Batch UI&quot;</code>. Browsers then encode the credentials in UTF-8 (RFC 7617) so passwords with non ASCII characters are correctly handled. No action required.</p>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+ <div class="sect2">
+  <h3 id="_requirements">Requirements</h3>
+ <div class="sectionbody">
+ <div class="paragraph">
+ <p>
+Java 17 minimum, as before.
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2">
+  <h3 id="_fixed_vulnerabilities">Fixed vulnerabilities</h3>
+ <div class="sectionbody">
+ <table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+   <col style="width: 33%;">
+   <col style="width: 33%;">
+   <col style="width: 33%;">
+  </colgroup>
+  <thead>
+   <tr>
+    <th class="tableblock halign-left">
+Component    </th>
+    <th class="tableblock halign-left">
+Before    </th>
+    <th class="tableblock halign-left">
+After    </th>
+   </tr>
+  </thead>
+  <tbody>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Apache Tomcat (UI, metrics relay)</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+10.1.33</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+11.0.27</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Apache POI (<code>excel-iterator</code>)</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+5.2.2</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+5.5.1</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Apache Log4j API (through POI)</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+2.17.2</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+2.26.1</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Apache Commons Compress</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+1.26.2</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+1.28.0</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Apache Commons Lang (through Commons Compress)</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+3.14.0</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+3.18.0</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Apache Commons IO</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+2.18.0</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+2.22.0</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Apache Johnzon</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+1.2.18</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+1.2.22</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Yupiik uship</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+1.0.19</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+1.0.20</p>
+    </td>
+   </tr>
+   <tr>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+Yupiik Fusion (metrics relay)</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+1.0.21</p>
+    </td>
+    <td class="tableblock halign-left">
+<p class="tableblock">
+1.2.0</p>
+    </td>
+   </tr>
+  </tbody>
+ </table>
+ <div class="paragraph">
+ <p>
+A dependency scan (OSV database) does not report any known vulnerability anymore in Yupiik Batch Java dependencies.
+ </p>
+ </div>
+ </div>
+ </div>
+ <div class="sect2">
+  <h3 id="_for_contributors">For contributors</h3>
+ <div class="sectionbody">
+ <div class="ulist">
+ <ul>
+  <li>
+ <p>
+The frontend build uses Node 22 LTS (instead of 18), automatically installed by Maven.
+ </p>
+  </li>
+  <li>
+ <p>
+Tests use JUnit 6.
+ </p>
+  </li>
+ </ul>
+ </div>
+ </div>
+ </div>
+ </div>
+ </div>
+                
+                
+            </div>
+        </div>
+<div class="page-navigation-right">
+        <h3>Navigation</h3>
+        <nav class="generated-nav-menu"></nav>
+    </div>
+    </div>
+<footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-social">
+                <ul class="social-list">
+                <li class="list-inline-item"><a title="LinkedIn" target="_blank" href="https://www.linkedin.com/company/yupiik/"><i class="fab fa-linkedin fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Twitter" target="_blank" href="https://twitter.com/Yupiik/"><i class="fab fa-twitter fa-fw"></i></a></li>
+              <li class="list-inline-item"><a title="Github" target="_blank" href="https://www.github.com/yupiik/yupiik-batch"><i class="fab fa-github fa-fw"></i></a></li>
+                </ul>
+            </div>
+            <nav class="footer-bar"><small class="copyright">© 2026 <strong><a href="https://www.yupiik.com">Yupiik</a></strong>. All Rights Reserved</small><a class="legal-link" href="https://www.yupiik.com/terms-of-use/">Terms of use</a><a class="legal-link" href="https://www.yupiik.com/privacy-policy/">Privacy policy</a></nav>
+        </div>
+    </footer>
+
+    <div class="modal" id="searchModal" role="dialog" aria-label="Search site">
+    <div class="modal-overlay" data-close-modal></div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-header">
+            <h5 class="modal-title">Search</h5>
+            <button type="button" class="modal-close" data-close-modal aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input class="form-control" id="searchInput" placeholder="Search the docs..." autocomplete="off">
+            <div class="search-hits"></div>
+        </div>
+    </div>
+</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.11.2/highlight.min.js" integrity="sha384-pZ4gLQJIEk/VKnGk59xUSQK8Ne/erZQR9cpnPXPLB9iN1tXsVkRVfHYGdFYrSkv1" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.11.2/languages/bash.min.js" integrity="sha384-efs9Q+5nnPiBO0WMrHtZ2b4ZbGnY0xWwGyXD6wEdpsx5FloMqm1cIVIKG1Bdvg40" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.11.2/languages/json.min.js" integrity="sha384-NnOc9XV+udt/++RdhhzykFpOtc2D05945J+tYJKxgDKzBhgT/v7WDgIYAfP5LaSa" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@highlightjs/cdn-assets@11.11.2/languages/dockerfile.min.js" integrity="sha384-0zNCDFuDropscQQX105Gh/3QcoGRmz/FNUFCljVEETiDYRYMhSEyRydgyjQTlgds" crossorigin="anonymous"></script>
+    <script>if (!(window.minisite || {}).skipHighlightJs) {
+        document.querySelectorAll('.page-content-body pre code').forEach(function (codeBlock) {
+            hljs.highlightElement(codeBlock);
+        });
+        function addCopyButtons(clipboard) {
+          document.querySelectorAll('.page-content-body pre').forEach(function (codeBlock) {
+            var button = document.createElement('button');
+            button.className = 'copy-code-button';
+            button.type = 'button';
+            button.setAttribute('aria-label', 'Copy code to clipboard');
+            button.innerHTML = '<svg class="copy-glyph" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"></rect><path d="M10.5 5.5v-1A2 2 0 0 0 8.5 2.5h-5A2 2 0 0 0 1.5 4.5v5a2 2 0 0 0 2 2h1"></path></svg>' +
+                '<svg class="copy-check" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6.5"></path></svg>';
+            button.addEventListener('click', function () {
+              clipboard.writeText(codeBlock.querySelector('code') ? codeBlock.querySelector('code').innerText : codeBlock.innerText).then(function () {
+                button.classList.add('is-copied');
+                button.blur();
+                setTimeout(function () { button.classList.remove('is-copied'); }, 2000);
+              }, function () {
+                button.classList.add('is-copied');
+                button.querySelector('.copy-check').style.stroke = 'var(--brand-purple)';
+              });
+            });
+            codeBlock.appendChild(button);
+          });
+        }
+        if (navigator && navigator.clipboard) {
+         addCopyButtons(navigator.clipboard);
+        } else {
+         var script = document.createElement('script');
+         script.src = '//cdnjs.cloudflare.com/ajax/libs/clipboard-polyfill/2.7.0/clipboard-polyfill.promise.js';
+         script.integrity = 'sha256-waClS2re9NUbXRsryKoof+F9qc1gjjIhc2eT7ZbIv94=';
+         script.crossOrigin = 'anonymous';
+         script.onload = function() {addCopyButtons(clipboard);};
+         document.body.appendChild(script);
+        }
+    }</script>
+    <script src="//www.yupiik.io/yupiik-batch/js/minisite.js?v=1.0.8-SNAPSHOT"></script>
+    <script>$('.page-content-body').generatedNavMenu();</script>
+    
+    
+
+<script>
+    (function () {
+        // theme toggle
+        var root = document.documentElement;
+        var toggle = document.getElementById('theme-toggle');
+        if (toggle) {
+            function currentDark() {
+                var stored = root.getAttribute('data-theme');
+                if (stored === 'light' || stored === 'dark') return stored === 'dark';
+                // no explicit attribute yet: follow the OS preference
+                return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            }
+            toggle.addEventListener('click', function () {
+                var next = currentDark() ? 'light' : 'dark';
+                root.setAttribute('data-theme', next);
+                try { localStorage.setItem('yupiik-theme', next); } catch (e) {}
+            });
+        }
+        // search modal
+        var modal = document.getElementById('searchModal');
+        function openModal() { if (modal) modal.classList.add('open'); }
+        function closeModal() { if (modal) modal.classList.remove('open'); }
+        var sb = document.getElementById('search-button');
+        if (sb) sb.addEventListener('click', function (e) { e.preventDefault(); openModal(); });
+        if (modal) {
+            modal.addEventListener('click', function (e) { if (e.target.closest('[data-close-modal]')) closeModal(); });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
+        }
+    })();
+</script>
+</body>
+</html>
