@@ -27,6 +27,10 @@
   <artifactId>documentation</artifactId>
   <name>Yupiik Batch :: Documentation</name>
 
+  <properties>
+    <yupiik-tools.version>1.3.1</yupiik-tools.version>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -55,7 +59,7 @@
       <plugin> <!-- mvn [compile] yupiik-tools:serve-minisite -e -->
         <groupId>io.yupiik.maven</groupId>
         <artifactId>yupiik-tools-maven-plugin</artifactId>
-        <version>1.2.3</version>
+        <version>${yupiik-tools.version}</version>
         <configuration>
           <preferYupiikAsciidoc>true</preferYupiikAsciidoc>
           <siteBase>//www.yupiik.io/yupiik-batch</siteBase>
@@ -69,7 +73,7 @@
           <indexSubTitle>A light Java batch API.</indexSubTitle>
           <logoText>Batch</logoText>
           <logoSideText>Documentation</logoSideText>
-          <copyright>© 2024 &lt;strong&gt;&lt;a href="https://www.yupiik.com"&gt;Yupiik&lt;/a&gt;&lt;/strong&gt;. All Rights Reserved</copyright>
+          <copyright>© 2026 &lt;strong&gt;&lt;a href="https://www.yupiik.com"&gt;Yupiik&lt;/a&gt;&lt;/strong&gt;. All Rights Reserved</copyright>
 
           <templateExtensionPoints>
             <socialLinks>
@@ -110,7 +114,7 @@
           <dependency>
             <groupId>io.yupiik.maven</groupId>
             <artifactId>asciidoc-java</artifactId>
-            <version>1.2.3</version>
+            <version>${yupiik-tools.version}</version>
           </dependency>
         </dependencies>
       </plugin>
