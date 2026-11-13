@@ -1,0 +1,162 @@
+= Migration
+:minisite-index: 400
+:minisite-index-title: Migration
+:minisite-index-description: How to upgrade between Yupiik Batch versions.
+:minisite-index-icon: level-up-alt
+
+[abstract]
+This page lists what to check when upgrading Yupiik Batch.
+
+== Upgrade to 1.0.7
+
+This version upgrades the dependencies of Yupiik Batch to fix known vulnerabilities (CVE), in particular in Apache Tomcat.
+Yupiik Batch API does not change: your batches, configurations and mappers compile and run without any modification.
+
+=== Summary
+
+[options="header",cols="a,a"]
+|===
+| You use... | What to do
+| The runtime, components and iterators | Upgrade the version, and align uship on 1.0.20 if you use it.
+| The UI (`yupiik-batch-ui-backend`) | Upgrade the version, check your Tomcat customizations if any.
+| The metrics relay | Nothing mandatory, moving to the new monitoring port property is recommended.
+|===
+
+=== Project dependencies
+
+==== Mandatory
+
+Upgrade all `io.yupiik.batch` artifacts:
+
+[source,xml]
+----
+<dependency>
+  <groupId>io.yupiik.batch</groupId>
+  <artifactId>yupiik-batch-runtime</artifactId>
+  <version>1.0.7</version>
+</dependency>
+----
+
+==== Recommended: align uship
+
+If you declare `io.yupiik.uship:persistence` (needed by `DatabaseDiffExecutor`, the runtime declares it as `provided`),
+upgrade it to `1.0.20` which is the version the runtime is built and tested with:
+
+[source,xml]
+----
+<dependency>
+  <groupId>io.yupiik.uship</groupId>
+  <artifactId>persistence</artifactId>
+  <version>1.0.20</version>
+</dependency>
+----
+
+==== Only if your project already does it
+
+* *Forced Tomcat version* (property or `dependencyManagement` with a 10.1.x version): upgrade it to `11.0.27` or remove it.
+The libraries the UI and the metrics relay rely on are built for Tomcat 11.
+* *Old versions pinned in your `dependencyManagement`* for `org.apache.logging.log4j:log4j-api`, `commons-io:commons-io`,
+`org.apache.commons:commons-compress` or `org.apache.poi:*`: remove them, they override the fixed versions brought by Yupiik Batch.
+* *Direct usage of Yupiik Fusion* (an application derived from the metrics relay for example):
+** upgrade fusion to `1.2.0`,
+** remove the `io.yupiik.fusion:fusion-observability` dependency which does not exist anymore, `/health` and `/metrics` are now provided by `fusion-http-server`,
+** move your tests to JUnit 6 if you use `fusion-testing` which requires it in 1.2.0.
+
+==== Optional: log4j message with the Excel iterator
+
+With `excel-iterator`, Apache POI 5.5.1 logs at startup:
+
+[source]
+----
+ERROR Log4j API could not find a logging provider.
+----
+
+This message is harmless. To get rid of it, add a bridge to your logging system, for example to JUL:
+
+[source,xml]
+----
+<dependency>
+  <groupId>org.apache.logging.log4j</groupId>
+  <artifactId>log4j-to-jul</artifactId>
+  <version>2.26.1</version>
+</dependency>
+----
+
+=== Configuration
+
+Batch parameters (`@Param`), UI ones (`yupiik.batch.backend.*`, `yupiik.batch.frontend.*`) and the metrics relay
+endpoint (`/relay`) do not change: same names, same defaults.
+
+==== Metrics relay monitoring server
+
+The monitoring server (`/health`, `/metrics`) uses new configuration keys:
+
+[options="header",cols="a,a,a"]
+|===
+| | Up to 1.0.6 | From 1.0.7
+| Activation | always enabled | `fusion.http-server.monitoring.enabled` (default: `true`)
+| Port | `fusion.observability.server.port` (default: `8181`) | `fusion.http-server.monitoring.port` (default: `8181`)
+|===
+
+* *No action required*: the server is still enabled by default on port `8181` and the former `fusion.observability.server.port`
+key is still honored when the new one is not set.
+* *Recommended*: use the new key, the former one is only kept for compatibility.
+As environment variable: `FUSION_HTTP_SERVER_MONITORING_PORT`.
+* *New*: the monitoring server can be disabled with `fusion.http-server.monitoring.enabled=false` (`FUSION_HTTP_SERVER_MONITORING_ENABLED=false`).
+
+[source,bash]
+----
+java -Dfusion.http-server.monitoring.port=9090 ...
+# or
+FUSION_HTTP_SERVER_MONITORING_PORT=9090 java ...
+----
+
+See xref:metrics-relay.adoc[Metrics Relay] for more details.
+
+=== Behavior changes
+
+==== UI and metrics relay run on Tomcat 11
+
+The UI and the metrics relay now run on Apache Tomcat 11 (Servlet 6.1, Jakarta EE 11).
+If you use the UI as is, nothing changes.
+If you customize it (valves, `TomcatCustomizer`, additional servlets or filters), ensure this code is compatible with Tomcat 11.
+
+==== UI BASIC authentication uses UTF-8
+
+When `yupiik.batch.backend.tomcat.webUsers` is set, the response header is now:
+
+[source]
+----
+WWW-Authenticate: Basic realm="Yupiik Batch UI", charset=UTF-8
+----
+
+instead of `Basic realm="Yupiik Batch UI"`.
+Browsers then encode the credentials in UTF-8 (RFC 7617) so passwords with non ASCII characters are correctly handled.
+No action required.
+
+=== Requirements
+
+Java 17 minimum, as before.
+
+=== Fixed vulnerabilities
+
+[options="header",cols="a,a,a"]
+|===
+| Component | Before | After
+| Apache Tomcat (UI, metrics relay) | 10.1.33 | 11.0.27
+| Apache POI (`excel-iterator`) | 5.2.2 | 5.5.1
+| Apache Log4j API (through POI) | 2.17.2 | 2.26.1
+| Apache Commons Compress | 1.26.2 | 1.28.0
+| Apache Commons Lang (through Commons Compress) | 3.14.0 | 3.18.0
+| Apache Commons IO | 2.18.0 | 2.22.0
+| Apache Johnzon | 1.2.18 | 1.2.22
+| Yupiik uship | 1.0.19 | 1.0.20
+| Yupiik Fusion (metrics relay) | 1.0.21 | 1.2.0
+|===
+
+A dependency scan (OSV database) does not report any known vulnerability anymore in Yupiik Batch Java dependencies.
+
+=== For contributors
+
+* The frontend build uses Node 22 LTS (instead of 18), automatically installed by Maven.
+* Tests use JUnit 6.

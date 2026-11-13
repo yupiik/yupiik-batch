@@ -75,11 +75,6 @@
       <version>${fusion.version}</version>
     </dependency>
     <dependency>
-      <groupId>io.yupiik.fusion</groupId>
-      <artifactId>fusion-observability</artifactId>
-      <version>${fusion.version}</version>
-    </dependency>
-    <dependency>
       <groupId>io.yupiik.logging</groupId>
       <artifactId>yupiik-logging-jul</artifactId>
       <version>${yupiik-logging.version}</version>
@@ -104,7 +99,7 @@
             <java.util.logging.manager>io.yupiik.logging.jul.YupiikLogManager</java.util.logging.manager>
             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
             <fusion.http-server.port>0</fusion.http-server.port>
-            <fusion.observability.server.port>0</fusion.observability.server.port>
+            <fusion.http-server.monitoring.port>0</fusion.http-server.monitoring.port>
           </systemPropertyVariables>
         </configuration>
       </plugin>

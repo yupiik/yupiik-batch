@@ -14,7 +14,12 @@
     "json-rpc-2.0": "0.2.18"
   },
   "overrides": {
-    "nth-check": "^2.1.1"
+    "nth-check": "^2.1.1",
+    "ws@^7": "^7.5.13",
+    "resolve-url-loader": {
+      "postcss": "^8.5.32"
+    },
+    "serialize-javascript": "^7.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
