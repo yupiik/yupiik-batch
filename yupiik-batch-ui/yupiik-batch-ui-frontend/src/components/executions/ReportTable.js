@@ -81,6 +81,7 @@ export function ReportTable({ data, idRenderer, pagination, previousId, showDura
     return (<Table
         dataSource={dataSource}
         columns={columns}
+        scroll={{ x: 'max-content' }}
         expandable={{
             expandedRowRender: record => <pre>{extensions.commentWrapper(record.comment)}</pre>,
             rowExpandable: record => record.comment,

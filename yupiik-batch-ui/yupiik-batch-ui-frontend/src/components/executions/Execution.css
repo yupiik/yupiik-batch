@@ -1,3 +1,7 @@
 .execution .ant-table-wrapper {
     padding-top: 1rem;
 }
+.execution .ant-descriptions-item-content,
+.execution .ant-typography {
+    overflow-wrap: anywhere;
+}

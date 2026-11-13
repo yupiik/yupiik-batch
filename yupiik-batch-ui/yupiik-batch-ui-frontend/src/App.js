@@ -1,43 +1,39 @@
 import React, { useReducer, useState } from 'react';
 import { Layout, Menu } from 'antd';
-import { Redirect, Route, Switch } from 'react-router';
-import { BrowserRouter as Router, Link } from 'react-router-dom';
-import { ReactComponent as Logo } from './logo.svg';
+import { BrowserRouter as Router, Link, Navigate, Route, Routes } from 'react-router-dom';
+import logo from './logo.svg';
 import './App.css';
 
 import routes from './routes';
-import reducer from "./reducers";
+import reducer from './reducers';
 
 function SwitchRoutes({ component, includeRedirect, filter }) {
   return (
-    <Switch>
+    <Routes>
       {routes.filter(route => filter == null || filter(route)).map((route, key) => (
-        <Route path={route.path} key={key} exact={route.exact}>
-          {component(route)}
-        </Route>
+        <Route path={route.path} key={key} element={component(route)} />
       ))}
-      {includeRedirect && <Redirect from="*" to="/" />}
-    </Switch>
+      <Route path="*" element={includeRedirect ? <Navigate to="/" replace /> : null} />
+    </Routes>
   );
 }
 
-
-function SideMenuItems(props) {
+function SideMenuItems({ selectedKey }) {
   return (
-    <Menu theme="dark" selectedKeys={[props.selectedKey]} mode="inline">
-      {routes.filter(route => route.sider.menu).map(route => (
-        <Menu.Item {...route.sider.menu.attributes}>{route.sider.menu.content}</Menu.Item>
-      ))}
-    </Menu>
+    <Menu theme="dark" selectedKeys={selectedKey ? [selectedKey] : []} mode="inline"
+          items={routes.filter(route => route.sider?.menu).map(route => ({
+            ...route.sider.menu.attributes,
+            label: route.sider.menu.content,
+          }))} />
   );
 }
 
 function SideMenu() {
   const [collapsed, setCollapsed] = useState(false);
   return (
-    <Layout.Sider collapsible collapsed={collapsed} onCollapse={newValue => setCollapsed(newValue)}>
+    <Layout.Sider collapsible breakpoint="lg" collapsedWidth={64} collapsed={collapsed} onCollapse={setCollapsed} onBreakpoint={setCollapsed}>
       <div className="logo">
-        <Link to="/"><Logo /></Link>
+        <Link to="/"><img src={logo} alt="Yupiik" width={32} height={32} /></Link>
         {!collapsed && <Link to="/">Yupiik Batch UI</Link>}
       </div>
       <SwitchRoutes filter={route => route.sider} component={route => (<SideMenuItems selectedKey={route.sider.selectedKey} />)} />
@@ -50,10 +46,10 @@ function Content() {
   return (
     <Layout.Content>
       <SwitchRoutes filter={route => route.component.Breadcrumb}
-                    component={route => (<route.component.Breadcrumb/>)}/>
+                    component={route => (<route.component.Breadcrumb />)} />
       <div className="site-layout-background">
-        <SwitchRoutes component={route => (<route.component state={state} dispatch={dispatch}/>)}
-                      includeRedirect={true}/>
+        <SwitchRoutes component={route => (<route.component state={state} dispatch={dispatch} />)}
+                      includeRedirect={true} />
       </div>
     </Layout.Content>
   );
@@ -66,7 +62,7 @@ export default function App() {
         <SideMenu />
         <Layout className="site-layout">
           <Content />
-          <Layout.Footer>Yupiik ©2022</Layout.Footer>
+          <Layout.Footer>Yupiik ©{new Date().getFullYear()}</Layout.Footer>
         </Layout>
       </Router>
     </Layout>

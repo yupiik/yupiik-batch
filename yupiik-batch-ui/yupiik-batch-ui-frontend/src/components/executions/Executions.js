@@ -1,155 +1,89 @@
 import { HomeOutlined } from '@ant-design/icons';
-import { Alert, Breadcrumb, PageHeader, Select, Skeleton } from 'antd';
+import { Alert, Breadcrumb, Select, Skeleton, Typography } from 'antd';
 import { useEffect } from 'react';
-import { Link, useLocation, withRouter } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { fetchJsonRpc } from '../../service/fetchJsonRpc';
 import { ReportTable } from './ReportTable';
 
-function forgeRequest({ method, showSelectBatch, queryPage, queryPageSize, batchName }) {
-    const params = {
-        page: queryPage ? +queryPage : 0,
-        pageSize: queryPageSize ? +queryPageSize : 10,
-        batch: batchName,
-    };
-    return showSelectBatch ?
-        [
-            {
-                jsonrpc: '2.0',
-                id: 0,
-                method,
-                params,
-            },
-            {   // fetch all batch names this way for now, since we bulk requests it is acceptable
-                jsonrpc: '2.0',
-                id: 1,
-                method: 'yupiik-batch-last-executions',
-                params: {},
-            },
-        ] :
-        params;
+function positiveInteger(value, fallback) {
+    const number = Number(value);
+    return Number.isSafeInteger(number) && number > 0 ? number : fallback;
 }
 
-function updatePaginationAndRequest({ method, showSelectBatch, queryPage, queryPageSize, batchName, dispatch }) {
-    dispatch({
-        type: `${method}-pagination`,
-        value: {
-            page: queryPage ? +queryPage : 0,
-            pageSize: queryPageSize ? +queryPageSize : 10,
-            batch: batchName,
-        },
-    });
-    dispatch({
-        type: `${method}-request-params`,
-        value: forgeRequest({ method, showSelectBatch, queryPage, queryPageSize, batchName }),
-    });
-}
+function BaseExecutions({ method, showDuration, showSelectBatch, sortAttribute, state, dispatch }) {
+    const [searchParams, setSearchParams] = useSearchParams();
+    const page = positiveInteger(searchParams.get('page'), 1);
+    const pageSize = positiveInteger(searchParams.get('size'), 10);
+    const batch = searchParams.get('batch') || '';
 
-function BaseExecutions({ location, history, method, pageSize, showDuration, showSelectBatch, sortAttribute, state, dispatch }) {
-    const pagination = state[`${method}-pagination`];
-    const request = state[`${method}-request-params`];
     useEffect(() => {
-        if (!pagination) {
-            const queryParams = new URLSearchParams(location.search);
-            const queryPage = queryParams.get('page');
-            const queryPageSize = queryParams.get('size'); // partially wired only
-            const batchName = queryParams.get('batch') || '';
-            updatePaginationAndRequest({
-                method,
-                showSelectBatch,
-                queryPage: queryPage && queryPage > 0 ? queryPage - 1 : queryPage,
-                queryPageSize,
-                batchName,
-                dispatch,
-            });
-        }
-        if (request) {
-            return fetchJsonRpc(method, request, dispatch);
-        }
-    }, [method, pagination, request, dispatch, location, showSelectBatch]);
+        const params = { page: page - 1, pageSize, batch };
+        const request = showSelectBatch ? [
+            { jsonrpc: '2.0', id: 0, method, params },
+            { jsonrpc: '2.0', id: 1, method: 'yupiik-batch-last-executions', params: {} },
+        ] : params;
+        return fetchJsonRpc(method, request, dispatch);
+    }, [method, page, pageSize, batch, showSelectBatch, dispatch]);
+
+    const updateQuery = values => {
+        const query = new URLSearchParams(searchParams);
+        Object.entries(values).forEach(([key, value]) => {
+            if (value === '') {
+                query.delete(key);
+            } else {
+                query.set(key, String(value));
+            }
+        });
+        setSearchParams(query);
+    };
 
     if (state[`${method}-loading-state`]) {
-        return (<Skeleton active />);
+        return <Skeleton active />;
     }
-
     const error = state[`${method}-error`];
     if (error) {
-        return (
-            <div className="executions">
-                <Alert message="Error" description={error.message} type="error" showIcon />
-            </div>
-        );
+        return <Alert title="Error" description={error.message} type="error" showIcon />;
     }
-
     const data = state[`${method}-data`];
     if (!data) {
-        return (<Skeleton active />);
+        return <Skeleton active />;
     }
-
-    const hasBatchNames = Array.isArray(data);
-    const pageData = hasBatchNames ? data[0] : data;
+    const pageData = showSelectBatch ? data[0] : data;
     return (
         <div className="executions">
-            <PageHeader title="Job Executions" />
-            {hasBatchNames && data.length === 2 &&
+            <Typography.Title level={4}>Job Executions</Typography.Title>
+            {showSelectBatch &&
                 <div className="batch-selector" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center' }}>
                     <span style={{ marginRight: '1rem' }}>Batch:</span>
                     <Select
-                        defaultValue={(pagination || {}).batch || ''}
-                        dropdownMatchSelectWidth={true}
+                        aria-label="Batch"
+                        value={batch}
+                        popupMatchSelectWidth={true}
                         style={{ width: '100%' }}
-                        onChange={value => {
-                            const safePagination = pagination || {};
-                            updatePaginationAndRequest({
-                                method,
-                                showSelectBatch,
-                                queryPage: safePagination.page || 0,
-                                queryPageSize: safePagination.pageSize || 10,
-                                batchName: decodeURIComponent(value),
-                                dispatch,
-                            });
-                            const queryParams = new URLSearchParams(location.search);
-                            queryParams.set('batch', value);
-                            history.push({
-                                pathname: location.pathname,
-                                search: `?${queryParams.toString()}`,
-                            });
-                        }}>
-                        <Select.Option value="">All</Select.Option>
-                        {data[1].items
-                            .map(it => it.name)
-                            .map(it => (<Select.Option key={it} value={encodeURIComponent(it)}>{it}</Select.Option>))}
-                    </Select>
+                        onChange={value => updateQuery({ batch: value, page: 1 })}
+                        options={[
+                            { value: '', label: 'All' },
+                            ...Array.from(new Set(data[1].items.map(it => it.name)))
+                                .filter(Boolean).map(name => ({ value: name, label: name })),
+                        ]}
+                    />
                 </div>}
             <ReportTable
-                idRenderer={id => (<Link to={`/execution/${id}`}>{id}</Link>)}
+                idRenderer={id => <Link to={`/execution/${encodeURIComponent(id)}`}>{id}</Link>}
                 data={pageData.items}
                 showDuration={showDuration}
                 method={method}
                 reversed={true}
                 sortAttribute={sortAttribute}
-                pagination={pageSize ? {
-                    defaultPageSize: 10,
-                    pageSize: pagination.pageSize || 10,
+                pagination={showSelectBatch ? {
+                    pageSize,
                     total: pageData.total,
-                    current: pagination.page + 1,
+                    current: page,
                     showQuickJumper: true,
-                    onChange: (page, pageSize) => {
-                        const queryParams = new URLSearchParams(location.search);
-                        queryParams.set('page', page);
-                        queryParams.set('size', pageSize);
-                        updatePaginationAndRequest({
-                            method,
-                            showSelectBatch,
-                            queryPage: Math.max(0, page - 1),
-                            queryPageSize: pageSize,
-                            batchName: pagination.batch,
-                            dispatch,
-                        });
-                        history.push({
-                            pathname: location.pathname,
-                            search: `?${queryParams.toString()}`,
-                        });
-                    },
+                    onChange: (nextPage, nextSize) => updateQuery({
+                        page: nextSize === pageSize ? nextPage : 1,
+                        size: nextSize,
+                    }),
                 } : false}
             />
         </div>
@@ -157,51 +91,25 @@ function BaseExecutions({ location, history, method, pageSize, showDuration, sho
 }
 
 function ExecutionsBreadcrumb() {
-    return (
-        <Breadcrumb>
-            <Breadcrumb.Item><Link to='/'><HomeOutlined /></Link></Breadcrumb.Item>
-            <Breadcrumb.Item>Executions</Breadcrumb.Item>
-        </Breadcrumb>
-    );
+    return <Breadcrumb items={[
+        { title: <Link to="/"><HomeOutlined /></Link> },
+        { title: 'Executions' },
+    ]} />;
 }
-function Executions(props) {
-    const location = useLocation();
-    return (
-        <BaseExecutions
-            {...props}
-            location={location}
-            showDuration={true}
-            showSelectBatch={true}
-            method="yupiik-batch-executions"
-            pageSize={(props.state['yupiik-batch-executions-pagination'] || {}).pageSize}
-        />
-    );
-}
-Executions.Breadcrumb = ExecutionsBreadcrumb;
 
-// LastExecutionsView has no pagination and show all latest execution per batch (name)
-function LastExecutionsViewBreadcrumb() {
-    return (
-        <Breadcrumb>
-            <Breadcrumb.Item><Link to='/'><HomeOutlined /></Link></Breadcrumb.Item>
-            <Breadcrumb.Item>Executions Overview</Breadcrumb.Item>
-        </Breadcrumb>
-    );
+export function ExecutionHistory(props) {
+    return <BaseExecutions {...props} showDuration={true} showSelectBatch={true} method="yupiik-batch-executions" />;
 }
-function LastExecutionsView(props) {
-    const location = useLocation();
-    return (
-        <BaseExecutions
-            {...props}
-            location={location}
-            showDuration={true}
-            sortAttribute={false}
-            method="yupiik-batch-last-executions"
-            pageSize={props.state.pageSize}
-        />
-    );
-}
-LastExecutionsView.Breadcrumb = LastExecutionsViewBreadcrumb;
+ExecutionHistory.Breadcrumb = ExecutionsBreadcrumb;
 
-export const ExecutionHistory = withRouter(Executions);
-export const LastExecutions = withRouter(LastExecutionsView);
+function LastExecutionsBreadcrumb() {
+    return <Breadcrumb items={[
+        { title: <Link to="/"><HomeOutlined /></Link> },
+        { title: 'Executions Overview' },
+    ]} />;
+}
+
+export function LastExecutions(props) {
+    return <BaseExecutions {...props} showDuration={true} sortAttribute={false} method="yupiik-batch-last-executions" />;
+}
+LastExecutions.Breadcrumb = LastExecutionsBreadcrumb;
